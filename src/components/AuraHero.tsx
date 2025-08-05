@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 
 const AuraHero = () => {
   return (
@@ -14,12 +15,16 @@ const AuraHero = () => {
         </div>
         
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center mb-12 md:mb-16">
-          <Button variant="aura" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
-            Start exploring
-          </Button>
-          <Button variant="subtle" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
-            Learn more
-          </Button>
+          <Link to="/discover">
+            <Button variant="aura" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
+              Start exploring
+            </Button>
+          </Link>
+          <Link to="/vibe-matching">
+            <Button variant="subtle" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
+              Learn more
+            </Button>
+          </Link>
         </div>
 
         {/* Stats */}
