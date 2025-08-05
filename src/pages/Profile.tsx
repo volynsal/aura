@@ -21,8 +21,7 @@ const userPosts = [
     id: 1, 
     type: "image", 
     content: "caught this moment between dreams and reality", 
-    artist: "cyber_artist", 
-    tags: ["#aesthetic", "#neon", "#cyberpunk", "#dreams", "#greatest hits"],
+    tags: ["#aesthetic", "#neon", "#cyberpunk", "#dreams"],
     image: "/placeholder.svg",
     notes: 5637,
     timestamp: "3 hours ago"
@@ -31,7 +30,7 @@ const userPosts = [
     id: 2, 
     type: "text", 
     content: "sometimes the void stares back and it's actually kind of aesthetic ngl",
-    tags: ["#void", "#aesthetic", "#relatable", "#dark academia"],
+    tags: ["#void", "#aesthetic", "#relatable"],
     notes: 1203,
     timestamp: "1 day ago"
   },
@@ -40,7 +39,7 @@ const userPosts = [
     type: "quote", 
     content: "we are all just NPCs in someone else's main character moment",
     source: "overheard at 3am",
-    tags: ["#quotes", "#3am thoughts", "#existential", "#main character"],
+    tags: ["#quotes", "#3am thoughts", "#existential"],
     notes: 2847,
     timestamp: "2 days ago"
   },
@@ -48,7 +47,7 @@ const userPosts = [
     id: 4, 
     type: "image", 
     content: "local cryptid spotted at the coffee shop again (it's me, I'm the cryptid)",
-    tags: ["#cryptid", "#coffee", "#self portrait", "#mood"],
+    tags: ["#cryptid", "#coffee", "#self portrait"],
     image: "/placeholder.svg",
     notes: 891,
     timestamp: "3 days ago"
@@ -57,9 +56,68 @@ const userPosts = [
     id: 5, 
     type: "text", 
     content: "why does every song sound like a soundtrack to my life when it's 2am and I'm having Feelings™",
-    tags: ["#2am", "#feelings", "#music", "#relatable", "#emotional"],
+    tags: ["#2am", "#feelings", "#music", "#relatable"],
     notes: 3456,
     timestamp: "4 days ago"
+  },
+  { 
+    id: 6, 
+    type: "image", 
+    content: "found this old polaroid in a thrift store and now I'm emotionally attached to strangers from the 90s",
+    tags: ["#thrift", "#polaroid", "#vintage", "#nostalgia"],
+    image: "/placeholder.svg",
+    notes: 1829,
+    timestamp: "5 days ago"
+  },
+  { 
+    id: 7, 
+    type: "text", 
+    content: "me: I'm gonna have a productive day\nalso me: *spends 4 hours researching the etymology of random words*",
+    tags: ["#productivity", "#adhd", "#relatable", "#etymology"],
+    notes: 4732,
+    timestamp: "6 days ago"
+  },
+  { 
+    id: 8, 
+    type: "quote", 
+    content: "the urge to disappear and start a new life as a forest witch grows stronger every monday",
+    tags: ["#forest witch", "#monday mood", "#escape fantasy"],
+    notes: 6284,
+    timestamp: "1 week ago"
+  },
+  { 
+    id: 9, 
+    type: "image", 
+    content: "proof that I can look mysterious and ethereal when the lighting is just right (and the camera quality is terrible)",
+    tags: ["#selfie", "#mysterious", "#ethereal", "#bad camera quality"],
+    image: "/placeholder.svg",
+    notes: 2156,
+    timestamp: "1 week ago"
+  },
+  { 
+    id: 10, 
+    type: "text", 
+    content: "hot take: the best conversations happen in grocery store aisles at 11pm when you're both questioning your life choices",
+    tags: ["#hot take", "#grocery store", "#11pm thoughts", "#life choices"],
+    notes: 3847,
+    timestamp: "1 week ago"
+  },
+  { 
+    id: 11, 
+    type: "image", 
+    content: "accidentally created art while procrastinating on actual art",
+    tags: ["#procrastination", "#accidental art", "#irony"],
+    image: "/placeholder.svg",
+    notes: 1945,
+    timestamp: "2 weeks ago"
+  },
+  { 
+    id: 12, 
+    type: "text", 
+    content: "shoutout to my anxiety for always keeping me on my toes and also ruining everything",
+    tags: ["#anxiety", "#mental health", "#relatable", "#dark humor"],
+    notes: 5672,
+    timestamp: "2 weeks ago"
   }
 ];
 
@@ -128,67 +186,82 @@ const Profile = () => {
           </TabsList>
 
           <TabsContent value="posts" className="mt-6">
-            <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-max">
               {userPosts.map((post, index) => (
-                <article key={post.id} className="break-inside-avoid mb-4 bg-surface border border-border/30 rounded-lg overflow-hidden">
+                <article 
+                  key={post.id} 
+                  className="bg-surface border border-border/30 rounded-lg overflow-hidden"
+                  style={{ 
+                    gridRowEnd: post.type === "text" && post.content.length > 100 ? "span 2" : "auto"
+                  }}
+                >
                   {/* Post Header */}
                   <div className="flex items-center gap-3 p-3 border-b border-border/20">
-                    <Avatar className="w-8 h-8">
+                    <Avatar className="w-6 h-6">
                       <AvatarImage src={userProfile.avatar} />
                       <AvatarFallback className="text-xs">{userProfile.username[0]}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <span className="font-medium text-sm">{userProfile.username}</span>
+                      <span className="font-medium text-xs">{userProfile.username}</span>
                     </div>
                     <button className="text-muted-foreground hover:text-foreground">
-                      <span className="text-sm">•••</span>
+                      <span className="text-xs">•••</span>
                     </button>
                   </div>
                   
                   {/* Post Content */}
-                  <div className="p-4">
+                  <div className="p-3">
                     {post.type === "image" && post.image && (
                       <div className="mb-3">
                         <img 
                           src={post.image} 
                           alt="" 
-                          className="w-full rounded-lg"
-                          style={{ height: `${200 + (index % 3) * 100}px`, objectFit: 'cover' }}
+                          className="w-full rounded-md object-cover"
+                          style={{ 
+                            height: `${180 + (index % 4) * 60}px`
+                          }}
                         />
                       </div>
                     )}
                     
                     {post.type === "quote" && (
-                      <div className="mb-3 p-4 bg-surface-elevated rounded-lg" style={{ minHeight: `${150 + (index % 2) * 50}px` }}>
-                        <blockquote className="text-lg italic leading-relaxed mb-2">
+                      <div className="mb-3 p-4 bg-surface-elevated rounded-md min-h-[120px] flex items-center">
+                        <blockquote className="text-sm italic leading-relaxed">
                           "{post.content}"
+                          {post.source && (
+                            <cite className="block text-xs text-muted-foreground mt-2 not-italic">
+                              — {post.source}
+                            </cite>
+                          )}
                         </blockquote>
-                        {post.source && (
-                          <cite className="text-sm text-muted-foreground">
-                            — {post.source}
-                          </cite>
-                        )}
                       </div>
                     )}
                     
                     {post.type === "text" && (
-                      <div className="mb-3" style={{ minHeight: `${120 + (index % 4) * 40}px` }}>
-                        <p className="leading-relaxed">{post.content}</p>
+                      <div className="mb-3">
+                        <p className="text-sm leading-relaxed">{post.content}</p>
                       </div>
+                    )}
+                    
+                    {(post.type === "image" && post.content) && (
+                      <p className="text-sm leading-relaxed mb-3">{post.content}</p>
                     )}
                     
                     {/* Tags */}
                     <div className="flex flex-wrap gap-1 mb-3">
-                      {post.tags.slice(0, 4).map((tag, idx) => (
+                      {post.tags.slice(0, 3).map((tag, idx) => (
                         <button key={idx} className="text-xs text-primary hover:underline">
                           {tag}
                         </button>
                       ))}
+                      {post.tags.length > 3 && (
+                        <span className="text-xs text-muted-foreground">+{post.tags.length - 3}</span>
+                      )}
                     </div>
                   </div>
                   
                   {/* Post Footer */}
-                  <div className="px-4 pb-3 flex items-center justify-between border-t border-border/20 pt-3">
+                  <div className="px-3 pb-3 flex items-center justify-between border-t border-border/20 pt-2">
                     <span className="text-xs text-muted-foreground">
                       {post.notes.toLocaleString()} notes
                     </span>
@@ -197,7 +270,7 @@ const Profile = () => {
                         <span className="text-sm">↻</span>
                       </button>
                       <button className="text-muted-foreground hover:text-red-500 transition-colors">
-                        <Heart className="w-4 h-4" />
+                        <Heart className="w-3 h-3" />
                       </button>
                     </div>
                   </div>
