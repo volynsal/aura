@@ -186,47 +186,50 @@ const Profile = () => {
           </TabsList>
 
           <TabsContent value="posts" className="mt-6">
-            <div className="space-y-4 max-w-lg mx-auto">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-max">
               {userPosts.map((post, index) => (
                 <article 
                   key={post.id} 
-                  className="bg-surface border border-border/30 rounded-xl overflow-hidden"
+                  className="bg-surface border border-border/30 rounded-lg overflow-hidden"
+                  style={{ 
+                    gridRowEnd: post.type === "text" && post.content.length > 100 ? "span 2" : "auto"
+                  }}
                 >
                   {/* Post Header */}
-                  <div className="flex items-center gap-3 p-4 border-b border-border/20">
-                    <Avatar className="w-8 h-8">
+                  <div className="flex items-center gap-3 p-3 border-b border-border/20">
+                    <Avatar className="w-6 h-6">
                       <AvatarImage src={userProfile.avatar} />
-                      <AvatarFallback className="text-sm">{userProfile.username[0]}</AvatarFallback>
+                      <AvatarFallback className="text-xs">{userProfile.username[0]}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <span className="font-medium text-sm">{userProfile.username}</span>
+                      <span className="font-medium text-xs">{userProfile.username}</span>
                     </div>
                     <button className="text-muted-foreground hover:text-foreground">
-                      <span className="text-lg">•••</span>
+                      <span className="text-xs">•••</span>
                     </button>
                   </div>
                   
                   {/* Post Content */}
-                  <div className="p-4">
+                  <div className="p-3">
                     {post.type === "image" && post.image && (
-                      <div className="mb-4">
+                      <div className="mb-3">
                         <img 
                           src={post.image} 
                           alt="" 
-                          className="w-full rounded-lg object-cover"
+                          className="w-full rounded-md object-cover"
                           style={{ 
-                            height: `${240 + (index % 3) * 80}px`
+                            height: `${180 + (index % 4) * 60}px`
                           }}
                         />
                       </div>
                     )}
                     
                     {post.type === "quote" && (
-                      <div className="mb-4">
-                        <blockquote className="text-lg leading-relaxed">
+                      <div className="mb-3 p-4 bg-surface-elevated rounded-md min-h-[120px] flex items-center">
+                        <blockquote className="text-sm italic leading-relaxed">
                           "{post.content}"
                           {post.source && (
-                            <cite className="block text-sm text-muted-foreground mt-3 not-italic">
+                            <cite className="block text-xs text-muted-foreground mt-2 not-italic">
                               — {post.source}
                             </cite>
                           )}
@@ -235,36 +238,39 @@ const Profile = () => {
                     )}
                     
                     {post.type === "text" && (
-                      <div className="mb-4">
-                        <p className="text-base leading-relaxed">{post.content}</p>
+                      <div className="mb-3">
+                        <p className="text-sm leading-relaxed">{post.content}</p>
                       </div>
                     )}
                     
                     {(post.type === "image" && post.content) && (
-                      <p className="text-base leading-relaxed mb-4">{post.content}</p>
+                      <p className="text-sm leading-relaxed mb-3">{post.content}</p>
                     )}
                     
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-2 mb-4">
-                      {post.tags.map((tag, idx) => (
-                        <button key={idx} className="text-sm text-primary hover:underline">
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {post.tags.slice(0, 3).map((tag, idx) => (
+                        <button key={idx} className="text-xs text-primary hover:underline">
                           {tag}
                         </button>
                       ))}
+                      {post.tags.length > 3 && (
+                        <span className="text-xs text-muted-foreground">+{post.tags.length - 3}</span>
+                      )}
                     </div>
                   </div>
                   
                   {/* Post Footer */}
-                  <div className="px-4 pb-4 flex items-center justify-between border-t border-border/20 pt-4">
-                    <span className="text-sm text-muted-foreground">
+                  <div className="px-3 pb-3 flex items-center justify-between border-t border-border/20 pt-2">
+                    <span className="text-xs text-muted-foreground">
                       {post.notes.toLocaleString()} notes
                     </span>
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                       <button className="text-muted-foreground hover:text-primary transition-colors">
-                        <span className="text-lg">↻</span>
+                        <span className="text-sm">↻</span>
                       </button>
                       <button className="text-muted-foreground hover:text-red-500 transition-colors">
-                        <Heart className="w-5 h-5" />
+                        <Heart className="w-3 h-3" />
                       </button>
                     </div>
                   </div>
