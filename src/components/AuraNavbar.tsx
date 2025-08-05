@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Search, Home, Compass, User } from "lucide-react";
+import { Search, Home, Compass, User, Heart, Palette } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import auraLogo from "@/assets/aura-logo.png";
 
@@ -33,12 +33,16 @@ const AuraNavbar = () => {
           <div className="flex items-center gap-4">
             {isLandingPage ? (
               <>
-                <Button variant="minimal" size="sm">
-                  Explore
-                </Button>
-                <Button variant="minimal" size="sm">
-                  Create
-                </Button>
+                <Link to="/vibe-matching">
+                  <Button variant="minimal" size="sm">
+                    Find Vibes
+                  </Button>
+                </Link>
+                <Link to="/create">
+                  <Button variant="minimal" size="sm">
+                    Create & Earn
+                  </Button>
+                </Link>
                 <Button variant="aura" size="sm">
                   Join Aura
                 </Button>
@@ -55,6 +59,18 @@ const AuraNavbar = () => {
                   <Button variant={location.pathname === '/discover' ? 'aura' : 'minimal'} size="sm">
                     <Compass className="w-4 h-4 mr-2" />
                     Discover
+                  </Button>
+                </Link>
+                <Link to="/vibe-matching">
+                  <Button variant={location.pathname === '/vibe-matching' ? 'aura' : 'minimal'} size="sm">
+                    <Heart className="w-4 h-4 mr-2" />
+                    Match
+                  </Button>
+                </Link>
+                <Link to="/create">
+                  <Button variant={location.pathname === '/create' ? 'aura' : 'minimal'} size="sm">
+                    <Palette className="w-4 h-4 mr-2" />
+                    Create
                   </Button>
                 </Link>
                 <Link to="/profile">

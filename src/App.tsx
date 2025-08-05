@@ -7,6 +7,8 @@ import Index from "./pages/Index";
 import Feed from "./pages/Feed";
 import Discover from "./pages/Discover";
 import Profile from "./pages/Profile";
+import VibeMatching from "./pages/VibeMatching";
+import Create from "./pages/Create";
 import NotFound from "./pages/NotFound";
 import AuraNavbar from "./components/AuraNavbar";
 
@@ -24,6 +26,8 @@ const App = () => (
           <Route path="/feed" element={<Feed />} />
           <Route path="/discover" element={<Discover />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/vibe-matching" element={<VibeMatching />} />
+          <Route path="/create" element={<Create />} />
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
