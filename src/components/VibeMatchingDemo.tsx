@@ -126,16 +126,6 @@ const VibeMatchingDemo = () => {
           </Button>
         </div>
 
-        {/* Alternative action buttons */}
-        <div className="flex gap-4 justify-center mb-8">
-          <Button variant="outline" onClick={handlePass} className="px-8">
-            Pass
-          </Button>
-          <Button variant="aura" onClick={handleVibe} className="px-8">
-            Vibe
-          </Button>
-        </div>
-
         {/* Take quiz button */}
         <div>
           <Button variant="subtle" size="lg" className="px-12">
