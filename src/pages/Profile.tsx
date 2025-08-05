@@ -128,21 +128,20 @@ const Profile = () => {
           </TabsList>
 
           <TabsContent value="posts" className="mt-6">
-            <div className="space-y-4">
-              {userPosts.map((post) => (
-                <article key={post.id} className="bg-surface border border-border/30 rounded-lg overflow-hidden">
+            <div className="columns-1 md:columns-2 lg:columns-3 gap-4 space-y-4">
+              {userPosts.map((post, index) => (
+                <article key={post.id} className="break-inside-avoid mb-4 bg-surface border border-border/30 rounded-lg overflow-hidden">
                   {/* Post Header */}
-                  <div className="flex items-center gap-3 p-4 border-b border-border/20">
-                    <Avatar className="w-10 h-10">
+                  <div className="flex items-center gap-3 p-3 border-b border-border/20">
+                    <Avatar className="w-8 h-8">
                       <AvatarImage src={userProfile.avatar} />
-                      <AvatarFallback className="text-sm">{userProfile.username[0]}</AvatarFallback>
+                      <AvatarFallback className="text-xs">{userProfile.username[0]}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
                       <span className="font-medium text-sm">{userProfile.username}</span>
-                      <span className="text-xs text-muted-foreground ml-2">{post.timestamp}</span>
                     </div>
                     <button className="text-muted-foreground hover:text-foreground">
-                      <span className="text-lg">•••</span>
+                      <span className="text-sm">•••</span>
                     </button>
                   </div>
                   
@@ -150,12 +149,17 @@ const Profile = () => {
                   <div className="p-4">
                     {post.type === "image" && post.image && (
                       <div className="mb-3">
-                        <img src={post.image} alt="" className="w-full rounded-lg" />
+                        <img 
+                          src={post.image} 
+                          alt="" 
+                          className="w-full rounded-lg"
+                          style={{ height: `${200 + (index % 3) * 100}px`, objectFit: 'cover' }}
+                        />
                       </div>
                     )}
                     
                     {post.type === "quote" && (
-                      <div className="mb-3">
+                      <div className="mb-3 p-4 bg-surface-elevated rounded-lg" style={{ minHeight: `${150 + (index % 2) * 50}px` }}>
                         <blockquote className="text-lg italic leading-relaxed mb-2">
                           "{post.content}"
                         </blockquote>
@@ -167,14 +171,16 @@ const Profile = () => {
                       </div>
                     )}
                     
-                    {(post.type === "text" || (post.type === "image" && post.content)) && (
-                      <p className="leading-relaxed mb-3">{post.content}</p>
+                    {post.type === "text" && (
+                      <div className="mb-3" style={{ minHeight: `${120 + (index % 4) * 40}px` }}>
+                        <p className="leading-relaxed">{post.content}</p>
+                      </div>
                     )}
                     
                     {/* Tags */}
-                    <div className="flex flex-wrap gap-1 mb-4">
-                      {post.tags.map((tag, idx) => (
-                        <button key={idx} className="text-sm text-primary hover:underline">
+                    <div className="flex flex-wrap gap-1 mb-3">
+                      {post.tags.slice(0, 4).map((tag, idx) => (
+                        <button key={idx} className="text-xs text-primary hover:underline">
                           {tag}
                         </button>
                       ))}
@@ -182,16 +188,16 @@ const Profile = () => {
                   </div>
                   
                   {/* Post Footer */}
-                  <div className="px-4 pb-4 flex items-center justify-between">
-                    <span className="text-sm text-muted-foreground">
+                  <div className="px-4 pb-3 flex items-center justify-between border-t border-border/20 pt-3">
+                    <span className="text-xs text-muted-foreground">
                       {post.notes.toLocaleString()} notes
                     </span>
-                    <div className="flex gap-4">
+                    <div className="flex gap-3">
                       <button className="text-muted-foreground hover:text-primary transition-colors">
-                        <span className="text-lg">↻</span>
+                        <span className="text-sm">↻</span>
                       </button>
                       <button className="text-muted-foreground hover:text-red-500 transition-colors">
-                        <Heart className="w-5 h-5" />
+                        <Heart className="w-4 h-4" />
                       </button>
                     </div>
                   </div>
