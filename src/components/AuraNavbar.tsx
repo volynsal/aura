@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Search, Heart, MessageCircle, Bookmark, Home, Compass, User } from "lucide-react";
+import { Search, Home, Compass, User } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
 import auraLogo from "@/assets/aura-logo.png";
 
