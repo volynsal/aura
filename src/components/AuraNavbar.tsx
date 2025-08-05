@@ -1,7 +1,7 @@
 import { Button } from "@/components/ui/button";
 import { Search, Home, Compass, User, Heart, Palette } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
-import auraLogo from "@/assets/aura-logo.png";
+import auraLogo from "@/assets/aura-logo-ring.png";
 
 const AuraNavbar = () => {
   const location = useLocation();
