@@ -1,5 +1,6 @@
 import { Button } from "@/components/ui/button";
 import { Search, Heart, MessageCircle, Bookmark } from "lucide-react";
+import auraLogo from "@/assets/aura-logo.png";
 
 const AuraNavbar = () => {
   return (
@@ -7,9 +8,12 @@ const AuraNavbar = () => {
       <div className="max-w-6xl mx-auto px-6 py-4">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-8">
-            <h1 className="text-2xl font-bold">
-              <span className="text-primary">AURA</span>
-            </h1>
+            <div className="flex items-center gap-3">
+              <img src={auraLogo} alt="Aura Logo" className="w-8 h-8" />
+              <h1 className="text-2xl font-bold">
+                <span className="text-primary">AURA</span>
+              </h1>
+            </div>
             <div className="relative">
               <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
               <input 
