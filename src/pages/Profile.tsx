@@ -20,52 +20,45 @@ const userPosts = [
   { 
     id: 1, 
     type: "image", 
-    title: "Neon Dreams #23", 
-    content: "Sometimes the city speaks in neon languages only dreamers understand...", 
+    content: "caught this moment between dreams and reality", 
     artist: "cyber_artist", 
-    mood: "euphoric", 
+    tags: ["#aesthetic", "#neon", "#cyberpunk", "#dreams", "#greatest hits"],
     image: "/placeholder.svg",
-    notes: 847,
+    notes: 5637,
     timestamp: "3 hours ago"
   },
   { 
     id: 2, 
-    type: "quote", 
-    content: "We are all walking through our own personal void, but at least the void is aesthetic.",
-    source: "Midnight Thoughts",
-    mood: "melancholic",
+    type: "text", 
+    content: "sometimes the void stares back and it's actually kind of aesthetic ngl",
+    tags: ["#void", "#aesthetic", "#relatable", "#dark academia"],
     notes: 1203,
     timestamp: "1 day ago"
   },
   { 
     id: 3, 
-    type: "text", 
-    title: "Digital Serenity", 
-    content: "Found this hidden corner of the internet today. It's quiet here. The kind of quiet that makes you remember who you are when no one's watching. Sometimes I think the best parts of ourselves only exist in these liminal digital spaces.",
-    mood: "serene",
-    notes: 234,
+    type: "quote", 
+    content: "we are all just NPCs in someone else's main character moment",
+    source: "overheard at 3am",
+    tags: ["#quotes", "#3am thoughts", "#existential", "#main character"],
+    notes: 2847,
     timestamp: "2 days ago"
   },
   { 
     id: 4, 
-    type: "audio", 
-    title: "Chaos Theory Mixtape", 
-    content: "Late night sessions producing this ambient chaos. Every glitch tells a story.",
-    artist: "rebel_mind", 
-    mood: "chaotic",
-    duration: "4:23",
-    notes: 567,
+    type: "image", 
+    content: "local cryptid spotted at the coffee shop again (it's me, I'm the cryptid)",
+    tags: ["#cryptid", "#coffee", "#self portrait", "#mood"],
+    image: "/placeholder.svg",
+    notes: 891,
     timestamp: "3 days ago"
   },
   { 
     id: 5, 
-    type: "image", 
-    title: "Ethereal Flow", 
-    content: "Caught this moment between dimensions. The algorithm gods smiled upon my feed today.",
-    artist: "dream_weaver", 
-    mood: "ethereal", 
-    image: "/placeholder.svg",
-    notes: 923,
+    type: "text", 
+    content: "why does every song sound like a soundtrack to my life when it's 2am and I'm having Feelings™",
+    tags: ["#2am", "#feelings", "#music", "#relatable", "#emotional"],
+    notes: 3456,
     timestamp: "4 days ago"
   }
 ];
@@ -90,130 +83,116 @@ const Profile = () => {
     <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Tumblr-style Header */}
-        <div className="text-center mb-8 border-b border-border/50 pb-8">
-          <Avatar className="w-32 h-32 mx-auto mb-4 border-4 border-primary/20">
+        <div className="text-center mb-6 pb-6 border-b border-border/30">
+          <Avatar className="w-20 h-20 mx-auto mb-3">
             <AvatarImage src={userProfile.avatar} />
-            <AvatarFallback className="text-3xl">{userProfile.displayName[0]}</AvatarFallback>
+            <AvatarFallback className="text-2xl">{userProfile.displayName[0]}</AvatarFallback>
           </Avatar>
           
-          <h1 className="text-3xl font-bold mb-2 gradient-text">{userProfile.username}</h1>
-          <h2 className="text-lg text-muted-foreground mb-4">{userProfile.displayName}</h2>
+          <h1 className="text-2xl font-bold mb-1">{userProfile.username}</h1>
+          <p className="text-muted-foreground text-sm mb-4 max-w-md mx-auto leading-relaxed">
+            {userProfile.bio}
+          </p>
           
-          <div className="max-w-md mx-auto mb-6">
-            <p className="text-center leading-relaxed">{userProfile.bio}</p>
-          </div>
-          
-          <div className="flex justify-center gap-6 mb-4 text-sm text-muted-foreground">
-            <span>Aura: <span className="text-primary font-medium">{userProfile.auraScore}</span></span>
+          <div className="flex justify-center gap-4 text-xs text-muted-foreground mb-4">
             <span>Since {userProfile.joinedDate}</span>
+            <span>•</span>
+            <span>Aura {userProfile.auraScore}</span>
           </div>
           
           {isOwnProfile ? (
             <div className="flex justify-center gap-2">
-              <Button variant="outline" size="sm">
-                <Settings className="w-4 h-4 mr-2" />
-                Customize
+              <Button variant="outline" size="sm" className="text-xs">
+                <Settings className="w-3 h-3 mr-1" />
+                Edit
               </Button>
-              <Button variant="minimal" size="sm">
-                <Share className="w-4 h-4" />
+              <Button variant="minimal" size="sm" className="text-xs">
+                <Share className="w-3 h-3" />
               </Button>
             </div>
           ) : (
             <div className="flex justify-center gap-2">
-              <Button variant="aura" size="sm">Follow</Button>
-              <Button variant="outline" size="sm">Message</Button>
+              <Button variant="aura" size="sm" className="text-xs">Follow</Button>
+              <Button variant="outline" size="sm" className="text-xs">Message</Button>
             </div>
           )}
         </div>
 
-        {/* Blog-style Navigation */}
+        {/* Tumblr-style Navigation */}
         <Tabs defaultValue="posts" className="w-full">
-          <TabsList className="grid w-full grid-cols-4 mb-8">
-            <TabsTrigger value="posts" className="flex items-center gap-2">
-              <Rss className="w-4 h-4" />
-              Posts
-            </TabsTrigger>
-            <TabsTrigger value="saved" className="flex items-center gap-2">
-              <Bookmark className="w-4 h-4" />
-              Likes
-            </TabsTrigger>
-            <TabsTrigger value="activity" className="flex items-center gap-2">
-              <Heart className="w-4 h-4" />
-              Following
-            </TabsTrigger>
-            <TabsTrigger value="wrapped">Archive</TabsTrigger>
+          <TabsList className="w-full grid grid-cols-4 mb-6 bg-surface/50">
+            <TabsTrigger value="posts" className="text-xs">Posts</TabsTrigger>
+            <TabsTrigger value="saved" className="text-xs">Likes</TabsTrigger>
+            <TabsTrigger value="activity" className="text-xs">Following</TabsTrigger>
+            <TabsTrigger value="wrapped" className="text-xs">Archive</TabsTrigger>
           </TabsList>
 
           <TabsContent value="posts" className="mt-6">
-            <div className="space-y-8">
+            <div className="space-y-4">
               {userPosts.map((post) => (
-                <article key={post.id} className="border border-border/50 rounded-xl overflow-hidden bg-surface/50 backdrop-blur-sm">
+                <article key={post.id} className="bg-surface border border-border/30 rounded-lg overflow-hidden">
                   {/* Post Header */}
-                  <div className="p-6 border-b border-border/30">
-                    <div className="flex items-center justify-between mb-3">
-                      <div className="flex items-center gap-3">
-                        {post.type === "image" && <Image className="w-5 h-5 text-primary" />}
-                        {post.type === "quote" && <Quote className="w-5 h-5 text-primary" />}
-                        {post.type === "text" && <Rss className="w-5 h-5 text-primary" />}
-                        {post.type === "audio" && <Music className="w-5 h-5 text-primary" />}
-                        <Badge variant="secondary" className="capitalize text-xs">
-                          {post.mood}
-                        </Badge>
-                      </div>
-                      <span className="text-xs text-muted-foreground">{post.timestamp}</span>
+                  <div className="flex items-center gap-3 p-4 border-b border-border/20">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={userProfile.avatar} />
+                      <AvatarFallback className="text-sm">{userProfile.username[0]}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1">
+                      <span className="font-medium text-sm">{userProfile.username}</span>
+                      <span className="text-xs text-muted-foreground ml-2">{post.timestamp}</span>
                     </div>
-                    {post.title && <h3 className="font-bold text-lg mb-2">{post.title}</h3>}
+                    <button className="text-muted-foreground hover:text-foreground">
+                      <span className="text-lg">•••</span>
+                    </button>
                   </div>
                   
                   {/* Post Content */}
-                  <div className="p-6">
-                    {post.type === "image" && (
-                      <div className="mb-4">
-                        <img src={post.image} alt={post.title} className="w-full rounded-lg" />
+                  <div className="p-4">
+                    {post.type === "image" && post.image && (
+                      <div className="mb-3">
+                        <img src={post.image} alt="" className="w-full rounded-lg" />
                       </div>
                     )}
                     
                     {post.type === "quote" && (
-                      <blockquote className="text-xl italic font-medium leading-relaxed mb-4 pl-4 border-l-4 border-primary">
-                        "{post.content}"
+                      <div className="mb-3">
+                        <blockquote className="text-lg italic leading-relaxed mb-2">
+                          "{post.content}"
+                        </blockquote>
                         {post.source && (
-                          <cite className="block text-sm text-muted-foreground mt-2 not-italic">
+                          <cite className="text-sm text-muted-foreground">
                             — {post.source}
                           </cite>
                         )}
-                      </blockquote>
-                    )}
-                    
-                    {(post.type === "text" || post.type === "image") && post.content && (
-                      <p className="leading-relaxed mb-4">{post.content}</p>
-                    )}
-                    
-                    {post.type === "audio" && (
-                      <div className="bg-surface-elevated rounded-lg p-4 mb-4">
-                        <div className="flex items-center gap-4">
-                          <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
-                            <Music className="w-6 h-6 text-primary" />
-                          </div>
-                          <div className="flex-1">
-                            <p className="font-medium">{post.title}</p>
-                            <p className="text-sm text-muted-foreground">Duration: {post.duration}</p>
-                          </div>
-                        </div>
-                        {post.content && <p className="mt-3 text-sm">{post.content}</p>}
                       </div>
                     )}
                     
-                    {post.artist && (
-                      <p className="text-sm text-muted-foreground mb-4">by {post.artist}</p>
+                    {(post.type === "text" || (post.type === "image" && post.content)) && (
+                      <p className="leading-relaxed mb-3">{post.content}</p>
                     )}
+                    
+                    {/* Tags */}
+                    <div className="flex flex-wrap gap-1 mb-4">
+                      {post.tags.map((tag, idx) => (
+                        <button key={idx} className="text-sm text-primary hover:underline">
+                          {tag}
+                        </button>
+                      ))}
+                    </div>
                   </div>
                   
                   {/* Post Footer */}
-                  <div className="px-6 pb-6 flex items-center justify-between text-sm text-muted-foreground">
-                    <span>{post.notes.toLocaleString()} notes</span>
+                  <div className="px-4 pb-4 flex items-center justify-between">
+                    <span className="text-sm text-muted-foreground">
+                      {post.notes.toLocaleString()} notes
+                    </span>
                     <div className="flex gap-4">
-                      <button className="hover:text-primary transition-colors">Reblog</button>
-                      <button className="hover:text-primary transition-colors">Like</button>
+                      <button className="text-muted-foreground hover:text-primary transition-colors">
+                        <span className="text-lg">↻</span>
+                      </button>
+                      <button className="text-muted-foreground hover:text-red-500 transition-colors">
+                        <Heart className="w-5 h-5" />
+                      </button>
                     </div>
                   </div>
                 </article>
