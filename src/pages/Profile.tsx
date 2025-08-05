@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings, Share, Heart, Grid3X3, Bookmark } from "lucide-react";
+import { Settings, Share, Heart, Bookmark, Rss, Quote, Image, Music } from "lucide-react";
 
 const userProfile = {
   username: "vibe_seeker",
@@ -16,13 +16,58 @@ const userProfile = {
   avatar: "/placeholder.svg"
 };
 
-const userNFTs = [
-  { id: 1, title: "Neon Dreams #23", artist: "cyber_artist", mood: "euphoric", image: "/placeholder.svg" },
-  { id: 2, title: "Void Walker", artist: "dark_creator", mood: "melancholic", image: "/placeholder.svg" },
-  { id: 3, title: "Digital Serenity", artist: "peace_maker", mood: "serene", image: "/placeholder.svg" },
-  { id: 4, title: "Chaos Theory", artist: "rebel_mind", mood: "chaotic", image: "/placeholder.svg" },
-  { id: 5, title: "Ethereal Flow", artist: "dream_weaver", mood: "ethereal", image: "/placeholder.svg" },
-  { id: 6, title: "Urban Pulse", artist: "city_soul", mood: "vibrant", image: "/placeholder.svg" }
+const userPosts = [
+  { 
+    id: 1, 
+    type: "image", 
+    title: "Neon Dreams #23", 
+    content: "Sometimes the city speaks in neon languages only dreamers understand...", 
+    artist: "cyber_artist", 
+    mood: "euphoric", 
+    image: "/placeholder.svg",
+    notes: 847,
+    timestamp: "3 hours ago"
+  },
+  { 
+    id: 2, 
+    type: "quote", 
+    content: "We are all walking through our own personal void, but at least the void is aesthetic.",
+    source: "Midnight Thoughts",
+    mood: "melancholic",
+    notes: 1203,
+    timestamp: "1 day ago"
+  },
+  { 
+    id: 3, 
+    type: "text", 
+    title: "Digital Serenity", 
+    content: "Found this hidden corner of the internet today. It's quiet here. The kind of quiet that makes you remember who you are when no one's watching. Sometimes I think the best parts of ourselves only exist in these liminal digital spaces.",
+    mood: "serene",
+    notes: 234,
+    timestamp: "2 days ago"
+  },
+  { 
+    id: 4, 
+    type: "audio", 
+    title: "Chaos Theory Mixtape", 
+    content: "Late night sessions producing this ambient chaos. Every glitch tells a story.",
+    artist: "rebel_mind", 
+    mood: "chaotic",
+    duration: "4:23",
+    notes: 567,
+    timestamp: "3 days ago"
+  },
+  { 
+    id: 5, 
+    type: "image", 
+    title: "Ethereal Flow", 
+    content: "Caught this moment between dimensions. The algorithm gods smiled upon my feed today.",
+    artist: "dream_weaver", 
+    mood: "ethereal", 
+    image: "/placeholder.svg",
+    notes: 923,
+    timestamp: "4 days ago"
+  }
 ];
 
 const savedCollections = [
@@ -43,84 +88,155 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-6">
-        {/* Profile Header */}
-        <div className="flex items-start gap-6 mb-8">
-          <Avatar className="w-24 h-24">
+      <div className="max-w-2xl mx-auto px-4 py-6">
+        {/* Tumblr-style Header */}
+        <div className="text-center mb-8 border-b border-border/50 pb-8">
+          <Avatar className="w-32 h-32 mx-auto mb-4 border-4 border-primary/20">
             <AvatarImage src={userProfile.avatar} />
-            <AvatarFallback className="text-2xl">{userProfile.displayName[0]}</AvatarFallback>
+            <AvatarFallback className="text-3xl">{userProfile.displayName[0]}</AvatarFallback>
           </Avatar>
           
-          <div className="flex-1">
-            <div className="flex items-center gap-4 mb-3">
-              <h1 className="text-2xl font-bold">{userProfile.username}</h1>
-              {isOwnProfile ? (
-                <div className="flex gap-2">
-                  <Button variant="outline" size="sm">
-                    <Settings className="w-4 h-4 mr-2" />
-                    Edit Profile
-                  </Button>
-                  <Button variant="minimal" size="sm">
-                    <Share className="w-4 h-4" />
-                  </Button>
-                </div>
-              ) : (
-                <div className="flex gap-2">
-                  <Button variant="aura" size="sm">Follow</Button>
-                  <Button variant="outline" size="sm">Message</Button>
-                </div>
-              )}
-            </div>
-            
-            <div className="flex gap-6 mb-3 text-sm">
-              <span><strong>{userNFTs.length}</strong> collected</span>
-              <span><strong>{userProfile.followers}</strong> followers</span>
-              <span><strong>{userProfile.following}</strong> following</span>
-            </div>
-            
-            <div className="mb-3">
-              <h2 className="font-medium text-lg">{userProfile.displayName}</h2>
-              <p className="text-muted-foreground">{userProfile.bio}</p>
-            </div>
-            
-            <div className="flex items-center gap-4 text-sm text-muted-foreground">
-              <span>Aura Score: <span className="text-primary font-medium">{userProfile.auraScore}</span></span>
-              <span>Joined {userProfile.joinedDate}</span>
-            </div>
+          <h1 className="text-3xl font-bold mb-2 gradient-text">{userProfile.username}</h1>
+          <h2 className="text-lg text-muted-foreground mb-4">{userProfile.displayName}</h2>
+          
+          <div className="max-w-md mx-auto mb-6">
+            <p className="text-center leading-relaxed">{userProfile.bio}</p>
           </div>
+          
+          <div className="flex justify-center gap-6 mb-4 text-sm text-muted-foreground">
+            <span>Aura: <span className="text-primary font-medium">{userProfile.auraScore}</span></span>
+            <span>Since {userProfile.joinedDate}</span>
+          </div>
+          
+          {isOwnProfile ? (
+            <div className="flex justify-center gap-2">
+              <Button variant="outline" size="sm">
+                <Settings className="w-4 h-4 mr-2" />
+                Customize
+              </Button>
+              <Button variant="minimal" size="sm">
+                <Share className="w-4 h-4" />
+              </Button>
+            </div>
+          ) : (
+            <div className="flex justify-center gap-2">
+              <Button variant="aura" size="sm">Follow</Button>
+              <Button variant="outline" size="sm">Message</Button>
+            </div>
+          )}
         </div>
 
-        {/* Profile Tabs */}
-        <Tabs defaultValue="collected" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="collected" className="flex items-center gap-2">
-              <Grid3X3 className="w-4 h-4" />
-              Collected
+        {/* Blog-style Navigation */}
+        <Tabs defaultValue="posts" className="w-full">
+          <TabsList className="grid w-full grid-cols-4 mb-8">
+            <TabsTrigger value="posts" className="flex items-center gap-2">
+              <Rss className="w-4 h-4" />
+              Posts
             </TabsTrigger>
             <TabsTrigger value="saved" className="flex items-center gap-2">
               <Bookmark className="w-4 h-4" />
-              Saved
+              Likes
             </TabsTrigger>
             <TabsTrigger value="activity" className="flex items-center gap-2">
               <Heart className="w-4 h-4" />
-              Activity
+              Following
             </TabsTrigger>
-            <TabsTrigger value="wrapped">Wrapped</TabsTrigger>
+            <TabsTrigger value="wrapped">Archive</TabsTrigger>
           </TabsList>
 
-          <TabsContent value="collected" className="mt-6">
-            <div className="grid grid-cols-2 md:grid-cols-3 gap-4">
-              {userNFTs.map((nft) => (
-                <div key={nft.id} className="group cursor-pointer">
-                  <div className="aspect-square bg-surface-elevated rounded-lg mb-2 relative overflow-hidden">
-                    <img src={nft.image} alt={nft.title} className="w-full h-full object-cover" />
-                    <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-center justify-center">
-                      <div className="text-center">
-                        <Badge variant="secondary" className="mb-2 capitalize">
-                          {nft.mood}
+          <TabsContent value="posts" className="mt-6">
+            <div className="space-y-8">
+              {userPosts.map((post) => (
+                <article key={post.id} className="border border-border/50 rounded-xl overflow-hidden bg-surface/50 backdrop-blur-sm">
+                  {/* Post Header */}
+                  <div className="p-6 border-b border-border/30">
+                    <div className="flex items-center justify-between mb-3">
+                      <div className="flex items-center gap-3">
+                        {post.type === "image" && <Image className="w-5 h-5 text-primary" />}
+                        {post.type === "quote" && <Quote className="w-5 h-5 text-primary" />}
+                        {post.type === "text" && <Rss className="w-5 h-5 text-primary" />}
+                        {post.type === "audio" && <Music className="w-5 h-5 text-primary" />}
+                        <Badge variant="secondary" className="capitalize text-xs">
+                          {post.mood}
                         </Badge>
-                        <p className="text-white font-medium text-sm">{nft.title}</p>
-                        <p className="text-white/80 text-xs">by {nft.artist}</p>
+                      </div>
+                      <span className="text-xs text-muted-foreground">{post.timestamp}</span>
+                    </div>
+                    {post.title && <h3 className="font-bold text-lg mb-2">{post.title}</h3>}
+                  </div>
+                  
+                  {/* Post Content */}
+                  <div className="p-6">
+                    {post.type === "image" && (
+                      <div className="mb-4">
+                        <img src={post.image} alt={post.title} className="w-full rounded-lg" />
+                      </div>
+                    )}
+                    
+                    {post.type === "quote" && (
+                      <blockquote className="text-xl italic font-medium leading-relaxed mb-4 pl-4 border-l-4 border-primary">
+                        "{post.content}"
+                        {post.source && (
+                          <cite className="block text-sm text-muted-foreground mt-2 not-italic">
+                            — {post.source}
+                          </cite>
+                        )}
+                      </blockquote>
+                    )}
+                    
+                    {(post.type === "text" || post.type === "image") && post.content && (
+                      <p className="leading-relaxed mb-4">{post.content}</p>
+                    )}
+                    
+                    {post.type === "audio" && (
+                      <div className="bg-surface-elevated rounded-lg p-4 mb-4">
+                        <div className="flex items-center gap-4">
+                          <div className="w-12 h-12 bg-primary/20 rounded-full flex items-center justify-center">
+                            <Music className="w-6 h-6 text-primary" />
+                          </div>
+                          <div className="flex-1">
+                            <p className="font-medium">{post.title}</p>
+                            <p className="text-sm text-muted-foreground">Duration: {post.duration}</p>
+                          </div>
+                        </div>
+                        {post.content && <p className="mt-3 text-sm">{post.content}</p>}
+                      </div>
+                    )}
+                    
+                    {post.artist && (
+                      <p className="text-sm text-muted-foreground mb-4">by {post.artist}</p>
+                    )}
+                  </div>
+                  
+                  {/* Post Footer */}
+                  <div className="px-6 pb-6 flex items-center justify-between text-sm text-muted-foreground">
+                    <span>{post.notes.toLocaleString()} notes</span>
+                    <div className="flex gap-4">
+                      <button className="hover:text-primary transition-colors">Reblog</button>
+                      <button className="hover:text-primary transition-colors">Like</button>
+                    </div>
+                  </div>
+                </article>
+              ))}
+            </div>
+          </TabsContent>
+
+          <TabsContent value="saved" className="mt-6">
+            <div className="grid gap-6">
+              {savedCollections.map((collection) => (
+                <div key={collection.name} className="border border-border/50 rounded-xl p-6 bg-surface/50 backdrop-blur-sm hover:bg-surface/80 transition-colors">
+                  <div className="flex items-start gap-4">
+                    <div className="w-20 h-20 bg-gradient-aura rounded-lg flex-shrink-0" />
+                    <div className="flex-1">
+                      <h3 className="font-bold text-lg mb-2">{collection.name}</h3>
+                      <p className="text-muted-foreground mb-3">{collection.pieces} posts liked</p>
+                      <div className="flex items-center gap-3">
+                        <Badge variant="secondary" className="capitalize">
+                          {collection.mood}
+                        </Badge>
+                        <button className="text-sm text-primary hover:underline">
+                          View all likes
+                        </button>
                       </div>
                     </div>
                   </div>
@@ -129,56 +245,42 @@ const Profile = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="saved" className="mt-6">
-            <div className="grid gap-4">
-              {savedCollections.map((collection) => (
-                <div key={collection.name} className="flex items-center gap-4 p-4 bg-surface border border-border rounded-xl">
-                  <div className="w-16 h-16 bg-surface-elevated rounded-lg" />
-                  <div className="flex-1">
-                    <h3 className="font-medium mb-1">{collection.name}</h3>
-                    <p className="text-sm text-muted-foreground">{collection.pieces} pieces</p>
-                    <Badge variant="secondary" className="mt-1 capitalize">
-                      {collection.mood}
-                    </Badge>
-                  </div>
-                  <Button variant="minimal" size="sm">
-                    View
-                  </Button>
-                </div>
-              ))}
-            </div>
-          </TabsContent>
-
           <TabsContent value="activity" className="mt-6">
-            <div className="space-y-4">
-              {auraActivity.map((activity, idx) => (
-                <div key={idx} className="flex items-center gap-4 p-4 bg-surface border border-border rounded-xl">
-                  <div className="w-2 h-2 bg-primary rounded-full" />
-                  <div className="flex-1">
-                    <p className="text-sm">
-                      <span className="capitalize font-medium">{activity.type}</span>{" "}
-                      <span className="text-muted-foreground">{activity.item}</span>
-                    </p>
-                    <div className="flex items-center gap-2 mt-1">
-                      <Badge variant="secondary" className="text-xs capitalize">
-                        {activity.mood}
-                      </Badge>
-                      <span className="text-xs text-muted-foreground">{activity.time}</span>
+            <div className="text-center py-12">
+              <h3 className="text-xl font-bold mb-2">Following</h3>
+              <p className="text-muted-foreground mb-6">Blogs you're following will appear here</p>
+              <div className="space-y-4 max-w-md mx-auto">
+                {["aesthetic_dreams", "void_poetry", "digital_nostalgia"].map((blog) => (
+                  <div key={blog} className="flex items-center gap-3 p-3 bg-surface border border-border rounded-lg">
+                    <Avatar className="w-10 h-10">
+                      <AvatarFallback>{blog[0].toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div className="flex-1 text-left">
+                      <p className="font-medium">{blog}</p>
+                      <p className="text-xs text-muted-foreground">Active 2h ago</p>
                     </div>
+                    <Button variant="outline" size="sm">Unfollow</Button>
                   </div>
-                </div>
-              ))}
+                ))}
+              </div>
             </div>
           </TabsContent>
 
           <TabsContent value="wrapped" className="mt-6">
             <div className="text-center py-12">
               <div className="w-24 h-24 bg-primary/20 rounded-full mx-auto mb-4 flex items-center justify-center">
-                <span className="text-2xl">✨</span>
+                <span className="text-2xl">📚</span>
               </div>
-              <h3 className="text-xl font-bold mb-2">Your 2024 Aura Wrapped</h3>
-              <p className="text-muted-foreground mb-6">Your aesthetic evolution this year</p>
-              <Button variant="aura">Generate Wrapped</Button>
+              <h3 className="text-xl font-bold mb-2">Archive</h3>
+              <p className="text-muted-foreground mb-6">Browse your posts by month and year</p>
+              <div className="max-w-sm mx-auto space-y-2">
+                {["December 2024", "November 2024", "October 2024"].map((month) => (
+                  <button key={month} className="w-full p-3 text-left bg-surface border border-border rounded-lg hover:bg-surface-elevated transition-colors">
+                    <span className="font-medium">{month}</span>
+                    <span className="text-sm text-muted-foreground ml-2">(12 posts)</span>
+                  </button>
+                ))}
+              </div>
             </div>
           </TabsContent>
         </Tabs>
