@@ -2,13 +2,13 @@ import { Button } from "@/components/ui/button";
 
 const AuraHero = () => {
   return (
-    <section className="relative py-24 px-6 bg-gradient-to-b from-background to-surface-elevated">
+    <section className="relative py-12 md:py-24 px-4 md:px-6 bg-gradient-to-b from-background to-surface-elevated">
       <div className="max-w-4xl mx-auto text-center">
-        <div className="mb-12">
-          <h1 className="text-5xl md:text-7xl font-bold mb-6 tracking-tight">
+        <div className="mb-8 md:mb-12">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight leading-tight">
             Your mood is your gallery
           </h1>
-          <p className="text-xl text-muted-foreground mb-8 max-w-2xl mx-auto leading-relaxed">
+          <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">
             Discover and collect NFTs by how they make you feel. Aura is where digital art and emotion collide.
           </p>
         </div>
