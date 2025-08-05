@@ -43,7 +43,7 @@ const AuraNavbar = () => {
                     Create & Earn
                   </Button>
                 </Link>
-                <Link to="/profile">
+                <Link to="/login">
                   <Button variant="aura" size="sm" className="text-xs sm:text-sm px-3 sm:px-4">
                     Join
                   </Button>
