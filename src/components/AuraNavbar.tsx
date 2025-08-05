@@ -45,7 +45,7 @@ const AuraNavbar = () => {
                 </Link>
                 <Link to="/login">
                   <Button variant="aura" size="sm" className="text-xs sm:text-sm px-3 sm:px-4">
-                    Join
+                    Unlock My Invite
                   </Button>
                 </Link>
               </>
