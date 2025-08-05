@@ -13,28 +13,28 @@ const AuraHero = () => {
           </p>
         </div>
         
-        <div className="flex flex-col sm:flex-row gap-4 justify-center items-center mb-16">
-          <Button variant="aura" size="lg" className="text-lg px-8 py-6">
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center mb-12 md:mb-16">
+          <Button variant="aura" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
             Start exploring
           </Button>
-          <Button variant="subtle" size="lg" className="text-lg px-8 py-6">
+          <Button variant="subtle" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
             Learn more
           </Button>
         </div>
 
         {/* Stats */}
-        <div className="grid grid-cols-3 gap-8 max-w-md mx-auto">
+        <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-sm sm:max-w-md mx-auto">
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary mb-1">12.4K</div>
-            <div className="text-sm text-muted-foreground">Artworks</div>
+            <div className="text-xl sm:text-2xl font-bold text-primary mb-1">12.4K</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">Artworks</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary mb-1">2.8K</div>
-            <div className="text-sm text-muted-foreground">Artists</div>
+            <div className="text-xl sm:text-2xl font-bold text-primary mb-1">2.8K</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">Artists</div>
           </div>
           <div className="text-center">
-            <div className="text-2xl font-bold text-primary mb-1">890</div>
-            <div className="text-sm text-muted-foreground">Collectors</div>
+            <div className="text-xl sm:text-2xl font-bold text-primary mb-1">890</div>
+            <div className="text-xs sm:text-sm text-muted-foreground">Collectors</div>
           </div>
         </div>
       </div>
