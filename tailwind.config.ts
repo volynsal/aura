@@ -61,7 +61,16 @@ export default {
 					'accent-foreground': 'hsl(var(--sidebar-accent-foreground))',
 					border: 'hsl(var(--sidebar-border))',
 					ring: 'hsl(var(--sidebar-ring))'
-				}
+				},
+				// Aura design tokens
+				'grain-overlay': 'hsl(var(--grain-overlay))',
+				'neon-glow': 'hsl(var(--neon-glow))',
+				underground: 'hsl(var(--underground))',
+				'cinema-blur': 'hsl(var(--cinema-blur))',
+				'vibe-purple': 'hsl(var(--vibe-purple))',
+				'mood-pink': 'hsl(var(--mood-pink))',
+				'ghost-blue': 'hsl(var(--ghost-blue))',
+				'flicker-yellow': 'hsl(var(--flicker-yellow))'
 			},
 			borderRadius: {
 				lg: 'var(--radius)',

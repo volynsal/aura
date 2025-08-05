@@ -8,35 +8,56 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 0 0% 100%;
-    --foreground: 222.2 84% 4.9%;
+    --background: 222 25% 4%;
+    --foreground: 300 5% 85%;
 
-    --card: 0 0% 100%;
-    --card-foreground: 222.2 84% 4.9%;
+    --card: 220 20% 8%;
+    --card-foreground: 300 5% 90%;
 
-    --popover: 0 0% 100%;
-    --popover-foreground: 222.2 84% 4.9%;
+    --popover: 220 20% 6%;
+    --popover-foreground: 300 5% 90%;
 
-    --primary: 222.2 47.4% 11.2%;
-    --primary-foreground: 210 40% 98%;
+    --primary: 280 65% 65%;
+    --primary-foreground: 220 25% 5%;
 
-    --secondary: 210 40% 96.1%;
-    --secondary-foreground: 222.2 47.4% 11.2%;
+    --secondary: 220 15% 12%;
+    --secondary-foreground: 300 5% 75%;
 
-    --muted: 210 40% 96.1%;
-    --muted-foreground: 215.4 16.3% 46.9%;
+    --muted: 220 15% 10%;
+    --muted-foreground: 300 5% 55%;
 
-    --accent: 210 40% 96.1%;
-    --accent-foreground: 222.2 47.4% 11.2%;
+    --accent: 310 50% 45%;
+    --accent-foreground: 300 5% 95%;
 
-    --destructive: 0 84.2% 60.2%;
-    --destructive-foreground: 210 40% 98%;
+    --destructive: 0 65% 55%;
+    --destructive-foreground: 300 5% 95%;
 
-    --border: 214.3 31.8% 91.4%;
-    --input: 214.3 31.8% 91.4%;
-    --ring: 222.2 84% 4.9%;
+    --border: 220 15% 15%;
+    --input: 220 15% 12%;
+    --ring: 280 65% 65%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
+
+    /* Aura-specific design tokens */
+    --grain-overlay: 220 15% 8%;
+    --neon-glow: 280 85% 75%;
+    --underground: 240 20% 6%;
+    --cinema-blur: 220 25% 12%;
+    --vibe-purple: 270 60% 55%;
+    --mood-pink: 320 70% 65%;
+    --ghost-blue: 200 80% 75%;
+    --flicker-yellow: 50 90% 80%;
+
+    /* Gradients */
+    --gradient-aura: linear-gradient(135deg, hsl(var(--vibe-purple)) 0%, hsl(var(--mood-pink)) 100%);
+    --gradient-underground: linear-gradient(180deg, hsl(var(--underground)) 0%, hsl(var(--background)) 100%);
+    --gradient-ghost: linear-gradient(45deg, hsl(var(--ghost-blue) / 0.1) 0%, hsl(var(--vibe-purple) / 0.1) 100%);
+
+    /* Effects */
+    --shadow-neon: 0 0 30px hsl(var(--neon-glow) / 0.3);
+    --shadow-underground: 0 20px 60px hsl(220 25% 2% / 0.8);
+    --blur-kinetic: blur(0.5px);
+    --transition-flicker: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
@@ -100,6 +121,97 @@ All colors MUST be HSL.
   }
 
   body {
-    @apply bg-background text-foreground;
+    @apply bg-background text-foreground overflow-x-hidden;
   }
+}
+
+@layer components {
+  /* Grain texture effect */
+  .grain::before {
+    content: '';
+    position: fixed;
+    top: -50%;
+    left: -50%;
+    width: 200%;
+    height: 200%;
+    background-image: 
+      radial-gradient(circle, rgba(255,255,255,0.02) 1px, transparent 1px),
+      radial-gradient(circle, rgba(255,255,255,0.01) 1px, transparent 1px);
+    background-size: 25px 25px, 50px 50px;
+    background-position: 0 0, 25px 25px;
+    pointer-events: none;
+    opacity: 0.6;
+    z-index: 1;
+    animation: grain-flicker 8s infinite;
+  }
+
+  /* Kinetic blur effect */
+  .kinetic-blur {
+    backdrop-filter: var(--blur-kinetic);
+    filter: var(--blur-kinetic);
+  }
+
+  /* Neon glow effect */
+  .neon-glow {
+    box-shadow: var(--shadow-neon);
+  }
+
+  /* Underground shadow */
+  .underground-shadow {
+    box-shadow: var(--shadow-underground);
+  }
+
+  /* Flickering animation */
+  .flicker {
+    animation: flicker 3s infinite;
+  }
+
+  /* Gradient backgrounds */
+  .gradient-aura {
+    background: var(--gradient-aura);
+  }
+
+  .gradient-underground {
+    background: var(--gradient-underground);
+  }
+
+  .gradient-ghost {
+    background: var(--gradient-ghost);
+  }
+}
+
+@layer utilities {
+  .text-vibe-purple {
+    color: hsl(var(--vibe-purple));
+  }
+  
+  .text-mood-pink {
+    color: hsl(var(--mood-pink));
+  }
+  
+  .text-ghost-blue {
+    color: hsl(var(--ghost-blue));
+  }
+  
+  .text-flicker-yellow {
+    color: hsl(var(--flicker-yellow));
+  }
+  
+  .bg-grain-overlay {
+    background-color: hsl(var(--grain-overlay));
+  }
+  
+  .bg-underground {
+    background-color: hsl(var(--underground));
+  }
+}
+
+@keyframes grain-flicker {
+  0%, 100% { opacity: 0.6; }
+  50% { opacity: 0.8; }
+}
+
+@keyframes flicker {
+  0%, 98%, 100% { opacity: 1; }
+  99% { opacity: 0.8; }
 }
