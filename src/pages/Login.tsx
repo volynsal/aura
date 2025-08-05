@@ -1,18 +1,52 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Github, Chrome } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Eye, EyeOff, Wallet, Chrome } from "lucide-react";
+import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { useAccount, useConnect } from 'wagmi';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
+  
+  const { signUp, signIn, user } = useAuth();
+  const navigate = useNavigate();
+  const { address, isConnected } = useAccount();
+  const { connect, connectors, isPending } = useConnect();
+
+  // Redirect if already authenticated
+  useEffect(() => {
+    if (user) {
+      navigate('/');
+    }
+  }, [user, navigate]);
+
+  const handleSignUp = async () => {
+    if (!email || !password || !name) return;
+    
+    setIsLoading(true);
+    await signUp(email, password, { 
+      username: name.toLowerCase().replace(/\s+/g, ''),
+      display_name: name 
+    });
+    setIsLoading(false);
+  };
+
+  const handleSignIn = async () => {
+    if (!email || !password) return;
+    
+    setIsLoading(true);
+    await signIn(email, password);
+    setIsLoading(false);
+  };
 
   return (
     <div className="min-h-screen bg-gradient-to-br from-background via-surface-elevated to-background flex items-center justify-center p-4">
@@ -81,8 +115,14 @@ const Login = () => {
                     </Button>
                   </div>
                 </div>
-                <Button className="w-full" variant="aura" size="lg">
-                  Create Account
+                <Button 
+                  className="w-full" 
+                  variant="aura" 
+                  size="lg"
+                  onClick={handleSignUp}
+                  disabled={isLoading || !email || !password || !name}
+                >
+                  {isLoading ? "Creating Account..." : "Create Account"}
                 </Button>
               </TabsContent>
               
@@ -127,8 +167,14 @@ const Login = () => {
                     Forgot password?
                   </Link>
                 </div>
-                <Button className="w-full" variant="aura" size="lg">
-                  Sign In
+                <Button 
+                  className="w-full" 
+                  variant="aura" 
+                  size="lg"
+                  onClick={handleSignIn}
+                  disabled={isLoading || !email || !password}
+                >
+                  {isLoading ? "Signing In..." : "Sign In"}
                 </Button>
               </TabsContent>
             </Tabs>
@@ -143,15 +189,42 @@ const Login = () => {
             </div>
 
             <div className="grid grid-cols-2 gap-3">
-              <Button variant="outline" className="w-full">
-                <Github className="w-4 h-4 mr-2" />
-                GitHub
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  const metamaskConnector = connectors.find(c => c.name === 'MetaMask');
+                  if (metamaskConnector) connect({ connector: metamaskConnector });
+                }}
+                disabled={isPending}
+              >
+                <Wallet className="w-4 h-4 mr-2" />
+                MetaMask
               </Button>
-              <Button variant="outline" className="w-full">
-                <Chrome className="w-4 h-4 mr-2" />
-                Google
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  const walletConnectConnector = connectors.find(c => c.name === 'WalletConnect');
+                  if (walletConnectConnector) connect({ connector: walletConnectConnector });
+                }}
+                disabled={isPending}
+              >
+                <Wallet className="w-4 h-4 mr-2" />
+                Trust Wallet
               </Button>
             </div>
+            
+            {isConnected && address && (
+              <div className="mt-4 p-3 bg-surface-elevated rounded-md">
+                <p className="text-sm text-center">
+                  <span className="text-muted-foreground">Connected: </span>
+                  <span className="font-mono text-primary">
+                    {address.slice(0, 6)}...{address.slice(-4)}
+                  </span>
+                </p>
+              </div>
+            )}
 
             <p className="text-center text-xs text-muted-foreground mt-6">
               By continuing, you agree to our{" "}

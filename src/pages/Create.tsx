@@ -6,6 +6,10 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Palette, TrendingUp, Coins, Eye, Heart, Share } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
+import NFTUpload from "@/components/NFTUpload";
+import SubscriptionTiers from "@/components/SubscriptionTiers";
+import NFTMarketplace from "@/components/NFTMarketplace";
 
 const moods = ["ethereal", "dark", "vibrant", "melancholic", "euphoric", "chaotic", "serene", "rebellious"];
 
@@ -53,6 +57,9 @@ const Create = () => {
     selectedNFTs: [] as number[]
   });
   const [isCreating, setIsCreating] = useState(false);
+  const [showUploadDialog, setShowUploadDialog] = useState(false);
+  
+  const { user } = useAuth();
 
   const handleNFTToggle = (nftId: number) => {
     setNewBoard(prev => ({
@@ -81,9 +88,11 @@ const Create = () => {
         </div>
 
         <Tabs defaultValue="boards" className="w-full">
-          <TabsList className="grid w-full grid-cols-3">
+          <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="boards">My Boards</TabsTrigger>
-            <TabsTrigger value="create">Create Board</TabsTrigger>
+            <TabsTrigger value="upload">Upload NFT</TabsTrigger>
+            <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
+            <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
             <TabsTrigger value="earnings">Earnings</TabsTrigger>
           </TabsList>
 
@@ -156,101 +165,16 @@ const Create = () => {
             </div>
           </TabsContent>
 
-          <TabsContent value="create" className="mt-6">
-            <Card>
-              <CardHeader>
-                <CardTitle className="flex items-center gap-2">
-                  <Palette className="w-5 h-5" />
-                  Create New Moodboard
-                </CardTitle>
-              </CardHeader>
-              <CardContent className="space-y-6">
-                <div>
-                  <label className="block text-sm font-medium mb-2">Board Title</label>
-                  <Input
-                    placeholder="e.g., Midnight Vibes"
-                    value={newBoard.title}
-                    onChange={(e) => setNewBoard(prev => ({ ...prev, title: e.target.value }))}
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">Description</label>
-                  <Textarea
-                    placeholder="Describe the mood and feeling of this board..."
-                    value={newBoard.description}
-                    onChange={(e) => setNewBoard(prev => ({ ...prev, description: e.target.value }))}
-                  />
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">Primary Mood</label>
-                  <div className="flex gap-2 flex-wrap">
-                    {moods.map((mood) => (
-                      <Button
-                        key={mood}
-                        variant={newBoard.mood === mood ? "aura" : "outline"}
-                        size="sm"
-                        onClick={() => setNewBoard(prev => ({ ...prev, mood }))}
-                        className="capitalize"
-                      >
-                        {mood}
-                      </Button>
-                    ))}
-                  </div>
-                </div>
-                
-                <div>
-                  <label className="block text-sm font-medium mb-2">
-                    Select NFTs ({newBoard.selectedNFTs.length}/10)
-                  </label>
-                  <div className="grid grid-cols-3 gap-4">
-                    {availableNFTs.map((nft) => (
-                      <div
-                        key={nft.id}
-                        className={`relative cursor-pointer rounded-lg overflow-hidden transition-all ${
-                          newBoard.selectedNFTs.includes(nft.id)
-                            ? 'ring-2 ring-primary scale-95'
-                            : 'hover:scale-105'
-                        }`}
-                        onClick={() => handleNFTToggle(nft.id)}
-                      >
-                        <div className="aspect-square bg-surface-elevated">
-                          <img src={nft.image} alt={nft.title} className="w-full h-full object-cover" />
-                        </div>
-                        {newBoard.selectedNFTs.includes(nft.id) && (
-                          <div className="absolute inset-0 bg-primary/20 flex items-center justify-center">
-                            <div className="bg-primary text-primary-foreground rounded-full w-8 h-8 flex items-center justify-center">
-                              ✓
-                            </div>
-                          </div>
-                        )}
-                        <div className="absolute bottom-0 left-0 right-0 bg-gradient-to-t from-black/80 to-transparent p-2">
-                          <p className="text-white text-xs font-medium">{nft.title}</p>
-                          <Badge variant="secondary" className="text-xs capitalize mt-1">
-                            {nft.mood}
-                          </Badge>
-                        </div>
-                      </div>
-                    ))}
-                  </div>
-                </div>
-                
-                <div className="flex gap-4">
-                  <Button 
-                    onClick={handleCreateBoard}
-                    variant="aura"
-                    disabled={!newBoard.title || !newBoard.mood || newBoard.selectedNFTs.length === 0}
-                    className="flex-1"
-                  >
-                    Create Moodboard
-                  </Button>
-                  <Button variant="outline" onClick={() => setIsCreating(false)}>
-                    Cancel
-                  </Button>
-                </div>
-              </CardContent>
-            </Card>
+          <TabsContent value="upload" className="mt-6">
+            <NFTUpload onSuccess={() => {}} />
+          </TabsContent>
+
+          <TabsContent value="subscriptions" className="mt-6">
+            <SubscriptionTiers isOwner={true} />
+          </TabsContent>
+
+          <TabsContent value="marketplace" className="mt-6">
+            <NFTMarketplace />
           </TabsContent>
 
           <TabsContent value="earnings" className="mt-6">
