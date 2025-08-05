@@ -9,17 +9,17 @@ const AuraNavbar = () => {
 
   return (
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border">
-      <div className="max-w-6xl mx-auto px-6 py-4">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 py-3 sm:py-4">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-8">
-            <Link to="/" className="flex items-center gap-3">
-              <img src={auraLogo} alt="Aura Logo" className="w-8 h-8" />
-              <h1 className="text-2xl font-bold">
+          <div className="flex items-center gap-4 sm:gap-8">
+            <Link to="/" className="flex items-center gap-2 sm:gap-3">
+              <img src={auraLogo} alt="Aura Logo" className="w-6 h-6 sm:w-8 sm:h-8" />
+              <h1 className="text-lg sm:text-2xl font-bold">
                 <span className="text-primary">AURA</span>
               </h1>
             </Link>
             {!isLandingPage && (
-              <div className="relative">
+              <div className="relative hidden md:block">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <input 
                   type="text" 
@@ -30,44 +30,44 @@ const AuraNavbar = () => {
             )}
           </div>
           
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-2 sm:gap-4">
             {isLandingPage ? (
               <>
-                <Link to="/vibe-matching">
+                <Link to="/vibe-matching" className="hidden sm:block">
                   <Button variant="minimal" size="sm">
                     Find Vibes
                   </Button>
                 </Link>
-                <Link to="/create">
+                <Link to="/create" className="hidden sm:block">
                   <Button variant="minimal" size="sm">
                     Create & Earn
                   </Button>
                 </Link>
-                <Button variant="aura" size="sm">
-                  Join Aura
+                <Button variant="aura" size="sm" className="text-xs sm:text-sm px-3 sm:px-4">
+                  Join
                 </Button>
               </>
             ) : (
               <>
-                <Link to="/feed">
+                <Link to="/feed" className="hidden sm:block">
                   <Button variant={location.pathname === '/feed' ? 'aura' : 'minimal'} size="sm">
                     <Home className="w-4 h-4 mr-2" />
                     Feed
                   </Button>
                 </Link>
-                <Link to="/discover">
+                <Link to="/discover" className="hidden sm:block">
                   <Button variant={location.pathname === '/discover' ? 'aura' : 'minimal'} size="sm">
                     <Compass className="w-4 h-4 mr-2" />
                     Discover
                   </Button>
                 </Link>
-                <Link to="/vibe-matching">
+                <Link to="/vibe-matching" className="hidden sm:block">
                   <Button variant={location.pathname === '/vibe-matching' ? 'aura' : 'minimal'} size="sm">
                     <Heart className="w-4 h-4 mr-2" />
                     Match
                   </Button>
                 </Link>
-                <Link to="/create">
+                <Link to="/create" className="hidden sm:block">
                   <Button variant={location.pathname === '/create' ? 'aura' : 'minimal'} size="sm">
                     <Palette className="w-4 h-4 mr-2" />
                     Create
@@ -75,8 +75,8 @@ const AuraNavbar = () => {
                 </Link>
                 <Link to="/profile">
                   <Button variant={location.pathname === '/profile' ? 'aura' : 'minimal'} size="sm">
-                    <User className="w-4 h-4 mr-2" />
-                    Profile
+                    <User className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Profile</span>
                   </Button>
                 </Link>
               </>
