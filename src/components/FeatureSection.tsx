@@ -84,7 +84,7 @@ const FeatureSection = () => {
         </div>
         
         <div className="text-center mt-16">
-          <Button variant="phantom" size="lg">
+          <Button variant="minimal" size="lg">
             Request early access
           </Button>
         </div>

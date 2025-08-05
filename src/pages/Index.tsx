@@ -1,15 +1,13 @@
+import AuraNavbar from "@/components/AuraNavbar";
 import AuraHero from "@/components/AuraHero";
-import FeatureSection from "@/components/FeatureSection";
-import AuraWrapped from "@/components/AuraWrapped";
-import AuraFooter from "@/components/AuraFooter";
+import AuraFeed from "@/components/AuraFeed";
 
 const Index = () => {
   return (
     <div className="min-h-screen bg-background">
+      <AuraNavbar />
       <AuraHero />
-      <FeatureSection />
-      <AuraWrapped />
-      <AuraFooter />
+      <AuraFeed />
     </div>
   );
 };

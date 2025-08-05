@@ -8,56 +8,53 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 222 25% 4%;
-    --foreground: 300 5% 85%;
+    --background: 220 15% 8%;
+    --foreground: 220 10% 85%;
 
-    --card: 220 20% 8%;
-    --card-foreground: 300 5% 90%;
+    --card: 220 12% 12%;
+    --card-foreground: 220 8% 90%;
 
-    --popover: 220 20% 6%;
-    --popover-foreground: 300 5% 90%;
+    --popover: 220 15% 10%;
+    --popover-foreground: 220 8% 90%;
 
-    --primary: 280 65% 65%;
-    --primary-foreground: 220 25% 5%;
+    --primary: 220 15% 75%;
+    --primary-foreground: 220 15% 10%;
 
-    --secondary: 220 15% 12%;
-    --secondary-foreground: 300 5% 75%;
+    --secondary: 220 10% 15%;
+    --secondary-foreground: 220 8% 80%;
 
-    --muted: 220 15% 10%;
-    --muted-foreground: 300 5% 55%;
+    --muted: 220 8% 18%;
+    --muted-foreground: 220 8% 60%;
 
-    --accent: 310 50% 45%;
-    --accent-foreground: 300 5% 95%;
+    --accent: 220 12% 20%;
+    --accent-foreground: 220 8% 85%;
 
-    --destructive: 0 65% 55%;
-    --destructive-foreground: 300 5% 95%;
+    --destructive: 0 50% 50%;
+    --destructive-foreground: 220 8% 95%;
 
-    --border: 220 15% 15%;
-    --input: 220 15% 12%;
-    --ring: 280 65% 65%;
+    --border: 220 10% 20%;
+    --input: 220 10% 16%;
+    --ring: 220 15% 75%;
 
-    --radius: 0.75rem;
+    --radius: 0.5rem;
 
-    /* Aura-specific design tokens */
-    --grain-overlay: 220 15% 8%;
-    --neon-glow: 280 85% 75%;
-    --underground: 240 20% 6%;
-    --cinema-blur: 220 25% 12%;
-    --vibe-purple: 270 60% 55%;
-    --mood-pink: 320 70% 65%;
-    --ghost-blue: 200 80% 75%;
-    --flicker-yellow: 50 90% 80%;
+    /* Refined Aura design tokens */
+    --aura-accent: 260 15% 65%;
+    --aura-pink: 320 20% 70%;
+    --aura-blue: 200 25% 75%;
+    --aura-warm: 40 25% 80%;
+    --surface: 220 12% 14%;
+    --surface-elevated: 220 12% 18%;
+    --text-subtle: 220 8% 65%;
 
-    /* Gradients */
-    --gradient-aura: linear-gradient(135deg, hsl(var(--vibe-purple)) 0%, hsl(var(--mood-pink)) 100%);
-    --gradient-underground: linear-gradient(180deg, hsl(var(--underground)) 0%, hsl(var(--background)) 100%);
-    --gradient-ghost: linear-gradient(45deg, hsl(var(--ghost-blue) / 0.1) 0%, hsl(var(--vibe-purple) / 0.1) 100%);
+    /* Subtle gradients */
+    --gradient-subtle: linear-gradient(135deg, hsl(var(--surface)) 0%, hsl(var(--surface-elevated)) 100%);
+    --gradient-accent: linear-gradient(135deg, hsl(var(--aura-accent) / 0.1) 0%, hsl(var(--aura-pink) / 0.1) 100%);
 
-    /* Effects */
-    --shadow-neon: 0 0 30px hsl(var(--neon-glow) / 0.3);
-    --shadow-underground: 0 20px 60px hsl(220 25% 2% / 0.8);
-    --blur-kinetic: blur(0.5px);
-    --transition-flicker: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Refined effects */
+    --shadow-soft: 0 4px 20px hsl(220 15% 2% / 0.4);
+    --shadow-elevated: 0 8px 40px hsl(220 15% 2% / 0.6);
+    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 
     --sidebar-background: 0 0% 98%;
 
