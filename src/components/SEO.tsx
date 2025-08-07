@@ -10,7 +10,7 @@ interface SEOProps {
 
 const SITE_URL = typeof window !== "undefined" ? window.location.origin : "";
 
-export function SEO({ title, description, path = "/", image = "/og-image.png", structuredData }: SEOProps) {
+export function SEO({ title, description, path = "/", image = "/lovable-uploads/a9c5a994-53fa-41a0-a807-026f6732b114.png", structuredData }: SEOProps) {
   const url = SITE_URL ? `${SITE_URL}${path}` : path;
   const imageUrl = image?.startsWith("http") ? image : (SITE_URL ? `${SITE_URL}${image}` : image);
 
