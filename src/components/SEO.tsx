@@ -10,7 +10,7 @@ interface SEOProps {
 
 const SITE_URL = typeof window !== "undefined" ? window.location.origin : "";
 
-export function SEO({ title, description, path = "/", image = "/lovable-uploads/a9c5a994-53fa-41a0-a807-026f6732b114.png", structuredData }: SEOProps) {
+export function SEO({ title, description, path = "/", image = "/og-aura.png", structuredData }: SEOProps) {
   const url = SITE_URL ? `${SITE_URL}${path}` : path;
   const imageUrl = image?.startsWith("http") ? image : (SITE_URL ? `${SITE_URL}${image}` : image);
 
@@ -26,6 +26,8 @@ export function SEO({ title, description, path = "/", image = "/lovable-uploads/
       <meta property="og:type" content="website" />
       <meta property="og:url" content={url} />
       <meta property="og:image" content={imageUrl} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
 
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
