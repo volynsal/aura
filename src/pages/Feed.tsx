@@ -120,8 +120,10 @@ const Feed = () => {
             <div className="aspect-square bg-surface-elevated relative group">
               <img 
                 src={post.image} 
-                alt={post.title}
+                alt={`${post.title} — mood: ${post.mood}`}
                 className="w-full h-full object-cover"
+                loading="lazy"
+                decoding="async"
               />
               <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
               <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">

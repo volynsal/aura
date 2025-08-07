@@ -215,11 +215,13 @@ const Profile = () => {
                       <div className="mb-3">
                         <img 
                           src={post.image} 
-                          alt="" 
+                          alt={post.content || "User post image"} 
                           className="w-full rounded-md object-cover"
                           style={{ 
                             height: `${180 + (index % 4) * 60}px`
                           }}
+                          loading="lazy"
+                          decoding="async"
                         />
                       </div>
                     )}

@@ -56,8 +56,10 @@ const FeatureSection = () => {
                 <div className="mb-6 overflow-hidden rounded-lg">
                   <img 
                     src={feature.image} 
-                    alt={feature.title}
+                    alt={`Feature image — ${feature.title}`}
                     className="w-full h-48 object-cover kinetic-blur group-hover:scale-105 transition-transform duration-700"
+                    loading="lazy"
+                    decoding="async"
                   />
                 </div>
               )}

@@ -84,8 +84,10 @@ const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
       <div className="aspect-square relative group cursor-pointer">
         <img 
           src={post.image} 
-          alt={post.title}
+          alt={`${post.title} — mood: ${post.mood}`}
           className="w-full h-full object-cover"
+          loading="lazy"
+          decoding="async"
         />
         <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
       </div>
@@ -118,7 +120,7 @@ const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
 
 const AuraFeed = () => {
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8">
+    <div className="max-w-6xl mx-auto px-6 py-8" role="feed" aria-label="NFT feed by mood">
       {/* Mood Filter Bar */}
       <div className="mb-8">
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
