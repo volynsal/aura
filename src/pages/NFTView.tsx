@@ -243,21 +243,16 @@ const NFTView = () => {
     if (!nft) return;
     
     setIsSharing(true);
-    const nftUrl = `${window.location.origin}/nft/${id}`;
+    const shareUrl = `${window.location.origin}/nft/${id}`;
     const shareTitle = `${nft.title} by ${creator?.display_name || creator?.username}`;
-    const shareDescription = nft.description || `Check out this amazing NFT: ${nft.title}`;
-
-    // Share via Edge Function that serves OG meta tags (bots don't run JS)
-    const ogFunction = `https://oyacwfzdaciskhlclrby.supabase.co/functions/v1/og`;
-    const shareUrl = `${ogFunction}?title=${encodeURIComponent(shareTitle)}&description=${encodeURIComponent(shareDescription)}&image=${encodeURIComponent(absoluteImageUrl)}&redirect=${encodeURIComponent(nftUrl)}&canonical=${encodeURIComponent(nftUrl)}`;
-
+    const shareText = `Check out this amazing NFT: ${nft.title}${nft.description ? ' - ' + nft.description : ''}`;
 
     // Check if Web Share API is supported
     if (navigator.share && navigator.canShare) {
       try {
         await navigator.share({
           title: shareTitle,
-          text: shareDescription,
+          text: shareText,
           url: shareUrl,
         });
         
