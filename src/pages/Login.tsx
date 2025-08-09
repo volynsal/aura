@@ -242,7 +242,7 @@ const Login = () => {
               }}
               disabled={isPending}
             >
-              <Coins className="w-4 h-4 mr-2" />
+              <img src="/lovable-uploads/4b11c2c6-bcb5-4938-b75c-c391394cd019.png" alt="Base" className="w-4 h-4 mr-2" />
               Coinbase Wallet
             </Button>
             
