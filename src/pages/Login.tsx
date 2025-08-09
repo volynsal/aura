@@ -8,7 +8,7 @@ import { Separator } from "@/components/ui/separator";
 import { Eye, EyeOff, Wallet, Coins } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import { useAccount, useConnect } from 'wagmi';
+import { useAccount, useConnect, useDisconnect } from 'wagmi';
 
 const Login = () => {
   const [showPassword, setShowPassword] = useState(false);
@@ -22,6 +22,7 @@ const Login = () => {
   const navigate = useNavigate();
   const { address, isConnected } = useAccount();
   const { connect, connectors, isPending } = useConnect();
+  const { disconnect } = useDisconnect();
 
   // Redirect if already authenticated
   useEffect(() => {
@@ -274,12 +275,41 @@ const Login = () => {
             
             {isConnected && address && (
               <div className="mt-4 p-3 bg-surface-elevated rounded-md">
-                <p className="text-sm text-center">
+                <p className="text-sm text-center mb-3">
                   <span className="text-muted-foreground">Connected: </span>
                   <span className="font-mono text-primary">
                     {address.slice(0, 6)}...{address.slice(-4)}
                   </span>
                 </p>
+                <div className="flex gap-2">
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => {
+                      console.log('Manual wallet authentication trigger');
+                      if (!walletConnecting && !user) {
+                        setWalletConnecting(true);
+                        signInWithWallet(address).finally(() => setWalletConnecting(false));
+                      }
+                    }}
+                    disabled={walletConnecting || !!user}
+                  >
+                    {walletConnecting ? "Authenticating..." : "Sign In with Wallet"}
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    className="flex-1"
+                    onClick={() => {
+                      console.log('Disconnecting wallet');
+                      disconnect();
+                      setWalletConnecting(false);
+                    }}
+                  >
+                    Disconnect
+                  </Button>
+                </div>
               </div>
             )}
 
