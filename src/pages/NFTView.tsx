@@ -39,6 +39,18 @@ const NFTView = () => {
     }
   }, [id]);
 
+  // Check if meta tags are being set correctly - but only after we have NFT data
+  useEffect(() => {
+    if (nft?.image_url) {
+      setTimeout(() => {
+        const ogImage = document.querySelector('meta[property="og:image"]');
+        const ogTitle = document.querySelector('meta[property="og:title"]');
+        console.log("Current og:image meta tag:", ogImage?.getAttribute('content'));
+        console.log("Current og:title meta tag:", ogTitle?.getAttribute('content'));
+      }, 1000);
+    }
+  }, [nft?.image_url]);
+
   const fetchNFT = async () => {
     try {
       // Fetch NFT data
@@ -302,16 +314,6 @@ const NFTView = () => {
   // Debug logging to help troubleshoot
   console.log("NFT Image URL:", nft.image_url);
   console.log("Absolute Image URL:", absoluteImageUrl);
-  
-  // Check if meta tags are being set correctly
-  useEffect(() => {
-    setTimeout(() => {
-      const ogImage = document.querySelector('meta[property="og:image"]');
-      const ogTitle = document.querySelector('meta[property="og:title"]');
-      console.log("Current og:image meta tag:", ogImage?.getAttribute('content'));
-      console.log("Current og:title meta tag:", ogTitle?.getAttribute('content'));
-    }, 1000);
-  }, [absoluteImageUrl]);
 
   return (
     <>
