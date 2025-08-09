@@ -67,10 +67,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   }, []);
 
   const signUp = async (email: string, password: string, userData?: any) => {
+    console.log('🟢 SIGNUP START - Email:', email, 'UserData:', userData);
     try {
       const redirectUrl = `${window.location.origin}/`;
+      console.log('🟢 SIGNUP - Redirect URL:', redirectUrl);
       
-      const { error } = await supabase.auth.signUp({
+      const { data, error } = await supabase.auth.signUp({
         email,
         password,
         options: {
@@ -79,7 +81,16 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       });
 
+      console.log('🟢 SIGNUP RESULT:', {
+        success: !error,
+        error: error?.message,
+        hasUser: !!data?.user,
+        hasSession: !!data?.session,
+        needsConfirmation: data?.user && !data?.session
+      });
+
       if (error) {
+        console.log('🟢 SIGNUP ERROR:', error);
         toast({
           title: "Sign up failed",
           description: error.message,
@@ -88,13 +99,32 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { error };
       }
 
-      toast({
-        title: "Account created!",
-        description: "Please check your email to verify your account."
-      });
+      if (data?.user && data?.session) {
+        console.log('🟢 SIGNUP SUCCESS - User created and signed in automatically');
+        toast({
+          title: "Welcome to Aura!",
+          description: "Your account has been created successfully."
+        });
+        return { error: null };
+      } else if (data?.user && !data?.session) {
+        console.log('🟢 SIGNUP - Email confirmation required');
+        toast({
+          title: "Check your email",
+          description: "We've sent you a confirmation link. Or disable email confirmation in Supabase settings.",
+          variant: "default"
+        });
+        return { error: null }; // This is actually success, just needs confirmation
+      }
 
-      return { error: null };
+      console.log('🟢 SIGNUP - No user created');
+      toast({
+        title: "Account creation failed", 
+        description: "Something went wrong creating your account."
+      });
+      return { error: new Error('No user created') };
+
     } catch (error: any) {
+      console.log('🟢 SIGNUP EXCEPTION:', error);
       toast({
         title: "Sign up failed",
         description: error.message,
