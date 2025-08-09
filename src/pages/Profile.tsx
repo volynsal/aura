@@ -492,11 +492,15 @@ const Profile = () => {
                         <AvatarImage src={profile.avatar_url} />
                         <AvatarFallback className="text-xs">{profile.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                       </Avatar>
-                      <div className="flex-1">
-                        <span className="font-medium text-xs">{profile.username}</span>
-                        <span className="text-xs text-muted-foreground ml-2">
-                          {new Date(nft.created_at).toLocaleDateString()}
-                        </span>
+                      <div className="flex-1 space-y-1">
+                        <span className="font-medium text-sm">{profile.username}</span>
+                        <div className="text-sm text-muted-foreground">
+                          {new Date(nft.created_at).toLocaleDateString('en-US', { 
+                            year: 'numeric', 
+                            month: 'short', 
+                            day: 'numeric' 
+                          })}
+                        </div>
                       </div>
                       <DropdownMenu>
                         <DropdownMenuTrigger 
