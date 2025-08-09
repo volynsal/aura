@@ -1,10 +1,16 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
-import { Settings, Share, Heart, Bookmark, Rss, Quote, Image, Music } from "lucide-react";
+import { Input } from "@/components/ui/input";
+import { Textarea } from "@/components/ui/textarea";
+import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
+import { Settings, Share, Heart, Bookmark, Rss, Quote, Image, Music, Upload, X } from "lucide-react";
 import { Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
 const userProfile = {
   username: "vibe_seeker",
@@ -136,7 +142,90 @@ const auraActivity = [
 ];
 
 const Profile = () => {
-  const [isOwnProfile] = useState(true); // In real app, this would be determined by route params
+  const [isOwnProfile] = useState(true);
+  const [isEditing, setIsEditing] = useState(false);
+  const [editForm, setEditForm] = useState({
+    username: userProfile.username,
+    bio: userProfile.bio,
+    avatar_url: userProfile.avatar
+  });
+  const [avatarFile, setAvatarFile] = useState<File | null>(null);
+  const [isUploading, setIsUploading] = useState(false);
+  
+  const { user } = useAuth();
+  const { toast } = useToast();
+
+  const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+    const file = event.target.files?.[0];
+    if (file) {
+      setAvatarFile(file);
+      // Create preview URL
+      const reader = new FileReader();
+      reader.onload = () => {
+        setEditForm(prev => ({ ...prev, avatar_url: reader.result as string }));
+      };
+      reader.readAsDataURL(file);
+    }
+  };
+
+  const uploadAvatar = async (file: File) => {
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${user?.id}/avatar.${fileExt}`;
+    
+    const { error: uploadError } = await supabase.storage
+      .from('avatars')
+      .upload(fileName, file, { upsert: true });
+
+    if (uploadError) throw uploadError;
+
+    const { data } = supabase.storage
+      .from('avatars')
+      .getPublicUrl(fileName);
+
+    return data.publicUrl;
+  };
+
+  const handleSaveProfile = async () => {
+    if (!user) return;
+    
+    setIsUploading(true);
+    try {
+      let avatarUrl = editForm.avatar_url;
+      
+      // Upload new avatar if selected
+      if (avatarFile) {
+        avatarUrl = await uploadAvatar(avatarFile);
+      }
+
+      // Update profile in database
+      const { error } = await supabase
+        .from('profiles')
+        .upsert({
+          user_id: user.id,
+          username: editForm.username,
+          bio: editForm.bio,
+          avatar_url: avatarUrl
+        });
+
+      if (error) throw error;
+
+      toast({
+        title: "Profile updated!",
+        description: "Your profile has been successfully updated."
+      });
+
+      setIsEditing(false);
+      setAvatarFile(null);
+    } catch (error: any) {
+      toast({
+        title: "Update failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsUploading(false);
+    }
+  };
 
   return (
     <div className="min-h-screen bg-background">
@@ -161,12 +250,104 @@ const Profile = () => {
           
           {isOwnProfile ? (
             <div className="flex justify-center gap-2">
-              <Link to="/login">
-                <Button variant="outline" size="sm" className="text-xs">
-                  <Settings className="w-3 h-3 mr-1" />
-                  Edit
-                </Button>
-              </Link>
+              <Dialog open={isEditing} onOpenChange={setIsEditing}>
+                <DialogTrigger asChild>
+                  <Button variant="outline" size="sm" className="text-xs">
+                    <Settings className="w-3 h-3 mr-1" />
+                    Edit
+                  </Button>
+                </DialogTrigger>
+                <DialogContent className="sm:max-w-md">
+                  <DialogHeader>
+                    <DialogTitle>Edit Profile</DialogTitle>
+                  </DialogHeader>
+                  <div className="space-y-4">
+                    {/* Avatar Upload */}
+                    <div className="flex flex-col items-center space-y-2">
+                      <Avatar className="w-20 h-20">
+                        <AvatarImage src={editForm.avatar_url} />
+                        <AvatarFallback className="text-2xl">{editForm.username[0]?.toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex gap-2">
+                        <label htmlFor="avatar-upload">
+                          <Button variant="outline" size="sm" className="text-xs cursor-pointer" asChild>
+                            <span>
+                              <Upload className="w-3 h-3 mr-1" />
+                              Change Photo
+                            </span>
+                          </Button>
+                        </label>
+                        <input
+                          id="avatar-upload"
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleAvatarChange}
+                        />
+                        {editForm.avatar_url && (
+                          <Button
+                            variant="ghost"
+                            size="sm"
+                            onClick={() => {
+                              setEditForm(prev => ({ ...prev, avatar_url: '' }));
+                              setAvatarFile(null);
+                            }}
+                          >
+                            <X className="w-3 h-3" />
+                          </Button>
+                        )}
+                      </div>
+                    </div>
+
+                    {/* Username */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Username</label>
+                      <Input
+                        value={editForm.username}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, username: e.target.value }))}
+                        placeholder="Your username"
+                      />
+                    </div>
+
+                    {/* Bio */}
+                    <div className="space-y-2">
+                      <label className="text-sm font-medium">Bio</label>
+                      <Textarea
+                        value={editForm.bio}
+                        onChange={(e) => setEditForm(prev => ({ ...prev, bio: e.target.value }))}
+                        placeholder="Tell us about yourself..."
+                        rows={3}
+                      />
+                    </div>
+
+                    {/* Actions */}
+                    <div className="flex gap-2 pt-2">
+                      <Button
+                        onClick={handleSaveProfile}
+                        disabled={isUploading}
+                        className="flex-1"
+                        variant="aura"
+                      >
+                        {isUploading ? 'Saving...' : 'Save Changes'}
+                      </Button>
+                      <Button
+                        variant="outline"
+                        onClick={() => {
+                          setIsEditing(false);
+                          setEditForm({
+                            username: userProfile.username,
+                            bio: userProfile.bio,
+                            avatar_url: userProfile.avatar
+                          });
+                          setAvatarFile(null);
+                        }}
+                      >
+                        Cancel
+                      </Button>
+                    </div>
+                  </div>
+                </DialogContent>
+              </Dialog>
               <Button variant="minimal" size="sm" className="text-xs">
                 <Share className="w-3 h-3" />
               </Button>
