@@ -52,41 +52,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       (event, session) => {
         console.log('🔥 AUTH STATE CHANGE:', { event, hasSession: !!session, hasUser: !!session?.user });
         
-        // CHECK FOR SIGNOUT FLAG IMMEDIATELY to prevent re-auth
-        const signoutInProgress = localStorage.getItem('signout-in-progress') || sessionStorage.getItem('signout-in-progress');
-        if (signoutInProgress && event === 'SIGNED_IN') {
-          const signoutTime = parseInt(signoutInProgress);
-          const timeSinceSignout = Date.now() - signoutTime;
-          
-          if (timeSinceSignout < 5000) { // Reduced to 5 seconds for mobile compatibility
-            console.log('🚫 BLOCKING AUTH STATE SIGN IN: Recent signout detected', timeSinceSignout, 'ms ago');
-            return; // Don't update state - block the sign in
-          } else {
-            // Clear the flag if enough time has passed
-            localStorage.removeItem('signout-in-progress');
-            sessionStorage.removeItem('signout-in-progress');
-            console.log('🔄 CLEARING signout flag - enough time passed');
-          }
-        }
-        
-        // Don't update state if we're in the middle of signing out
-        if (event === 'SIGNED_OUT') {
-          console.log('🔥 SIGNED_OUT event - clearing state');
-          if (mounted) {
+        if (mounted) {
+          if (event === 'SIGNED_OUT') {
+            console.log('🔥 SIGNED_OUT event - clearing state');
             setSession(null);
             setUser(null);
             setLoading(false);
-          }
-        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
-          console.log('🔥 SIGNED_IN/TOKEN_REFRESHED event - updating state');
-          if (mounted) {
+          } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+            console.log('🔥 SIGNED_IN/TOKEN_REFRESHED event - updating state');
             setSession(session);
             setUser(session?.user ?? null);
             setLoading(false);
-          }
-        } else {
-          console.log('🔥 Other auth event:', event);
-          if (mounted) {
+          } else {
+            console.log('🔥 Other auth event:', event);
             setSession(session);
             setUser(session?.user ?? null);
             setLoading(false);
@@ -208,116 +186,77 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log('🚪 SIGNOUT: Current user before logout:', user?.id);
     console.log('🚪 SIGNOUT: Current session before logout:', !!session);
     
-    // 1. SET SIGNOUT FLAG IMMEDIATELY - BEFORE doing anything else
-    console.log('🚪 SIGNOUT: Setting signout flag to block re-auth');
-    localStorage.setItem('signout-in-progress', Date.now().toString());
-    sessionStorage.setItem('signout-in-progress', Date.now().toString());
-    
     try {
-      // 1. IMMEDIATELY clear local state to prevent any re-auth triggers
+      // 1. Clear local state immediately
       console.log('🚪 SIGNOUT: Clearing local state immediately');
       setSession(null);
       setUser(null);
       setLoading(false);
       
-      // 2. DISCONNECT WALLET FIRST to prevent auto-reconnection
-      console.log('🚪 SIGNOUT: Disconnecting wallet...');
-      try {
-        // Try to disconnect wallet if available
-        if (window.ethereum) {
-          console.log('🚪 SIGNOUT: Ethereum provider found, clearing connection');
-        }
-      } catch (e) {
-        console.log('🚪 SIGNOUT: Wallet disconnect error (ignoring):', e);
-      }
-      
-      // 3. Clear all storage BEFORE calling Supabase signOut
-      console.log('🚪 SIGNOUT: Clearing all storage');
-      const keysToRemove = [
-        'walletconnect',
-        'wagmi.store', 
-        'wagmi.cache',
-        'wagmi.wallet',
-        'wagmi.injected.shimDisconnect',
-        'wagmi.recentConnectorId',
-        'wagmi.connected',
-        'wagmi.config.state',
-        'wagmi.autoConnect',
-        'wagmi.eager',
-        'coinbaseWallet',
-        'ethereum',
-        // Add more comprehensive clearing
-        'wagmi.connector.id',
-        'wagmi.connectionStatus',
-        'wagmi.lastUsedConnector'
-      ];
-      
-      keysToRemove.forEach(key => {
-        try {
-          localStorage.removeItem(key);
-          sessionStorage.removeItem(key);
-        } catch (e) {
-          console.log('🚪 SIGNOUT: Storage error for key:', key, e);
-        }
-      });
-      
-      // 4. Sign out from Supabase with the strongest scope  
-      console.log('🚪 SIGNOUT: Calling Supabase signOut with global scope');
-      const { error } = await supabase.auth.signOut({ scope: 'global' });
+      // 2. Sign out from Supabase
+      console.log('🚪 SIGNOUT: Calling Supabase signOut');
+      const { error } = await supabase.auth.signOut();
       
       if (error) {
         console.error('🚪 SIGNOUT: Supabase error:', error);
+        // Continue with cleanup even if there's an error
       } else {
         console.log('🚪 SIGNOUT: Supabase logout successful');
       }
       
-      // 5. Double-check that session is actually cleared
-      const { data: { session: checkSession } } = await supabase.auth.getSession();
-      console.log('🚪 SIGNOUT: Session check after logout:', !!checkSession);
-      
-      if (checkSession) {
-        console.log('🚪 SIGNOUT: Session still exists! Forcing additional clear...');
-        await supabase.auth.signOut({ scope: 'local' });
-        setSession(null);
-        setUser(null);
-      }
-      
-      // 7. Show success message
-      console.log('🚪 SIGNOUT: Logout process completed - FLAG ALREADY SET TO BLOCK AUTO-AUTH');
-      
-      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/feed')) {
-        toast({
-          title: "Signed out successfully",
-          description: "Redirecting to feed..."
+      // 3. Clear sensitive storage items (simplified for mobile compatibility)
+      console.log('🚪 SIGNOUT: Clearing storage');
+      try {
+        // Only clear specific items that might interfere
+        const keysToRemove = [
+          'walletconnect',
+          'wagmi.store', 
+          'wagmi.cache',
+          'wagmi.recentConnectorId'
+        ];
+        
+        keysToRemove.forEach(key => {
+          try {
+            localStorage.removeItem(key);
+          } catch (e) {
+            console.log('🚪 SIGNOUT: Storage error for key:', key, e);
+          }
         });
+      } catch (e) {
+        console.log('🚪 SIGNOUT: Storage clear error (ignoring):', e);
       }
       
-      // 8. Force immediate redirect with replace (no back button)
+      // 4. Show success message
+      console.log('🚪 SIGNOUT: Logout process completed');
+      
+      toast({
+        title: "Signed out successfully",
+        description: "Redirecting to feed..."
+      });
+      
+      // 5. Use React Router navigation instead of window.location
       console.log('🚪 SIGNOUT: Redirecting to feed');
+      // Use a shorter delay for better mobile experience
       setTimeout(() => {
-        window.location.replace('/feed');
-      }, 100);
+        window.location.href = '/feed';
+      }, 500);
       
     } catch (error: any) {
       console.error('🚪 SIGNOUT ERROR:', error);
       
-      // Even if there's an error, clear everything and redirect
+      // Even if there's an error, clear everything
       setUser(null);
       setSession(null);
       setLoading(false);
       
-      try {
-        localStorage.clear();
-        sessionStorage.clear();
-        localStorage.setItem('signout-in-progress', Date.now().toString());
-      } catch (e) {
-        console.log('🚪 SIGNOUT: Storage clear error:', e);
-      }
+      toast({
+        title: "Signed out",
+        description: "Redirecting to feed..."
+      });
       
-      console.log('🚪 SIGNOUT: Error occurred, forcing redirect');
       setTimeout(() => {
-        window.location.replace('/feed');
-      }, 100);
+        window.location.href = '/feed';
+      }, 500);
     }
   };
 
@@ -359,11 +298,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signInWithWallet = async (walletAddress: string) => {
     console.log('🔵 WALLET AUTH START - Address:', walletAddress);
-    
-    // Clear any signout flags when intentionally signing in with wallet
-    localStorage.removeItem('signout-in-progress');
-    sessionStorage.removeItem('signout-in-progress');
-    console.log('🔵 WALLET AUTH - Cleared signout flags for legitimate sign-in');
     
     try {
       // Simple approach: create wallet user directly without checking existing profiles first
