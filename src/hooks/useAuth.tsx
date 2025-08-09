@@ -185,39 +185,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signInWithWallet = async (walletAddress: string) => {
-    const timeout = setTimeout(() => {
-      console.log('Authentication timeout - taking too long');
-      toast({
-        title: "Authentication timeout",
-        description: "Please try again or refresh the page",
-        variant: "destructive"
-      });
-    }, 10000); // 10 second timeout
-
+    console.log('🔄 signInWithWallet START:', walletAddress);
+    
     try {
-      console.log('signInWithWallet called with:', walletAddress);
-      
       // Create a valid email format for wallet users
       const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
-      console.log('Generated wallet email:', walletEmail);
+      console.log('📧 Generated email:', walletEmail);
       
       // Try to sign in first (existing wallet user)
-      console.log('Attempting to sign in with existing account...');
-      const signInPromise = supabase.auth.signInWithPassword({
+      console.log('🔑 Attempting sign in...');
+      const { error: signInError } = await supabase.auth.signInWithPassword({
         email: walletEmail,
         password: walletAddress
       });
 
-      const { error: signInError } = await Promise.race([
-        signInPromise,
-        new Promise((_, reject) => 
-          setTimeout(() => reject(new Error('Sign in timeout')), 8000)
-        )
-      ]) as any;
-
       if (!signInError) {
-        console.log('Successfully signed in with existing wallet account');
-        clearTimeout(timeout);
+        console.log('✅ Sign in SUCCESS');
         toast({
           title: "Welcome back!",
           description: "Signed in with your wallet."
@@ -225,13 +208,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { error: null };
       }
 
-      console.log('Sign in error:', signInError);
+      console.log('❌ Sign in failed:', signInError.message);
 
-      // Only try to create account if it's an invalid credentials error (user doesn't exist)
-      if (signInError.message.includes('Invalid login credentials')) {
-        console.log('User not found, creating new account...');
+      // Only create account if user doesn't exist
+      if (signInError.message === 'Invalid login credentials') {
+        console.log('👤 Creating new account...');
         
-        const signUpPromise = supabase.auth.signUp({
+        const { error: signUpError } = await supabase.auth.signUp({
           email: walletEmail,
           password: walletAddress,
           options: {
@@ -244,19 +227,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         });
 
-        const { error: signUpError } = await Promise.race([
-          signUpPromise,
-          new Promise((_, reject) => 
-            setTimeout(() => reject(new Error('Sign up timeout')), 8000)
-          )
-        ]) as any;
-
         if (signUpError) {
-          console.log('Sign up error:', signUpError);
-          clearTimeout(timeout);
-          if (!signUpError.message.includes('rate limit') && !signUpError.message.includes('timeout')) {
+          console.log('❌ Sign up failed:', signUpError.message);
+          if (!signUpError.message.includes('rate limit')) {
             toast({
-              title: "Wallet authentication failed",
+              title: "Account creation failed",
               description: signUpError.message,
               variant: "destructive"
             });
@@ -264,8 +239,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           return { error: signUpError };
         }
 
-        console.log('Successfully created new wallet account');
-        clearTimeout(timeout);
+        console.log('✅ Account created SUCCESS');
         toast({
           title: "Account created!",
           description: "Your wallet has been connected and account created."
@@ -273,12 +247,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { error: null };
       }
 
-      // For other errors (like rate limits), don't show toast to prevent spam
-      console.log('Other authentication error:', signInError);
-      clearTimeout(timeout);
-      if (!signInError.message.includes('rate limit') && !signInError.message.includes('timeout')) {
+      // Handle other errors
+      console.log('❌ Other error:', signInError.message);
+      if (!signInError.message.includes('rate limit')) {
         toast({
-          title: "Wallet authentication failed",
+          title: "Authentication failed",
           description: signInError.message,
           variant: "destructive"
         });
@@ -286,22 +259,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return { error: signInError };
 
     } catch (error: any) {
-      console.log('Exception in signInWithWallet:', error);
-      clearTimeout(timeout);
-      
-      if (error.message === 'Sign in timeout' || error.message === 'Sign up timeout') {
-        toast({
-          title: "Authentication timeout",
-          description: "Please try again or check your internet connection",
-          variant: "destructive"
-        });
-      } else if (!error.message?.includes('rate limit')) {
-        toast({
-          title: "Wallet authentication failed",
-          description: error.message,
-          variant: "destructive"
-        });
-      }
+      console.log('💥 Exception in signInWithWallet:', error);
+      toast({
+        title: "Authentication error",
+        description: error.message || "Something went wrong",
+        variant: "destructive"
+      });
       return { error };
     }
   };

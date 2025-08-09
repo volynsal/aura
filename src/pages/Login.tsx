@@ -281,20 +281,19 @@ const Login = () => {
                     {address.slice(0, 6)}...{address.slice(-4)}
                   </span>
                 </p>
-                <div className="flex gap-2">
+                <div className="grid grid-cols-3 gap-2">
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="flex-1"
                     onClick={async () => {
-                      console.log('Manual wallet authentication trigger');
-                      if (!walletConnecting && !user) {
+                      console.log('🔄 Manual wallet authentication trigger');
+                      if (!user) {
                         setWalletConnecting(true);
                         try {
                           const result = await signInWithWallet(address);
-                          console.log('Manual authentication result:', result);
+                          console.log('🔄 Manual authentication result:', result);
                         } catch (error) {
-                          console.log('Manual authentication error:', error);
+                          console.log('💥 Manual authentication error:', error);
                         } finally {
                           setWalletConnecting(false);
                         }
@@ -302,19 +301,30 @@ const Login = () => {
                     }}
                     disabled={walletConnecting || !!user}
                   >
-                    {walletConnecting ? "Authenticating..." : "Sign In with Wallet"}
+                    {walletConnecting ? "Auth..." : "Sign In"}
                   </Button>
                   <Button 
                     variant="outline" 
                     size="sm"
-                    className="flex-1"
                     onClick={() => {
-                      console.log('Disconnecting wallet');
+                      console.log('🔌 Disconnecting wallet');
                       disconnect();
                       setWalletConnecting(false);
                     }}
                   >
                     Disconnect
+                  </Button>
+                  <Button 
+                    variant="outline" 
+                    size="sm"
+                    onClick={() => {
+                      console.log('🔄 Resetting authentication state');
+                      setWalletConnecting(false);
+                      // Force page refresh to clear any stuck states
+                      window.location.reload();
+                    }}
+                  >
+                    Reset
                   </Button>
                 </div>
               </div>
