@@ -119,6 +119,7 @@ const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
 };
 
 const AuraFeed = () => {
+  console.log('🟣 AuraFeed rendering...');
   return (
     <div className="max-w-6xl mx-auto px-6 py-8" role="feed" aria-label="NFT feed by mood">
       {/* Mood Filter Bar */}

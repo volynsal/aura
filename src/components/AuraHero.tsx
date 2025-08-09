@@ -2,6 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
 
 const AuraHero = () => {
+  console.log('🔵 AuraHero rendering...');
   return (
     <section className="relative py-12 md:py-24 px-4 md:px-6 bg-gradient-to-b from-background to-surface-elevated">
       <div className="max-w-4xl mx-auto text-center">
