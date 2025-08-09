@@ -24,11 +24,11 @@ const Login = () => {
   const { connect, connectors, isPending } = useConnect();
   const { disconnect } = useDisconnect();
 
-  // Redirect if already authenticated to feed
+  // Redirect authenticated users to profile page for setup
   useEffect(() => {
     if (user) {
-      console.log('🔀 User authenticated, redirecting to feed');
-      navigate('/feed');
+      console.log('🔀 User authenticated, redirecting to profile for setup');
+      navigate('/profile');
     }
   }, [user, navigate]);
 
