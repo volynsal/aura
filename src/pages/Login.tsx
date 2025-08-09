@@ -287,7 +287,7 @@ const Login = () => {
                     {address.slice(0, 6)}...{address.slice(-4)}
                   </span>
                 </p>
-                <div className="grid grid-cols-3 gap-2">
+                <div className="grid grid-cols-2 gap-2">
                   <Button 
                     variant="outline" 
                     size="sm"
@@ -319,18 +319,6 @@ const Login = () => {
                     }}
                   >
                     Disconnect
-                  </Button>
-                  <Button 
-                    variant="outline" 
-                    size="sm"
-                    onClick={() => {
-                      console.log('🔄 Resetting authentication state');
-                      setWalletConnecting(false);
-                      // Force page refresh to clear any stuck states
-                      window.location.reload();
-                    }}
-                  >
-                    Reset
                   </Button>
                 </div>
               </div>

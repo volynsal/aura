@@ -138,33 +138,34 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     try {
-      // Check if user is actually logged in before trying to sign out
-      if (!session) {
-        console.log('No active session to sign out from');
-        return;
-      }
-
-      const { error } = await supabase.auth.signOut();
+      // Always attempt to sign out regardless of session state
+      const { error } = await supabase.auth.signOut({ scope: 'local' });
+      
       if (error) {
         console.error('Sign out error:', error);
-        toast({
-          title: "Sign out failed",
-          description: error.message,
-          variant: "destructive"
-        });
+        // Don't show error toast for missing session - just clear local state
+        if (!error.message.includes('session')) {
+          toast({
+            title: "Sign out failed",
+            description: error.message,
+            variant: "destructive"
+          });
+        }
       } else {
         toast({
           title: "Signed out",
           description: "You have been signed out successfully."
         });
       }
+      
+      // Always clear local state
+      setSession(null);
+      setUser(null);
     } catch (error: any) {
       console.error('Sign out exception:', error);
-      toast({
-        title: "Sign out failed",
-        description: error.message,
-        variant: "destructive"
-      });
+      // Clear local state even if sign out fails
+      setSession(null);
+      setUser(null);
     }
   };
 
