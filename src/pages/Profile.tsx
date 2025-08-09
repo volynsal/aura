@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Settings, Share, Heart, Bookmark, Rss, Quote, Image, Music } from "lucide-react";
+import { Link } from "react-router-dom";
 
 const userProfile = {
   username: "vibe_seeker",
@@ -160,10 +161,12 @@ const Profile = () => {
           
           {isOwnProfile ? (
             <div className="flex justify-center gap-2">
-              <Button variant="outline" size="sm" className="text-xs">
-                <Settings className="w-3 h-3 mr-1" />
-                Edit
-              </Button>
+              <Link to="/login">
+                <Button variant="outline" size="sm" className="text-xs">
+                  <Settings className="w-3 h-3 mr-1" />
+                  Edit
+                </Button>
+              </Link>
               <Button variant="minimal" size="sm" className="text-xs">
                 <Share className="w-3 h-3" />
               </Button>
