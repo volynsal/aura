@@ -10,9 +10,11 @@ interface SEOProps {
 
 const SITE_URL = typeof window !== "undefined" ? window.location.origin : "";
 
-export function SEO({ title, description, path = "/", image = "/lovable-uploads/c01519dd-0698-4c23-b3a7-e5af5415a354.png", structuredData }: SEOProps) {
+export function SEO({ title, description, path = "/", image, structuredData }: SEOProps) {
   const url = SITE_URL ? `${SITE_URL}${path}` : path;
-  const imageUrl = image?.startsWith("http") ? image : (SITE_URL ? `${SITE_URL}${image}` : image);
+  const defaultImage = "/lovable-uploads/c01519dd-0698-4c23-b3a7-e5af5415a354.png";
+  const finalImage = image || defaultImage;
+  const imageUrl = finalImage?.startsWith("http") ? finalImage : (SITE_URL ? `${SITE_URL}${finalImage}` : finalImage);
   
   // Determine image type for better social media compatibility
   const getImageType = (url: string) => {
