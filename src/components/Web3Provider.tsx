@@ -4,7 +4,7 @@ import { WagmiProvider } from 'wagmi';
 import { mainnet, polygon, arbitrum, base } from 'wagmi/chains';
 import { walletConnect, metaMask, coinbaseWallet } from 'wagmi/connectors';
 
-import { ReactNode } from 'react';
+import { ReactNode, useEffect } from 'react';
 
 // Get projectId from WalletConnect Cloud
 const projectId = '6cdf8f3385abe52c71db1e86d8a627d6';
@@ -40,25 +40,27 @@ const config = defaultWagmiConfig({
   connectors
 });
 
-// Create modal with explicit configuration
-createWeb3Modal({
-  wagmiConfig: config,
-  projectId,
-  enableAnalytics: true,
-  enableOnramp: true,
-  allowUnsupportedChain: false,
-  tokens: {
-    1: {
-      address: '0xA0b86a33E6441b342c22e4b4BdC4E5E61d66e59f'
-    }
-  }
-});
-
 interface Web3ProviderProps {
   children: ReactNode;
 }
 
 export function Web3Provider({ children }: Web3ProviderProps) {
+  // Initialize Web3Modal only once
+  useEffect(() => {
+    createWeb3Modal({
+      wagmiConfig: config,
+      projectId,
+      enableAnalytics: true,
+      enableOnramp: true,
+      allowUnsupportedChain: false,
+      tokens: {
+        1: {
+          address: '0xA0b86a33E6441b342c22e4b4BdC4E5E61d66e59f'
+        }
+      }
+    });
+  }, []);
+
   return (
     <WagmiProvider config={config}>
       {children}
