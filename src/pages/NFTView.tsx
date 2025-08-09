@@ -6,10 +6,11 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { ArrowLeft, Heart, MessageCircle, Share, DollarSign, Send } from 'lucide-react';
+import { ArrowLeft, Heart, MessageCircle, Share, DollarSign, Send, Copy, Check } from 'lucide-react';
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import SEO from "@/components/SEO";
 
 const NFTView = () => {
   const { id } = useParams();
@@ -29,6 +30,8 @@ const NFTView = () => {
   const [showSellDialog, setShowSellDialog] = useState(false);
   const [sellPrice, setSellPrice] = useState("");
   const [isListing, setIsListing] = useState(false);
+  const [isSharing, setIsSharing] = useState(false);
+  const [linkCopied, setLinkCopied] = useState(false);
 
   useEffect(() => {
     if (id) {
@@ -205,6 +208,61 @@ const NFTView = () => {
     }
   };
 
+  const handleShare = async () => {
+    if (!nft) return;
+    
+    setIsSharing(true);
+    const shareUrl = `${window.location.origin}/nft/${id}`;
+    const shareTitle = `${nft.title} by ${creator?.display_name || creator?.username}`;
+    const shareText = `Check out this amazing NFT: ${nft.title}${nft.description ? ' - ' + nft.description : ''}`;
+
+    // Check if Web Share API is supported
+    if (navigator.share && navigator.canShare) {
+      try {
+        await navigator.share({
+          title: shareTitle,
+          text: shareText,
+          url: shareUrl,
+        });
+        
+        toast({
+          title: "Shared successfully!",
+          description: "The NFT has been shared."
+        });
+      } catch (error: any) {
+        if (error.name !== 'AbortError') {
+          // Fallback to copying link if share was cancelled
+          await copyToClipboard(shareUrl);
+        }
+      }
+    } else {
+      // Fallback: copy link to clipboard
+      await copyToClipboard(shareUrl);
+    }
+    
+    setIsSharing(false);
+  };
+
+  const copyToClipboard = async (text: string) => {
+    try {
+      await navigator.clipboard.writeText(text);
+      setLinkCopied(true);
+      toast({
+        title: "Link copied!",
+        description: "The NFT link has been copied to your clipboard."
+      });
+      
+      // Reset the copied state after 2 seconds
+      setTimeout(() => setLinkCopied(false), 2000);
+    } catch (error) {
+      toast({
+        title: "Could not copy link",
+        description: "Please manually copy the URL from your browser.",
+        variant: "destructive"
+      });
+    }
+  };
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -233,7 +291,31 @@ const NFTView = () => {
   const isForSale = marketplaceOrder && marketplaceOrder.status === 'active';
 
   return (
-    <div className="min-h-screen bg-background">
+    <>
+      {/* SEO Meta Tags for proper social sharing */}
+      <SEO
+        title={`${nft.title} by ${creator?.display_name || creator?.username} | Aura`}
+        description={nft.description || `Check out this amazing NFT: ${nft.title} by ${creator?.display_name || creator?.username}`}
+        path={`/nft/${id}`}
+        image={nft.image_url}
+        structuredData={{
+          "@context": "https://schema.org",
+          "@type": "VisualArtwork",
+          name: nft.title,
+          description: nft.description,
+          image: nft.image_url,
+          creator: {
+            "@type": "Person",
+            name: creator?.display_name || creator?.username,
+            url: `${window.location.origin}/profile/${creator?.username}`
+          },
+          dateCreated: nft.created_at,
+          artMedium: "Digital Art",
+          artworkSurface: "NFT"
+        }}
+      />
+      
+      <div className="min-h-screen bg-background">
       <div className="max-w-4xl mx-auto px-4 py-6">
         {/* Header */}
         <div className="flex items-center justify-between mb-6">
@@ -248,9 +330,18 @@ const NFTView = () => {
           </Button>
           
           <div className="flex gap-2">
-            <Button variant="outline" size="sm">
-              <Share className="w-4 h-4 mr-2" />
-              Share
+            <Button 
+              variant="outline" 
+              size="sm" 
+              onClick={handleShare}
+              disabled={isSharing}
+            >
+              {linkCopied ? (
+                <Check className="w-4 h-4 mr-2" />
+              ) : (
+                <Share className="w-4 h-4 mr-2" />
+              )}
+              {isSharing ? "Sharing..." : linkCopied ? "Copied!" : "Share"}
             </Button>
           </div>
         </div>
@@ -490,8 +581,9 @@ const NFTView = () => {
             </div>
           </div>
         </div>
+        </div>
       </div>
-    </div>
+    </>
   );
 };
 
