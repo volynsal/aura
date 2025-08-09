@@ -52,6 +52,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       (event, session) => {
         console.log('🔥 AUTH STATE CHANGE:', { event, hasSession: !!session, hasUser: !!session?.user });
         
+        // CHECK FOR SIGNOUT FLAG IMMEDIATELY to prevent re-auth
+        const signoutInProgress = localStorage.getItem('signout-in-progress');
+        if (signoutInProgress && event === 'SIGNED_IN') {
+          const signoutTime = parseInt(signoutInProgress);
+          const timeSinceSignout = Date.now() - signoutTime;
+          
+          if (timeSinceSignout < 10000) { // Block for 10 seconds
+            console.log('🚫 BLOCKING AUTH STATE SIGN IN: Recent signout detected', timeSinceSignout, 'ms ago');
+            return; // Don't update state - block the sign in
+          }
+        }
+        
         // Don't update state if we're in the middle of signing out
         if (event === 'SIGNED_OUT') {
           console.log('🔥 SIGNED_OUT event - clearing state');
@@ -191,6 +203,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log('🚪 SIGNOUT: Current user before logout:', user?.id);
     console.log('🚪 SIGNOUT: Current session before logout:', !!session);
     
+    // 1. SET SIGNOUT FLAG IMMEDIATELY - BEFORE doing anything else
+    console.log('🚪 SIGNOUT: Setting signout flag to block re-auth');
+    localStorage.setItem('signout-in-progress', Date.now().toString());
+    
     try {
       // 1. IMMEDIATELY clear local state to prevent any re-auth triggers
       console.log('🚪 SIGNOUT: Clearing local state immediately');
@@ -260,11 +276,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null);
       }
       
-      // 6. Show success message
-      console.log('🚪 SIGNOUT: Logout process completed - BLOCKING AUTO-AUTH');
-      
-      // 7. Set a flag to prevent auto-authentication temporarily
-      localStorage.setItem('signout-in-progress', Date.now().toString());
+      // 7. Show success message
+      console.log('🚪 SIGNOUT: Logout process completed - FLAG ALREADY SET TO BLOCK AUTO-AUTH');
       
       if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/feed')) {
         toast({
