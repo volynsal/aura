@@ -170,24 +170,35 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log('🚪 Starting complete logout...');
     
     try {
-      // Clear all wallet-related localStorage first
-      localStorage.removeItem('walletconnect');
-      localStorage.removeItem('wagmi.store');
-      localStorage.removeItem('wagmi.cache'); 
-      localStorage.removeItem('wagmi.wallet');
-      localStorage.removeItem('wagmi.injected.shimDisconnect');
-      localStorage.removeItem('wagmi.recentConnectorId');
+      // Clear all wallet-related localStorage FIRST (before Supabase logout)
+      const keysToRemove = [
+        'walletconnect',
+        'wagmi.store', 
+        'wagmi.cache',
+        'wagmi.wallet',
+        'wagmi.injected.shimDisconnect',
+        'wagmi.recentConnectorId',
+        'wagmi.connected',
+        'wagmi.config.state',
+        'wagmi.autoConnect'
+      ];
       
-      // Sign out from Supabase with local scope to clear session
+      keysToRemove.forEach(key => {
+        localStorage.removeItem(key);
+        sessionStorage.removeItem(key);
+      });
+      
+      console.log('🧹 Cleared all wallet storage');
+      
+      // Clear our state first to prevent re-authentication
+      setSession(null);
+      setUser(null);
+      
+      // Sign out from Supabase 
       const { error } = await supabase.auth.signOut({ scope: 'local' });
       
       if (error && !error.message.includes('session')) {
         console.error('Sign out error:', error);
-        toast({
-          title: "Sign out failed", 
-          description: error.message,
-          variant: "destructive"
-        });
       } else {
         console.log('✅ Supabase logout successful');
         if (!window.location.pathname.includes('/login')) {
@@ -198,28 +209,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         }
       }
       
-      // Always clear local state
-      setSession(null);
-      setUser(null);
-      
       console.log('✅ Complete logout successful');
       
-      // Force page reload to clear any cached state
-      setTimeout(() => {
-        window.location.href = '/feed';
-      }, 100);
+      // Immediate redirect without delay
+      window.location.href = '/feed';
       
     } catch (error: any) {
       console.error('❌ Error during logout:', error);
       
-      // Force clear everything even if there's an error
+      // Force clear everything
       setUser(null);
       setSession(null);
       localStorage.clear();
+      sessionStorage.clear();
       
-      setTimeout(() => {
-        window.location.href = '/feed';
-      }, 100);
+      window.location.href = '/feed';
     }
   };
 

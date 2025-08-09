@@ -226,6 +226,12 @@ const Login = () => {
                 variant="outline" 
                 className="w-full"
                 onClick={() => {
+                  console.log('🔌 Clearing wallet cache before MetaMask connection');
+                  // Clear wallet cache before connecting
+                  localStorage.removeItem('wagmi.store');
+                  localStorage.removeItem('wagmi.cache');
+                  localStorage.removeItem('wagmi.recentConnectorId');
+                  
                   console.log('Available connectors:', connectors.map(c => c.name));
                   const metamaskConnector = connectors.find(c => c.name.toLowerCase().includes('metamask'));
                   if (metamaskConnector) {
@@ -244,6 +250,13 @@ const Login = () => {
                 variant="outline" 
                 className="w-full"
                 onClick={() => {
+                  console.log('🔌 Clearing wallet cache before WalletConnect');
+                  // Clear wallet cache before connecting
+                  localStorage.removeItem('wagmi.store');
+                  localStorage.removeItem('wagmi.cache');
+                  localStorage.removeItem('wagmi.recentConnectorId');
+                  localStorage.removeItem('walletconnect');
+                  
                   console.log('Available connectors:', connectors.map(c => c.name));
                   const walletConnectConnector = connectors.find(c => c.name.toLowerCase().includes('walletconnect'));
                   if (walletConnectConnector) {
@@ -264,6 +277,13 @@ const Login = () => {
               variant="outline" 
               className="w-full mt-4"
               onClick={() => {
+                console.log('🔌 Clearing wallet cache before Coinbase connection');
+                // Clear wallet cache before connecting to force fresh connection
+                localStorage.removeItem('wagmi.store');
+                localStorage.removeItem('wagmi.cache');
+                localStorage.removeItem('wagmi.recentConnectorId');
+                localStorage.removeItem('wagmi.wallet');
+                
                 console.log('Available connectors:', connectors.map(c => c.name));
                 const coinbaseConnector = connectors.find(c => c.name.toLowerCase().includes('coinbase'));
                 if (coinbaseConnector) {
