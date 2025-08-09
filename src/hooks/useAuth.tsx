@@ -185,22 +185,26 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signInWithWallet = async (walletAddress: string) => {
-    console.log('🔄 signInWithWallet START:', walletAddress);
+    console.log('WALLET AUTH START - Address:', walletAddress);
+    console.log('WALLET AUTH START - Supabase client available:', !!supabase);
     
     try {
       // Create a valid email format for wallet users
       const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
-      console.log('📧 Generated email:', walletEmail);
+      console.log('WALLET AUTH - Generated email:', walletEmail);
       
       // Try to sign in first (existing wallet user)
-      console.log('🔑 Attempting sign in...');
-      const { error: signInError } = await supabase.auth.signInWithPassword({
+      console.log('WALLET AUTH - Attempting sign in...');
+      
+      const signInResult = await supabase.auth.signInWithPassword({
         email: walletEmail,
         password: walletAddress
       });
+      
+      console.log('WALLET AUTH - Sign in result:', signInResult);
 
-      if (!signInError) {
-        console.log('✅ Sign in SUCCESS');
+      if (!signInResult.error) {
+        console.log('WALLET AUTH - SUCCESS - Signed in existing user');
         toast({
           title: "Welcome back!",
           description: "Signed in with your wallet."
@@ -208,13 +212,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { error: null };
       }
 
-      console.log('❌ Sign in failed:', signInError.message);
+      console.log('WALLET AUTH - Sign in failed:', signInResult.error?.message);
 
       // Only create account if user doesn't exist
-      if (signInError.message === 'Invalid login credentials') {
-        console.log('👤 Creating new account...');
+      if (signInResult.error?.message === 'Invalid login credentials') {
+        console.log('WALLET AUTH - Creating new account...');
         
-        const { error: signUpError } = await supabase.auth.signUp({
+        const signUpResult = await supabase.auth.signUp({
           email: walletEmail,
           password: walletAddress,
           options: {
@@ -227,19 +231,21 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         });
 
-        if (signUpError) {
-          console.log('❌ Sign up failed:', signUpError.message);
-          if (!signUpError.message.includes('rate limit')) {
+        console.log('WALLET AUTH - Sign up result:', signUpResult);
+
+        if (signUpResult.error) {
+          console.log('WALLET AUTH - FAILED - Sign up error:', signUpResult.error.message);
+          if (!signUpResult.error.message.includes('rate limit')) {
             toast({
               title: "Account creation failed",
-              description: signUpError.message,
+              description: signUpResult.error.message,
               variant: "destructive"
             });
           }
-          return { error: signUpError };
+          return { error: signUpResult.error };
         }
 
-        console.log('✅ Account created SUCCESS');
+        console.log('WALLET AUTH - SUCCESS - Account created');
         toast({
           title: "Account created!",
           description: "Your wallet has been connected and account created."
@@ -248,18 +254,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       // Handle other errors
-      console.log('❌ Other error:', signInError.message);
-      if (!signInError.message.includes('rate limit')) {
+      console.log('WALLET AUTH - FAILED - Other error:', signInResult.error?.message);
+      if (!signInResult.error?.message?.includes('rate limit')) {
         toast({
           title: "Authentication failed",
-          description: signInError.message,
+          description: signInResult.error?.message || "Unknown error",
           variant: "destructive"
         });
       }
-      return { error: signInError };
+      return { error: signInResult.error };
 
     } catch (error: any) {
-      console.log('💥 Exception in signInWithWallet:', error);
+      console.log('WALLET AUTH - EXCEPTION:', error);
+      console.log('WALLET AUTH - EXCEPTION stack:', error.stack);
       toast({
         title: "Authentication error",
         description: error.message || "Something went wrong",
