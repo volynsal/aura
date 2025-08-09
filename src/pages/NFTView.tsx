@@ -48,10 +48,21 @@ const NFTView = () => {
       setTimeout(() => {
         const ogImage = document.querySelector('meta[property="og:image"]');
         const ogTitle = document.querySelector('meta[property="og:title"]');
-        console.log("Current og:image meta tag:", ogImage?.getAttribute('content'));
+        const allOgImages = document.querySelectorAll('meta[property="og:image"]');
+        
+        console.log("ALL og:image meta tags found:", allOgImages.length);
+        allOgImages.forEach((tag, index) => {
+          console.log(`og:image tag ${index}:`, tag.getAttribute('content'));
+        });
+        
+        console.log("Current primary og:image meta tag:", ogImage?.getAttribute('content'));
         console.log("Current og:title meta tag:", ogTitle?.getAttribute('content'));
         console.log("Expected image URL:", getAbsoluteImageUrl(nft.image_url));
-      }, 1000);
+        
+        // Check if there are duplicate meta tags
+        const allMetaTags = document.querySelectorAll('meta[property^="og:"]');
+        console.log("Total Open Graph meta tags:", allMetaTags.length);
+      }, 2000); // Wait longer to ensure everything has rendered
     }
   }, [nft?.image_url, creator]);
 
