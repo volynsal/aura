@@ -32,8 +32,25 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  // Auto-authenticate when wallet connects (simplified - no blocking)
+  // Auto-authenticate when wallet connects (for signup flow)
   useEffect(() => {
+    // Check if we just signed out to prevent immediate re-auth
+    const signoutInProgress = localStorage.getItem('signout-in-progress');
+    if (signoutInProgress) {
+      const signoutTime = parseInt(signoutInProgress);
+      const timeSinceSignout = Date.now() - signoutTime;
+      
+      // Block auto-auth for 5 seconds after signout
+      if (timeSinceSignout < 5000) {
+        console.log('🚫 BLOCKING AUTO-AUTH: Recent signout detected', timeSinceSignout, 'ms ago');
+        return;
+      } else {
+        // Clean up the flag if enough time has passed
+        localStorage.removeItem('signout-in-progress');
+        sessionStorage.removeItem('signout-in-progress');
+      }
+    }
+    
     console.log('Wallet connection state:', { isConnected, address, walletConnecting, user });
     
     if (isConnected && address && !walletConnecting && !user) {
@@ -227,6 +244,9 @@ const Login = () => {
                 className="w-full"
                 onClick={() => {
                   console.log('🔌 Clearing wallet cache before MetaMask connection');
+                  // Clear signout flags for legitimate connection
+                  localStorage.removeItem('signout-in-progress');
+                  sessionStorage.removeItem('signout-in-progress');
                   // Clear wallet cache before connecting
                   localStorage.removeItem('wagmi.store');
                   localStorage.removeItem('wagmi.cache');
@@ -251,6 +271,9 @@ const Login = () => {
                 className="w-full"
                 onClick={() => {
                   console.log('🔌 Clearing wallet cache before WalletConnect');
+                  // Clear signout flags for legitimate connection
+                  localStorage.removeItem('signout-in-progress');
+                  sessionStorage.removeItem('signout-in-progress');
                   // Clear wallet cache before connecting
                   localStorage.removeItem('wagmi.store');
                   localStorage.removeItem('wagmi.cache');
@@ -286,6 +309,9 @@ const Login = () => {
                   await new Promise(resolve => setTimeout(resolve, 500)); // Wait for disconnect
                 }
                 
+                // Clear signout flags for legitimate connection
+                localStorage.removeItem('signout-in-progress');
+                sessionStorage.removeItem('signout-in-progress');
                 
                 // Clear ALL wallet-related storage
                 const keysToRemove = [
