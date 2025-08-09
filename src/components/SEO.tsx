@@ -13,7 +13,17 @@ const SITE_URL = typeof window !== "undefined" ? window.location.origin : "";
 export function SEO({ title, description, path = "/", image, structuredData }: SEOProps) {
   const url = SITE_URL ? `${SITE_URL}${path}` : path;
   const defaultImage = "/lovable-uploads/c01519dd-0698-4c23-b3a7-e5af5415a354.png";
-  const finalImage = image || defaultImage;
+  
+  // For NFT pages, use a specific social sharing approach
+  const isNFTPage = path.startsWith('/nft/');
+  let finalImage = image || defaultImage;
+  
+  // If it's an NFT page and we have a gif, we might want to use a static version
+  // For now, we'll use the original image but this could be enhanced
+  if (isNFTPage && image) {
+    finalImage = image;
+  }
+  
   const imageUrl = finalImage?.startsWith("http") ? finalImage : (SITE_URL ? `${SITE_URL}${finalImage}` : finalImage);
   
   // Debug logging
