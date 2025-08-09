@@ -32,11 +32,16 @@ const Login = () => {
 
   // Auto-authenticate when wallet connects with debouncing
   useEffect(() => {
+    console.log('Wallet connection state:', { isConnected, address, walletConnecting, user });
+    
     if (isConnected && address && !walletConnecting && !user) {
+      console.log('Starting wallet authentication for:', address);
       setWalletConnecting(true);
       
       const timeoutId = setTimeout(async () => {
+        console.log('Executing signInWithWallet for:', address);
         const result = await signInWithWallet(address);
+        console.log('signInWithWallet result:', result);
         
         // Stop trying if rate limited
         if (result.error?.message?.includes('rate limit')) {
