@@ -11,6 +11,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: any }>;
   signOut: () => Promise<void>;
   linkWallet: (walletAddress: string) => Promise<{ error: any }>;
+  signInWithWallet: (walletAddress: string) => Promise<{ error: any }>;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -183,6 +184,63 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     }
   };
 
+  const signInWithWallet = async (walletAddress: string) => {
+    try {
+      // Create a unique email for wallet users
+      const walletEmail = `${walletAddress.toLowerCase()}@wallet.local`;
+      
+      // Try to sign in first (existing wallet user)
+      const { error: signInError } = await supabase.auth.signInWithPassword({
+        email: walletEmail,
+        password: walletAddress // Use wallet address as password
+      });
+
+      if (!signInError) {
+        toast({
+          title: "Welcome back!",
+          description: "Signed in with your wallet."
+        });
+        return { error: null };
+      }
+
+      // If sign in fails, create new account for this wallet
+      const { error: signUpError } = await supabase.auth.signUp({
+        email: walletEmail,
+        password: walletAddress,
+        options: {
+          emailRedirectTo: `${window.location.origin}/`,
+          data: {
+            wallet_address: walletAddress,
+            display_name: `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+          }
+        }
+      });
+
+      if (signUpError) {
+        toast({
+          title: "Wallet authentication failed",
+          description: signUpError.message,
+          variant: "destructive"
+        });
+        return { error: signUpError };
+      }
+
+      toast({
+        title: "Account created!",
+        description: "Your wallet has been connected and account created."
+      });
+
+      return { error: null };
+    } catch (error: any) {
+      toast({
+        title: "Wallet authentication failed",
+        description: error.message,
+        variant: "destructive"
+      });
+      return { error };
+    }
+  };
+
   const value = {
     user,
     session,
@@ -190,7 +248,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     signUp,
     signIn,
     signOut,
-    linkWallet
+    linkWallet,
+    signInWithWallet
   };
 
   return (

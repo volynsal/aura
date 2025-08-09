@@ -17,7 +17,7 @@ const Login = () => {
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   
-  const { signUp, signIn, user } = useAuth();
+  const { signUp, signIn, signInWithWallet, user } = useAuth();
   const navigate = useNavigate();
   const { address, isConnected } = useAccount();
   const { connect, connectors, isPending } = useConnect();
@@ -28,6 +28,13 @@ const Login = () => {
       navigate('/');
     }
   }, [user, navigate]);
+
+  // Auto-authenticate when wallet connects
+  useEffect(() => {
+    if (isConnected && address) {
+      signInWithWallet(address);
+    }
+  }, [isConnected, address, signInWithWallet]);
 
   const handleSignUp = async () => {
     if (!email || !password || !name) return;
