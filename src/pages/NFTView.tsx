@@ -290,6 +290,19 @@ const NFTView = () => {
   const isOwner = user?.id === nft.creator_id;
   const isForSale = marketplaceOrder && marketplaceOrder.status === 'active';
 
+  // Ensure we have an absolute URL for the image
+  const getAbsoluteImageUrl = (imageUrl: string) => {
+    if (imageUrl.startsWith('http')) return imageUrl;
+    if (imageUrl.startsWith('/')) return `${window.location.origin}${imageUrl}`;
+    return `${window.location.origin}/${imageUrl}`;
+  };
+
+  const absoluteImageUrl = getAbsoluteImageUrl(nft.image_url);
+  
+  // Debug logging to help troubleshoot
+  console.log("NFT Image URL:", nft.image_url);
+  console.log("Absolute Image URL:", absoluteImageUrl);
+
   return (
     <>
       {/* SEO Meta Tags for proper social sharing */}
@@ -297,13 +310,13 @@ const NFTView = () => {
         title={`${nft.title} by ${creator?.display_name || creator?.username} | Aura`}
         description={nft.description || `Check out this amazing NFT: ${nft.title} by ${creator?.display_name || creator?.username}`}
         path={`/nft/${id}`}
-        image={nft.image_url}
+        image={absoluteImageUrl}
         structuredData={{
           "@context": "https://schema.org",
           "@type": "VisualArtwork",
           name: nft.title,
           description: nft.description,
-          image: nft.image_url,
+          image: absoluteImageUrl,
           creator: {
             "@type": "Person",
             name: creator?.display_name || creator?.username,
