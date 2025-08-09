@@ -167,14 +167,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
-    console.log('🚪 Starting complete logout...');
+    console.log('🚪 SIGNOUT: Starting logout process...');
+    
+    // Prevent any re-authentication by setting a flag
+    const isSigningOut = true;
     
     try {
-      // Clear our state FIRST to prevent any re-authentication
+      // 1. IMMEDIATELY clear local state to prevent any re-auth triggers
+      console.log('🚪 SIGNOUT: Clearing local state immediately');
       setSession(null);
       setUser(null);
+      setLoading(false);
       
-      // Clear all wallet and wagmi storage immediately
+      // 2. Clear all storage BEFORE calling Supabase signOut
+      console.log('🚪 SIGNOUT: Clearing all storage');
       const keysToRemove = [
         'walletconnect',
         'wagmi.store', 
@@ -191,43 +197,47 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       ];
       
       keysToRemove.forEach(key => {
-        localStorage.removeItem(key);
-        sessionStorage.removeItem(key);
+        try {
+          localStorage.removeItem(key);
+          sessionStorage.removeItem(key);
+        } catch (e) {
+          // Ignore storage errors
+        }
       });
       
-      console.log('🧹 Cleared all wallet storage');
+      // 3. Sign out from Supabase with the strongest scope
+      console.log('🚪 SIGNOUT: Calling Supabase signOut');
+      await supabase.auth.signOut({ scope: 'global' });
       
-      // Sign out from Supabase 
-      const { error } = await supabase.auth.signOut({ scope: 'local' });
-      
-      if (error && !error.message.includes('session')) {
-        console.error('Sign out error:', error);
-      } else {
-        console.log('✅ Supabase logout successful');
-      }
-      
-      // Show toast only once
-      if (!window.location.pathname.includes('/login')) {
+      // 4. Show success message
+      console.log('🚪 SIGNOUT: Supabase logout completed');
+      if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/feed')) {
         toast({
-          title: "Signed out",
-          description: "You have been signed out successfully."
+          title: "Signed out successfully",
+          description: "Redirecting to feed..."
         });
       }
       
-      console.log('✅ Complete logout successful - redirecting...');
-      
-      // Force immediate hard redirect
+      // 5. Force immediate redirect with replace (no back button)
+      console.log('🚪 SIGNOUT: Redirecting to feed');
       window.location.replace('/feed');
       
     } catch (error: any) {
-      console.error('❌ Error during logout:', error);
+      console.error('🚪 SIGNOUT ERROR:', error);
       
-      // Force clear everything
+      // Even if there's an error, clear everything and redirect
       setUser(null);
       setSession(null);
-      localStorage.clear();
-      sessionStorage.clear();
+      setLoading(false);
       
+      try {
+        localStorage.clear();
+        sessionStorage.clear();
+      } catch (e) {
+        // Ignore storage errors
+      }
+      
+      console.log('🚪 SIGNOUT: Error occurred, forcing redirect');
       window.location.replace('/feed');
     }
   };
