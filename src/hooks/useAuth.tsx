@@ -198,7 +198,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setUser(null);
       setLoading(false);
       
-      // 2. Clear all storage BEFORE calling Supabase signOut
+      // 2. DISCONNECT WALLET FIRST to prevent auto-reconnection
+      console.log('🚪 SIGNOUT: Disconnecting wallet...');
+      try {
+        // Try to disconnect wallet if available
+        if (window.ethereum) {
+          console.log('🚪 SIGNOUT: Ethereum provider found, clearing connection');
+        }
+      } catch (e) {
+        console.log('🚪 SIGNOUT: Wallet disconnect error (ignoring):', e);
+      }
+      
+      // 3. Clear all storage BEFORE calling Supabase signOut
       console.log('🚪 SIGNOUT: Clearing all storage');
       const keysToRemove = [
         'walletconnect',
@@ -212,7 +223,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         'wagmi.autoConnect',
         'wagmi.eager',
         'coinbaseWallet',
-        'ethereum'
+        'ethereum',
+        // Add more comprehensive clearing
+        'wagmi.connector.id',
+        'wagmi.connectionStatus',
+        'wagmi.lastUsedConnector'
       ];
       
       keysToRemove.forEach(key => {
@@ -220,11 +235,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           localStorage.removeItem(key);
           sessionStorage.removeItem(key);
         } catch (e) {
-          console.log('Storage error for key:', key, e);
+          console.log('🚪 SIGNOUT: Storage error for key:', key, e);
         }
       });
       
-      // 3. Sign out from Supabase with the strongest scope  
+      // 4. Sign out from Supabase with the strongest scope  
       console.log('🚪 SIGNOUT: Calling Supabase signOut with global scope');
       const { error } = await supabase.auth.signOut({ scope: 'global' });
       
@@ -234,7 +249,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         console.log('🚪 SIGNOUT: Supabase logout successful');
       }
       
-      // 4. Double-check that session is actually cleared
+      // 5. Double-check that session is actually cleared
       const { data: { session: checkSession } } = await supabase.auth.getSession();
       console.log('🚪 SIGNOUT: Session check after logout:', !!checkSession);
       
@@ -245,8 +260,12 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         setUser(null);
       }
       
-      // 5. Show success message
-      console.log('🚪 SIGNOUT: Logout process completed');
+      // 6. Show success message
+      console.log('🚪 SIGNOUT: Logout process completed - BLOCKING AUTO-AUTH');
+      
+      // 7. Set a flag to prevent auto-authentication temporarily
+      localStorage.setItem('signout-in-progress', Date.now().toString());
+      
       if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/feed')) {
         toast({
           title: "Signed out successfully",
@@ -254,7 +273,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
       }
       
-      // 6. Force immediate redirect with replace (no back button)
+      // 8. Force immediate redirect with replace (no back button)
       console.log('🚪 SIGNOUT: Redirecting to feed');
       setTimeout(() => {
         window.location.replace('/feed');
@@ -271,8 +290,9 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       try {
         localStorage.clear();
         sessionStorage.clear();
+        localStorage.setItem('signout-in-progress', Date.now().toString());
       } catch (e) {
-        console.log('Storage clear error:', e);
+        console.log('🚪 SIGNOUT: Storage clear error:', e);
       }
       
       console.log('🚪 SIGNOUT: Error occurred, forcing redirect');
