@@ -6,7 +6,8 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Settings, Share, Heart, Upload, X } from "lucide-react";
+import { DropdownMenu, DropdownMenuContent, DropdownMenuItem, DropdownMenuTrigger } from "@/components/ui/dropdown-menu";
+import { Settings, Share, Heart, Upload, X, MoreVertical, Edit, Trash2, Coins, Eye } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -100,6 +101,70 @@ const Profile = () => {
         variant: "destructive"
       });
     }
+  };
+
+  const handleDeleteNFT = async (nftId: string) => {
+    if (!user) return;
+    
+    try {
+      const { error } = await supabase
+        .from('nfts')
+        .delete()
+        .eq('id', nftId)
+        .eq('creator_id', user.id); // Extra security check
+
+      if (error) throw error;
+
+      // Update local state
+      setUserNFTs(prev => prev.filter(nft => nft.id !== nftId));
+      
+      toast({
+        title: "NFT deleted",
+        description: "Your NFT has been removed from the database."
+      });
+    } catch (error: any) {
+      toast({
+        title: "Delete failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleMintNFT = async (nftId: string) => {
+    // TODO: Implement actual blockchain minting
+    // For now, we'll just update the is_minted status
+    try {
+      const { error } = await supabase
+        .from('nfts')
+        .update({ is_minted: true })
+        .eq('id', nftId)
+        .eq('creator_id', user.id);
+
+      if (error) throw error;
+
+      // Update local state
+      setUserNFTs(prev => prev.map(nft => 
+        nft.id === nftId ? { ...nft, is_minted: true } : nft
+      ));
+      
+      toast({
+        title: "NFT minted!",
+        description: "Your NFT has been minted to the blockchain.",
+      });
+    } catch (error: any) {
+      toast({
+        title: "Minting failed",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
+
+  const handleViewNFT = (nft: any) => {
+    // Navigate to a detailed view or open modal
+    // For now, we'll show a simple alert with NFT details
+    alert(`NFT Details:\nTitle: ${nft.title}\nDescription: ${nft.description}\nPrice: ${nft.price_eth} ETH\nRarity: ${nft.rarity}\nMinted: ${nft.is_minted ? 'Yes' : 'No'}`);
   };
 
   const fetchProfile = async () => {
@@ -420,7 +485,8 @@ const Profile = () => {
                 {userNFTs.map((nft, index) => (
                   <article 
                     key={nft.id} 
-                    className="bg-surface border border-border/30 rounded-lg overflow-hidden hover:border-primary/50 transition-colors"
+                    className="bg-surface border border-border/30 rounded-lg overflow-hidden hover:border-primary/50 transition-colors cursor-pointer"
+                    onClick={() => handleViewNFT(nft)}
                   >
                     {/* NFT Header */}
                     <div className="flex items-center gap-3 p-3 border-b border-border/20">
@@ -434,9 +500,56 @@ const Profile = () => {
                           {new Date(nft.created_at).toLocaleDateString()}
                         </span>
                       </div>
-                      <button className="text-muted-foreground hover:text-foreground">
-                        <span className="text-xs">•••</span>
-                      </button>
+                      <DropdownMenu>
+                        <DropdownMenuTrigger 
+                          className="text-muted-foreground hover:text-foreground"
+                          onClick={(e) => e.stopPropagation()} // Prevent card click
+                        >
+                          <MoreVertical className="w-4 h-4" />
+                        </DropdownMenuTrigger>
+                        <DropdownMenuContent align="end">
+                          <DropdownMenuItem onClick={(e) => {
+                            e.stopPropagation();
+                            handleViewNFT(nft);
+                          }}>
+                            <Eye className="w-4 h-4 mr-2" />
+                            View Details
+                          </DropdownMenuItem>
+                          <DropdownMenuItem onClick={(e) => {
+                            e.stopPropagation();
+                            navigate('/create', { state: { editNFT: nft } });
+                          }}>
+                            <Edit className="w-4 h-4 mr-2" />
+                            Edit
+                          </DropdownMenuItem>
+                          {!nft.is_minted && (
+                            <DropdownMenuItem 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                handleMintNFT(nft.id);
+                              }}
+                              className="text-primary"
+                            >
+                              <Coins className="w-4 h-4 mr-2" />
+                              Mint NFT
+                            </DropdownMenuItem>
+                          )}
+                          {!nft.is_minted && (
+                            <DropdownMenuItem 
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                if (confirm('Are you sure you want to delete this NFT? This action cannot be undone.')) {
+                                  handleDeleteNFT(nft.id);
+                                }
+                              }}
+                              className="text-destructive"
+                            >
+                              <Trash2 className="w-4 h-4 mr-2" />
+                              Delete
+                            </DropdownMenuItem>
+                          )}
+                        </DropdownMenuContent>
+                      </DropdownMenu>
                     </div>
                     
                     {/* NFT Image */}
@@ -451,11 +564,20 @@ const Profile = () => {
                         loading="lazy"
                         decoding="async"
                       />
-                      {/* NFT Badge */}
-                      <div className="absolute top-2 right-2">
+                      {/* NFT Status Badge */}
+                      <div className="absolute top-2 right-2 flex gap-2">
                         <Badge variant="secondary" className="text-xs bg-black/50 text-white">
                           NFT
                         </Badge>
+                        {nft.is_minted ? (
+                          <Badge variant="default" className="text-xs bg-green-600 text-white">
+                            Minted
+                          </Badge>
+                        ) : (
+                          <Badge variant="outline" className="text-xs bg-orange-500/20 border-orange-500 text-orange-400">
+                            Draft
+                          </Badge>
+                        )}
                       </div>
                     </div>
                     
@@ -495,18 +617,51 @@ const Profile = () => {
                           )}
                         </div>
                       )}
+                      
+                      {/* Action Buttons */}
+                      <div className="flex gap-2 pt-2">
+                        {!nft.is_minted ? (
+                          <Button 
+                            size="sm" 
+                            variant="aura" 
+                            className="flex-1 text-xs"
+                            onClick={(e) => {
+                              e.stopPropagation();
+                              handleMintNFT(nft.id);
+                            }}
+                          >
+                            <Coins className="w-3 h-3 mr-1" />
+                            Mint NFT
+                          </Button>
+                        ) : (
+                          <Button 
+                            size="sm" 
+                            variant="outline" 
+                            className="flex-1 text-xs"
+                            disabled
+                          >
+                            Minted ✓
+                          </Button>
+                        )}
+                      </div>
                     </div>
                     
                     {/* NFT Footer */}
                     <div className="px-3 pb-3 flex items-center justify-between border-t border-border/20 pt-2">
                       <span className="text-xs text-muted-foreground">
-                        {nft.is_minted ? 'Minted' : 'Not Minted'}
+                        Created {new Date(nft.created_at).toLocaleDateString()}
                       </span>
                       <div className="flex gap-3">
-                        <button className="text-muted-foreground hover:text-primary transition-colors">
+                        <button 
+                          className="text-muted-foreground hover:text-primary transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <span className="text-sm">↻</span>
                         </button>
-                        <button className="text-muted-foreground hover:text-red-500 transition-colors">
+                        <button 
+                          className="text-muted-foreground hover:text-red-500 transition-colors"
+                          onClick={(e) => e.stopPropagation()}
+                        >
                           <Heart className="w-3 h-3" />
                         </button>
                       </div>
