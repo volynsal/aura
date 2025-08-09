@@ -1,10 +1,12 @@
 import { Button } from "@/components/ui/button";
-import { Search, Home, Compass, User, Heart, Palette } from "lucide-react";
+import { Search, Home, Compass, User, Heart, Palette, LogOut } from "lucide-react";
 import { useLocation, Link } from "react-router-dom";
+import { useAuth } from "@/hooks/useAuth";
 import auraLogo from "@/assets/aura-logo-ring.png";
 
 const AuraNavbar = () => {
   const location = useLocation();
+  const { user, signOut } = useAuth();
   const isLandingPage = location.pathname === '/';
 
   return (
@@ -69,18 +71,29 @@ const AuraNavbar = () => {
                     Match
                   </Button>
                 </Link>
-                <Link to="/create" className="hidden sm:block">
-                  <Button variant={location.pathname === '/create' ? 'aura' : 'minimal'} size="sm">
-                    <Palette className="w-4 h-4 mr-2" />
-                    Create
-                  </Button>
-                </Link>
-                <Link to="/profile">
-                  <Button variant={location.pathname === '/profile' ? 'aura' : 'minimal'} size="sm">
-                    <User className="w-4 h-4 sm:mr-2" />
-                    <span className="hidden sm:inline">Profile</span>
-                  </Button>
-                </Link>
+                 <Link to="/create" className="hidden sm:block">
+                   <Button variant={location.pathname === '/create' ? 'aura' : 'minimal'} size="sm">
+                     <Palette className="w-4 h-4 mr-2" />
+                     Create
+                   </Button>
+                 </Link>
+                 <Link to="/profile">
+                   <Button variant={location.pathname === '/profile' ? 'aura' : 'minimal'} size="sm">
+                     <User className="w-4 h-4 sm:mr-2" />
+                     <span className="hidden sm:inline">Profile</span>
+                   </Button>
+                 </Link>
+                 {user && (
+                   <Button 
+                     variant="minimal" 
+                     size="sm" 
+                     onClick={signOut}
+                     className="text-muted-foreground hover:text-foreground"
+                   >
+                     <LogOut className="w-4 h-4 sm:mr-2" />
+                     <span className="hidden sm:inline">Sign Out</span>
+                   </Button>
+                 )}
               </>
             )}
           </div>
