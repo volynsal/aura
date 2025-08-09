@@ -18,7 +18,7 @@ const Login = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [walletConnecting, setWalletConnecting] = useState(false);
   
-  const { signUp, signIn, signInWithWallet, user } = useAuth();
+  const { signUp, signIn, signInWithWallet, signOut, user } = useAuth();
   const navigate = useNavigate();
   const { address, isConnected } = useAccount();
   const { connect, connectors, isPending } = useConnect();
@@ -312,13 +312,24 @@ const Login = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={() => {
-                      console.log('🔌 Disconnecting wallet');
-                      disconnect();
-                      setWalletConnecting(false);
-                      // Clear any cached wallet state
-                      localStorage.removeItem('walletconnect');
-                      localStorage.removeItem('wagmi.store');
+                    onClick={async () => {
+                      console.log('🔌 Disconnecting wallet and signing out...');
+                      try {
+                        // Sign out from Supabase first
+                        if (user) {
+                          await signOut();
+                        }
+                        // Disconnect wallet
+                        disconnect();
+                        setWalletConnecting(false);
+                        // Clear any cached wallet state
+                        localStorage.removeItem('walletconnect');
+                        localStorage.removeItem('wagmi.store');
+                        localStorage.removeItem('wagmi.cache');
+                        console.log('✅ Wallet and auth disconnected successfully');
+                      } catch (error) {
+                        console.error('❌ Error during disconnect:', error);
+                      }
                     }}
                   >
                     Disconnect

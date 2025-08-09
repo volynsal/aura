@@ -152,10 +152,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           });
         }
       } else {
-        toast({
-          title: "Signed out",
-          description: "You have been signed out successfully."
-        });
+        // Only show success toast if not on login page
+        if (!window.location.pathname.includes('/login')) {
+          toast({
+            title: "Signed out",
+            description: "You have been signed out successfully."
+          });
+        }
       }
       
       // Always clear local state
