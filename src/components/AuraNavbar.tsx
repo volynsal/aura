@@ -1,11 +1,12 @@
 import { Button } from "@/components/ui/button";
 import { Search, Home, Compass, User, Heart, Palette, LogOut } from "lucide-react";
-import { useLocation, Link } from "react-router-dom";
+import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import auraLogo from "@/assets/aura-logo-ring.png";
 
 const AuraNavbar = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { user, signOut } = useAuth();
   const isLandingPage = location.pathname === '/';
 
@@ -83,17 +84,20 @@ const AuraNavbar = () => {
                      <span className="hidden sm:inline">Profile</span>
                    </Button>
                  </Link>
-                 {user && (
-                   <Button 
-                     variant="minimal" 
-                     size="sm" 
-                     onClick={signOut}
-                     className="text-muted-foreground hover:text-foreground"
-                   >
-                     <LogOut className="w-4 h-4 sm:mr-2" />
-                     <span className="hidden sm:inline">Sign Out</span>
-                   </Button>
-                 )}
+                  {user && (
+                    <Button 
+                      variant="minimal" 
+                      size="sm" 
+                      onClick={async () => {
+                        await signOut();
+                        navigate('/feed');
+                      }}
+                      className="text-muted-foreground hover:text-foreground"
+                    >
+                      <LogOut className="w-4 h-4 sm:mr-2" />
+                      <span className="hidden sm:inline">Sign Out</span>
+                    </Button>
+                  )}
               </>
             )}
           </div>
