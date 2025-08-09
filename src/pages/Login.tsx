@@ -40,17 +40,22 @@ const Login = () => {
       setWalletConnecting(true);
       
       const timeoutId = setTimeout(async () => {
-        console.log('Executing signInWithWallet for:', address);
-        const result = await signInWithWallet(address);
-        console.log('signInWithWallet result:', result);
-        
-        // Stop trying if rate limited
-        if (result.error?.message?.includes('rate limit')) {
-          console.log('Rate limited, stopping wallet authentication attempts');
+        console.log('🔄 Executing signInWithWallet for:', address);
+        try {
+          const result = await signInWithWallet(address);
+          console.log('✅ signInWithWallet completed:', result);
+          
+          if (result.error) {
+            console.log('❌ Authentication failed:', result.error.message);
+          } else {
+            console.log('🎉 Wallet authentication successful!');
+          }
+        } catch (error) {
+          console.log('💥 Exception during signInWithWallet:', error);
         }
         
         setWalletConnecting(false);
-      }, 1000); // 1 second delay to prevent rapid calls
+      }, 1000);
 
       return () => clearTimeout(timeoutId);
     }
