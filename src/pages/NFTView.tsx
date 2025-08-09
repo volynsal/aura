@@ -320,8 +320,16 @@ const NFTView = () => {
   const absoluteImageUrl = getAbsoluteImageUrl(nft.image_url);
   
   // Debug logging to help troubleshoot
-  console.log("NFT Image URL:", nft.image_url);
-  console.log("Absolute Image URL:", absoluteImageUrl);
+  console.log("Raw NFT Image URL from DB:", nft.image_url);
+  console.log("Absolute Image URL for sharing:", absoluteImageUrl);
+  console.log("Testing direct image access...");
+  
+  // Let's also log what we're actually passing to SEO component
+  console.log("About to pass to SEO component:", {
+    title: `${nft.title} by ${creator?.display_name || creator?.username} | Aura`,
+    image: absoluteImageUrl,
+    nftId: nft.id
+  });
 
   return (
     <>
