@@ -262,7 +262,7 @@ const Login = () => {
             
             <Button 
               variant="outline" 
-              className="w-full mt-3"
+              className="w-full mt-6"
               onClick={() => {
                 console.log('Available connectors:', connectors.map(c => c.name));
                 const coinbaseConnector = connectors.find(c => c.name.toLowerCase().includes('coinbase'));
