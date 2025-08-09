@@ -13,6 +13,14 @@ const SITE_URL = typeof window !== "undefined" ? window.location.origin : "";
 export function SEO({ title, description, path = "/", image = "/lovable-uploads/c01519dd-0698-4c23-b3a7-e5af5415a354.png", structuredData }: SEOProps) {
   const url = SITE_URL ? `${SITE_URL}${path}` : path;
   const imageUrl = image?.startsWith("http") ? image : (SITE_URL ? `${SITE_URL}${image}` : image);
+  
+  // Determine image type for better social media compatibility
+  const getImageType = (url: string) => {
+    if (url.includes('.gif')) return 'image/gif';
+    if (url.includes('.png')) return 'image/png';
+    if (url.includes('.jpg') || url.includes('.jpeg')) return 'image/jpeg';
+    return 'image/jpeg'; // default
+  };
 
   return (
     <Helmet>
@@ -20,7 +28,15 @@ export function SEO({ title, description, path = "/", image = "/lovable-uploads/
       <link rel="canonical" href={url} />
       <meta name="description" content={description} />
 
-      {/* Override existing Open Graph tags */}
+      {/* Remove existing meta tags first to ensure our tags take precedence */}
+      <meta property="og:title" content="" />
+      <meta property="og:description" content="" />
+      <meta property="og:image" content="" />
+      <meta name="twitter:title" content="" />
+      <meta name="twitter:description" content="" />
+      <meta name="twitter:image" content="" />
+
+      {/* Set our custom meta tags */}
       <meta property="og:title" content={title} />
       <meta property="og:site_name" content="Aura" />
       <meta property="og:description" content={description} />
@@ -28,11 +44,11 @@ export function SEO({ title, description, path = "/", image = "/lovable-uploads/
       <meta property="og:url" content={url} />
       <meta property="og:image" content={imageUrl} />
       <meta property="og:image:secure_url" content={imageUrl} />
-      <meta property="og:image:type" content="image/jpeg" />
+      <meta property="og:image:type" content={getImageType(imageUrl)} />
       <meta property="og:image:width" content="1200" />
       <meta property="og:image:height" content="630" />
 
-      {/* Override existing Twitter tags */}
+      {/* Twitter Card tags */}
       <meta name="twitter:card" content="summary_large_image" />
       <meta name="twitter:title" content={title} />
       <meta name="twitter:description" content={description} />
