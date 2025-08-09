@@ -138,8 +138,15 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     try {
+      // Check if user is actually logged in before trying to sign out
+      if (!session) {
+        console.log('No active session to sign out from');
+        return;
+      }
+
       const { error } = await supabase.auth.signOut();
       if (error) {
+        console.error('Sign out error:', error);
         toast({
           title: "Sign out failed",
           description: error.message,
@@ -152,6 +159,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
       }
     } catch (error: any) {
+      console.error('Sign out exception:', error);
       toast({
         title: "Sign out failed",
         description: error.message,
@@ -197,11 +205,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signInWithWallet = async (walletAddress: string) => {
-    console.log('🔵 WALLET AUTH START - Address:', walletAddress);
-    console.log('🔵 WALLET AUTH START - Supabase client available:', !!supabase);
-    console.log('🔵 WALLET AUTH START - Current user state:', user);
-    console.log('🔵 WALLET AUTH START - Current session state:', session);
-    
     try {
       // Create a valid email format for wallet users
       const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;

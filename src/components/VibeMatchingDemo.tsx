@@ -41,7 +41,6 @@ const vibeCards = [
 ];
 
 const VibeMatchingDemo = () => {
-  console.log('🟠 VibeMatchingDemo rendering...');
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [matches, setMatches] = useState<number[]>([]);
   

@@ -3,7 +3,6 @@ import VibeMatchingDemo from "@/components/VibeMatchingDemo";
 import AuraFeed from "@/components/AuraFeed";
 import SEO from "@/components/SEO";
 const Index = () => {
-  console.log('🟢 Index page rendering...');
   return (
     <div className="min-h-screen bg-background">
       <SEO
