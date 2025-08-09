@@ -276,21 +276,43 @@ const Login = () => {
             <Button 
               variant="outline" 
               className="w-full mt-4"
-              onClick={() => {
-                console.log('🔌 Clearing wallet cache before Coinbase connection');
-                // Clear wallet cache before connecting to force fresh connection
-                localStorage.removeItem('wagmi.store');
-                localStorage.removeItem('wagmi.cache');
-                localStorage.removeItem('wagmi.recentConnectorId');
-                localStorage.removeItem('wagmi.wallet');
+              onClick={async () => {
+                console.log('🔌 Forcing fresh Coinbase connection...');
                 
+                // Disconnect current wallet first if connected
+                if (isConnected) {
+                  console.log('🔌 Disconnecting current wallet...');
+                  disconnect();
+                  await new Promise(resolve => setTimeout(resolve, 500)); // Wait for disconnect
+                }
+                
+                // Clear ALL wallet-related storage
+                const keysToRemove = [
+                  'wagmi.store',
+                  'wagmi.cache', 
+                  'wagmi.recentConnectorId',
+                  'wagmi.wallet',
+                  'wagmi.connected',
+                  'coinbaseWallet',
+                  'walletconnect',
+                  'ethereum'
+                ];
+                
+                keysToRemove.forEach(key => {
+                  localStorage.removeItem(key);
+                  sessionStorage.removeItem(key);
+                });
+                
+                console.log('🧹 Cleared all wallet storage for fresh connection');
+                
+                // Find and connect to Coinbase 
                 console.log('Available connectors:', connectors.map(c => c.name));
                 const coinbaseConnector = connectors.find(c => c.name.toLowerCase().includes('coinbase'));
                 if (coinbaseConnector) {
-                  console.log('Connecting to Coinbase...');
+                  console.log('🚀 Connecting to fresh Coinbase wallet...');
                   connect({ connector: coinbaseConnector });
                 } else {
-                  console.log('Coinbase connector not found');
+                  console.log('❌ Coinbase connector not found');
                 }
               }}
               disabled={isPending}

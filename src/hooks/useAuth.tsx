@@ -170,7 +170,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log('🚪 Starting complete logout...');
     
     try {
-      // Clear all wallet-related localStorage FIRST (before Supabase logout)
+      // Clear our state FIRST to prevent any re-authentication
+      setSession(null);
+      setUser(null);
+      
+      // Clear all wallet and wagmi storage immediately
       const keysToRemove = [
         'walletconnect',
         'wagmi.store', 
@@ -180,7 +184,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         'wagmi.recentConnectorId',
         'wagmi.connected',
         'wagmi.config.state',
-        'wagmi.autoConnect'
+        'wagmi.autoConnect',
+        'wagmi.eager',
+        'coinbaseWallet',
+        'ethereum'
       ];
       
       keysToRemove.forEach(key => {
@@ -190,10 +197,6 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       
       console.log('🧹 Cleared all wallet storage');
       
-      // Clear our state first to prevent re-authentication
-      setSession(null);
-      setUser(null);
-      
       // Sign out from Supabase 
       const { error } = await supabase.auth.signOut({ scope: 'local' });
       
@@ -201,18 +204,20 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         console.error('Sign out error:', error);
       } else {
         console.log('✅ Supabase logout successful');
-        if (!window.location.pathname.includes('/login')) {
-          toast({
-            title: "Signed out",
-            description: "You have been signed out successfully."
-          });
-        }
       }
       
-      console.log('✅ Complete logout successful');
+      // Show toast only once
+      if (!window.location.pathname.includes('/login')) {
+        toast({
+          title: "Signed out",
+          description: "You have been signed out successfully."
+        });
+      }
       
-      // Immediate redirect without delay
-      window.location.href = '/feed';
+      console.log('✅ Complete logout successful - redirecting...');
+      
+      // Force immediate hard redirect
+      window.location.replace('/feed');
       
     } catch (error: any) {
       console.error('❌ Error during logout:', error);
@@ -223,7 +228,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       localStorage.clear();
       sessionStorage.clear();
       
-      window.location.href = '/feed';
+      window.location.replace('/feed');
     }
   };
 
