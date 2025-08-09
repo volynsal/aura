@@ -44,21 +44,26 @@ interface Web3ProviderProps {
   children: ReactNode;
 }
 
+let isWeb3ModalInitialized = false;
+
 export function Web3Provider({ children }: Web3ProviderProps) {
-  // Initialize Web3Modal only once
+  // Initialize Web3Modal only once globally
   useEffect(() => {
-    createWeb3Modal({
-      wagmiConfig: config,
-      projectId,
-      enableAnalytics: true,
-      enableOnramp: true,
-      allowUnsupportedChain: false,
-      tokens: {
-        1: {
-          address: '0xA0b86a33E6441b342c22e4b4BdC4E5E61d66e59f'
+    if (!isWeb3ModalInitialized) {
+      createWeb3Modal({
+        wagmiConfig: config,
+        projectId,
+        enableAnalytics: false, // Disable to prevent double loading
+        enableOnramp: true,
+        allowUnsupportedChain: false,
+        tokens: {
+          1: {
+            address: '0xA0b86a33E6441b342c22e4b4BdC4E5E61d66e59f'
+          }
         }
-      }
-    });
+      });
+      isWeb3ModalInitialized = true;
+    }
   }, []);
 
   return (
