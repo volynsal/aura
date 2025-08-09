@@ -39,8 +39,8 @@ export default function NFTMarketplace({ showFilters = true }: NFTMarketplacePro
   const [nfts, setNfts] = useState<NFT[]>([]);
   const [loading, setLoading] = useState(true);
   const [searchTerm, setSearchTerm] = useState('');
-  const [rarityFilter, setRarityFilter] = useState('');
-  const [priceFilter, setPriceFilter] = useState('');
+  const [rarityFilter, setRarityFilter] = useState('all');
+  const [priceFilter, setPriceFilter] = useState('all');
   const [selectedNft, setSelectedNft] = useState<NFT | null>(null);
   
   const { user } = useAuth();
@@ -88,9 +88,9 @@ export default function NFTMarketplace({ showFilters = true }: NFTMarketplacePro
     const matchesSearch = nft.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
                          nft.creator.display_name.toLowerCase().includes(searchTerm.toLowerCase());
     
-    const matchesRarity = !rarityFilter || nft.rarity === rarityFilter;
+    const matchesRarity = rarityFilter === 'all' || nft.rarity === rarityFilter;
     
-    const matchesPrice = !priceFilter || (() => {
+    const matchesPrice = priceFilter === 'all' || (() => {
       const price = nft.marketplace_orders[0]?.price_eth || nft.price_eth;
       switch (priceFilter) {
         case 'low': return price < 0.1;
@@ -198,7 +198,7 @@ export default function NFTMarketplace({ showFilters = true }: NFTMarketplacePro
               <SelectValue placeholder="Filter by rarity" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All rarities</SelectItem>
+              <SelectItem value="all">All rarities</SelectItem>
               <SelectItem value="common">Common</SelectItem>
               <SelectItem value="uncommon">Uncommon</SelectItem>
               <SelectItem value="rare">Rare</SelectItem>
@@ -212,7 +212,7 @@ export default function NFTMarketplace({ showFilters = true }: NFTMarketplacePro
               <SelectValue placeholder="Filter by price" />
             </SelectTrigger>
             <SelectContent>
-              <SelectItem value="">All prices</SelectItem>
+              <SelectItem value="all">All prices</SelectItem>
               <SelectItem value="low">Under 0.1 ETH</SelectItem>
               <SelectItem value="medium">0.1 - 1 ETH</SelectItem>
               <SelectItem value="high">Over 1 ETH</SelectItem>
