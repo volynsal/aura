@@ -32,31 +32,6 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  // Clear any existing wallet connection when component mounts for fresh start
-  useEffect(() => {
-    if (isConnected) {
-      console.log('🧹 Clearing existing wallet connection for fresh login');
-      disconnect();
-      
-      // Clear all wallet storage
-      const keysToRemove = [
-        'wagmi.store',
-        'wagmi.cache', 
-        'wagmi.recentConnectorId',
-        'wagmi.wallet',
-        'wagmi.connected',
-        'coinbaseWallet',
-        'walletconnect',
-        'ethereum'
-      ];
-      
-      keysToRemove.forEach(key => {
-        localStorage.removeItem(key);
-        sessionStorage.removeItem(key);
-      });
-    }
-  }, []); // Only run on mount
-
   // Auto-authenticate when wallet connects (simplified - no blocking)
   useEffect(() => {
     console.log('Wallet connection state:', { isConnected, address, walletConnecting, user });
