@@ -143,6 +143,7 @@ export type Database = {
           required_tier_id: string | null
           title: string
           token_id: string | null
+          updated_at: string
         }
         Insert: {
           attributes?: Json | null
@@ -163,6 +164,7 @@ export type Database = {
           required_tier_id?: string | null
           title: string
           token_id?: string | null
+          updated_at?: string
         }
         Update: {
           attributes?: Json | null
@@ -183,6 +185,7 @@ export type Database = {
           required_tier_id?: string | null
           title?: string
           token_id?: string | null
+          updated_at?: string
         }
         Relationships: [
           {
