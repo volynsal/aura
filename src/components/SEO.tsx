@@ -18,10 +18,10 @@ export function SEO({ title, description, path = "/", image, structuredData }: S
   const isNFTPage = path.startsWith('/nft/');
   let finalImage = image || defaultImage;
   
-  // If it's an NFT page and we have a gif, we might want to use a static version
-  // For now, we'll use the original image but this could be enhanced
+  // For NFT pages, add cache busting to help with social media caching
   if (isNFTPage && image) {
-    finalImage = image;
+    const timestamp = Date.now();
+    finalImage = image.includes('?') ? `${image}&t=${timestamp}` : `${image}?t=${timestamp}`;
   }
   
   const imageUrl = finalImage?.startsWith("http") ? finalImage : (SITE_URL ? `${SITE_URL}${finalImage}` : finalImage);
