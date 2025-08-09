@@ -195,11 +195,23 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setSession(null);
       setUser(null);
       
+      // Clear wallet-related storage to prevent auto-reconnection
+      localStorage.removeItem('walletconnect');
+      localStorage.removeItem('wagmi.store');
+      localStorage.removeItem('wagmi.cache');
+      localStorage.removeItem('wagmi.wallet');
+      
     } catch (error: any) {
       console.error('Sign out exception:', error);
       // Clear local state even if sign out fails
       setSession(null);
       setUser(null);
+      
+      // Clear wallet storage anyway
+      localStorage.removeItem('walletconnect');
+      localStorage.removeItem('wagmi.store');
+      localStorage.removeItem('wagmi.cache');
+      localStorage.removeItem('wagmi.wallet');
     }
   };
 

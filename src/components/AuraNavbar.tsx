@@ -90,7 +90,9 @@ const AuraNavbar = () => {
                       size="sm" 
                       onClick={async () => {
                         await signOut();
-                        navigate('/feed');
+                        navigate('/login');
+                        // Force page refresh to clear wallet state
+                        window.location.reload();
                       }}
                       className="text-muted-foreground hover:text-foreground"
                     >
