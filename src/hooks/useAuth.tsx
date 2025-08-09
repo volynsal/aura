@@ -206,23 +206,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signInWithWallet = async (walletAddress: string) => {
+    console.log('🔵 WALLET AUTH START - Address:', walletAddress);
+    
     try {
       // Create a valid email format for wallet users
       const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
-      console.log('WALLET AUTH - Generated email:', walletEmail);
+      console.log('🔵 WALLET AUTH - Generated email:', walletEmail);
       
       // Try to sign in first (existing wallet user)
-      console.log('WALLET AUTH - Attempting sign in...');
+      console.log('🔵 WALLET AUTH - Attempting sign in...');
       
       const signInResult = await supabase.auth.signInWithPassword({
         email: walletEmail,
         password: walletAddress
       });
       
-      console.log('WALLET AUTH - Sign in result:', signInResult);
+      console.log('🔵 WALLET AUTH - Sign in result:', {
+        user: signInResult.data?.user?.id,
+        session: !!signInResult.data?.session,
+        error: signInResult.error?.message
+      });
 
       if (!signInResult.error) {
-        console.log('WALLET AUTH - SUCCESS - Signed in existing user');
+        console.log('🔵 WALLET AUTH - SUCCESS - Signed in existing user');
         toast({
           title: "Welcome back!",
           description: "Signed in with your wallet."
@@ -230,11 +236,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { error: null };
       }
 
-      console.log('WALLET AUTH - Sign in failed:', signInResult.error?.message);
+      console.log('🔵 WALLET AUTH - Sign in failed:', signInResult.error?.message);
 
       // Only create account if user doesn't exist
       if (signInResult.error?.message === 'Invalid login credentials') {
-        console.log('WALLET AUTH - Creating new account...');
+        console.log('🔵 WALLET AUTH - Creating new account...');
         
         const signUpResult = await supabase.auth.signUp({
           email: walletEmail,
@@ -249,10 +255,14 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           }
         });
 
-        console.log('WALLET AUTH - Sign up result:', signUpResult);
+        console.log('🔵 WALLET AUTH - Sign up result:', {
+          user: signUpResult.data?.user?.id,
+          session: !!signUpResult.data?.session,
+          error: signUpResult.error?.message
+        });
 
         if (signUpResult.error) {
-          console.log('WALLET AUTH - FAILED - Sign up error:', signUpResult.error.message);
+          console.log('🔵 WALLET AUTH - FAILED - Sign up error:', signUpResult.error.message);
           if (!signUpResult.error.message.includes('rate limit')) {
             toast({
               title: "Account creation failed",
@@ -263,7 +273,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           return { error: signUpResult.error };
         }
 
-        console.log('WALLET AUTH - SUCCESS - Account created');
+        console.log('🔵 WALLET AUTH - SUCCESS - Account created');
         toast({
           title: "Account created!",
           description: "Your wallet has been connected and account created."
@@ -272,7 +282,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       }
 
       // Handle other errors
-      console.log('WALLET AUTH - FAILED - Other error:', signInResult.error?.message);
+      console.log('🔵 WALLET AUTH - FAILED - Other error:', signInResult.error?.message);
       if (!signInResult.error?.message?.includes('rate limit')) {
         toast({
           title: "Authentication failed",
@@ -283,8 +293,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       return { error: signInResult.error };
 
     } catch (error: any) {
-      console.log('WALLET AUTH - EXCEPTION:', error);
-      console.log('WALLET AUTH - EXCEPTION stack:', error.stack);
+      console.log('🔵 WALLET AUTH - EXCEPTION:', error);
+      console.log('🔵 WALLET AUTH - EXCEPTION stack:', error.stack);
       toast({
         title: "Authentication error",
         description: error.message || "Something went wrong",
