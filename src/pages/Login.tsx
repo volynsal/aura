@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Separator } from "@/components/ui/separator";
-import { Eye, EyeOff, Wallet, Chrome } from "lucide-react";
+import { Eye, EyeOff, Wallet, Coins } from "lucide-react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAccount, useConnect } from 'wagmi';
@@ -242,7 +242,7 @@ const Login = () => {
               }}
               disabled={isPending}
             >
-              <Chrome className="w-4 h-4 mr-2" />
+              <Coins className="w-4 h-4 mr-2" />
               Coinbase Wallet
             </Button>
             
