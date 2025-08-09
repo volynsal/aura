@@ -162,9 +162,7 @@ const Profile = () => {
   };
 
   const handleViewNFT = (nft: any) => {
-    // Navigate to a detailed view or open modal
-    // For now, we'll show a simple alert with NFT details
-    alert(`NFT Details:\nTitle: ${nft.title}\nDescription: ${nft.description}\nPrice: ${nft.price_eth} ETH\nRarity: ${nft.rarity}\nMinted: ${nft.is_minted ? 'Yes' : 'No'}`);
+    navigate(`/nft/${nft.id}`);
   };
 
   const fetchProfile = async () => {

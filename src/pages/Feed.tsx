@@ -1,58 +1,83 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Bookmark, Share, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { useNavigate } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
+import { useToast } from "@/hooks/use-toast";
 
-const moods = ["ethereal", "dark", "vibrant", "melancholic", "euphoric", "chaotic", "serene", "rebellious"];
-
-const feedPosts = [
-  {
-    id: 1,
-    artist: "synthwave_dreams",
-    artistAvatar: "/placeholder.svg",
-    title: "Neon Solitude #47",
-    price: "2.3 ETH",
-    mood: "melancholic",
-    image: "/placeholder.svg",
-    likes: 847,
-    comments: 23,
-    timeAgo: "4h",
-    description: "Finding beauty in the lonely glow of city lights..."
-  },
-  {
-    id: 2,
-    artist: "digital_rebel",
-    artistAvatar: "/placeholder.svg",
-    title: "Chaos Theory",
-    price: "1.8 ETH",
-    mood: "chaotic",
-    image: "/placeholder.svg",
-    likes: 1204,
-    comments: 67,
-    timeAgo: "7h",
-    description: "When order breaks down, art emerges"
-  },
-  {
-    id: 3,
-    artist: "ethereal_visions",
-    artistAvatar: "/placeholder.svg",
-    title: "Floating Dreams",
-    price: "3.1 ETH",
-    mood: "ethereal",
-    image: "/placeholder.svg",
-    likes: 592,
-    comments: 15,
-    timeAgo: "12h",
-    description: "Suspended between reality and imagination"
-  }
-];
+const moods = ["common", "rare", "epic", "legendary"]; // Updated to match rarity values
 
 const Feed = () => {
+  const navigate = useNavigate();
+  const { toast } = useToast();
   const [selectedMood, setSelectedMood] = useState<string | null>(null);
-  const [likedPosts, setLikedPosts] = useState<Set<number>>(new Set());
+  const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
+  const [feedNFTs, setFeedNFTs] = useState<any[]>([]);
+  const [isLoading, setIsLoading] = useState(true);
 
-  const handleLike = (postId: number) => {
+  useEffect(() => {
+    fetchFeedNFTs();
+  }, []);
+
+  const fetchFeedNFTs = async () => {
+    try {
+      const { data: nfts, error: nftError } = await supabase
+        .from('nfts')
+        .select(`
+          *,
+          profiles:creator_id (
+            username,
+            display_name,
+            avatar_url
+          )
+        `)
+        .eq('is_minted', true) // Only show minted NFTs in the feed
+        .order('created_at', { ascending: false })
+        .limit(20);
+
+      if (nftError) throw nftError;
+      
+      // Transform the data to match our feed format
+      const transformedNFTs = nfts?.map(nft => ({
+        id: nft.id,
+        artist: nft.profiles?.username || 'Anonymous',
+        artistAvatar: nft.profiles?.avatar_url,
+        title: nft.title,
+        price: nft.price_eth ? `${nft.price_eth} ETH` : null,
+        mood: nft.rarity || 'neutral', // Using rarity as mood for now
+        image: nft.image_url,
+        likes: Math.floor(Math.random() * 500), // Mock likes for now
+        comments: Math.floor(Math.random() * 50), // Mock comments for now
+        timeAgo: getTimeAgo(nft.created_at),
+        description: nft.description,
+        nftData: nft
+      })) || [];
+
+      setFeedNFTs(transformedNFTs);
+    } catch (error: any) {
+      toast({
+        title: "Error loading feed",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const getTimeAgo = (dateString: string) => {
+    const now = new Date();
+    const date = new Date(dateString);
+    const diffInMinutes = Math.floor((now.getTime() - date.getTime()) / (1000 * 60));
+    
+    if (diffInMinutes < 60) return `${diffInMinutes}m`;
+    if (diffInMinutes < 1440) return `${Math.floor(diffInMinutes / 60)}h`;
+    return `${Math.floor(diffInMinutes / 1440)}d`;
+  };
+
+  const handleLike = (postId: string) => {
     const newLiked = new Set(likedPosts);
     if (newLiked.has(postId)) {
       newLiked.delete(postId);
@@ -62,9 +87,24 @@ const Feed = () => {
     setLikedPosts(newLiked);
   };
 
+  const handlePostClick = (nft: any) => {
+    navigate(`/nft/${nft.id}`);
+  };
+
   const filteredPosts = selectedMood 
-    ? feedPosts.filter(post => post.mood === selectedMood)
-    : feedPosts;
+    ? feedNFTs.filter(post => post.mood === selectedMood)
+    : feedNFTs;
+
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+          <p className="text-muted-foreground">Loading feed...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
     <div className="min-h-screen bg-background">
@@ -98,7 +138,11 @@ const Feed = () => {
       {/* Feed */}
       <div className="max-w-2xl mx-auto px-4 py-6">
         {filteredPosts.map((post) => (
-          <div key={post.id} className="mb-8 bg-surface border border-border rounded-xl overflow-hidden">
+          <div 
+            key={post.id} 
+            className="mb-8 bg-surface border border-border rounded-xl overflow-hidden cursor-pointer hover:border-primary/50 transition-colors"
+            onClick={() => handlePostClick(post)}
+          >
             {/* Post Header */}
             <div className="flex items-center justify-between p-4">
               <div className="flex items-center gap-3">
@@ -111,7 +155,11 @@ const Feed = () => {
                   <p className="text-sm text-muted-foreground">{post.timeAgo}</p>
                 </div>
               </div>
-              <Button variant="minimal" size="sm">
+              <Button 
+                variant="minimal" 
+                size="sm"
+                onClick={(e) => e.stopPropagation()}
+              >
                 <MoreHorizontal className="w-4 h-4" />
               </Button>
             </div>
@@ -142,19 +190,34 @@ const Feed = () => {
                   <Button
                     variant="minimal"
                     size="sm"
-                    onClick={() => handleLike(post.id)}
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleLike(post.id);
+                    }}
                     className={likedPosts.has(post.id) ? "text-red-500" : ""}
                   >
                     <Heart className={`w-5 h-5 ${likedPosts.has(post.id) ? "fill-current" : ""}`} />
                   </Button>
-                  <Button variant="minimal" size="sm">
+                  <Button 
+                    variant="minimal" 
+                    size="sm"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <MessageCircle className="w-5 h-5" />
                   </Button>
-                  <Button variant="minimal" size="sm">
+                  <Button 
+                    variant="minimal" 
+                    size="sm"
+                    onClick={(e) => e.stopPropagation()}
+                  >
                     <Share className="w-5 h-5" />
                   </Button>
                 </div>
-                <Button variant="minimal" size="sm">
+                <Button 
+                  variant="minimal" 
+                  size="sm"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   <Bookmark className="w-5 h-5" />
                 </Button>
               </div>
@@ -169,7 +232,12 @@ const Feed = () => {
               </div>
 
               {post.comments > 0 && (
-                <Button variant="minimal" size="sm" className="mt-2 p-0 h-auto text-muted-foreground">
+                <Button 
+                  variant="minimal" 
+                  size="sm" 
+                  className="mt-2 p-0 h-auto text-muted-foreground"
+                  onClick={(e) => e.stopPropagation()}
+                >
                   View all {post.comments} comments
                 </Button>
               )}

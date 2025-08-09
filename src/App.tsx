@@ -10,6 +10,7 @@ import Profile from "./pages/Profile";
 import VibeMatching from "./pages/VibeMatching";
 import Create from "./pages/Create";
 import Login from "./pages/Login";
+import NFTView from "./pages/NFTView";
 import NotFound from "./pages/NotFound";
 import AuraNavbar from "./components/AuraNavbar";
 import { AuthProvider } from "./hooks/useAuth";
@@ -42,6 +43,7 @@ const App = () => (
                 <Route path="/vibe-matching" element={<VibeMatching />} />
                 <Route path="/create" element={<Create />} />
                 <Route path="/login" element={<Login />} />
+                <Route path="/nft/:id" element={<NFTView />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
