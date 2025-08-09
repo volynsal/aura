@@ -50,10 +50,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // Set up auth state listener
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
       (event, session) => {
-        if (mounted) {
-          setSession(session);
-          setUser(session?.user ?? null);
-          setLoading(false);
+        console.log('🔥 AUTH STATE CHANGE:', { event, hasSession: !!session, hasUser: !!session?.user });
+        
+        // Don't update state if we're in the middle of signing out
+        if (event === 'SIGNED_OUT') {
+          console.log('🔥 SIGNED_OUT event - clearing state');
+          if (mounted) {
+            setSession(null);
+            setUser(null);
+            setLoading(false);
+          }
+        } else if (event === 'SIGNED_IN' || event === 'TOKEN_REFRESHED') {
+          console.log('🔥 SIGNED_IN/TOKEN_REFRESHED event - updating state');
+          if (mounted) {
+            setSession(session);
+            setUser(session?.user ?? null);
+            setLoading(false);
+          }
+        } else {
+          console.log('🔥 Other auth event:', event);
+          if (mounted) {
+            setSession(session);
+            setUser(session?.user ?? null);
+            setLoading(false);
+          }
         }
       }
     );
@@ -168,9 +188,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signOut = async () => {
     console.log('🚪 SIGNOUT: Starting logout process...');
-    
-    // Prevent any re-authentication by setting a flag
-    const isSigningOut = true;
+    console.log('🚪 SIGNOUT: Current user before logout:', user?.id);
+    console.log('🚪 SIGNOUT: Current session before logout:', !!session);
     
     try {
       // 1. IMMEDIATELY clear local state to prevent any re-auth triggers
@@ -201,16 +220,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           localStorage.removeItem(key);
           sessionStorage.removeItem(key);
         } catch (e) {
-          // Ignore storage errors
+          console.log('Storage error for key:', key, e);
         }
       });
       
-      // 3. Sign out from Supabase with the strongest scope
-      console.log('🚪 SIGNOUT: Calling Supabase signOut');
-      await supabase.auth.signOut({ scope: 'global' });
+      // 3. Sign out from Supabase with the strongest scope  
+      console.log('🚪 SIGNOUT: Calling Supabase signOut with global scope');
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
       
-      // 4. Show success message
-      console.log('🚪 SIGNOUT: Supabase logout completed');
+      if (error) {
+        console.error('🚪 SIGNOUT: Supabase error:', error);
+      } else {
+        console.log('🚪 SIGNOUT: Supabase logout successful');
+      }
+      
+      // 4. Double-check that session is actually cleared
+      const { data: { session: checkSession } } = await supabase.auth.getSession();
+      console.log('🚪 SIGNOUT: Session check after logout:', !!checkSession);
+      
+      if (checkSession) {
+        console.log('🚪 SIGNOUT: Session still exists! Forcing additional clear...');
+        await supabase.auth.signOut({ scope: 'local' });
+        setSession(null);
+        setUser(null);
+      }
+      
+      // 5. Show success message
+      console.log('🚪 SIGNOUT: Logout process completed');
       if (!window.location.pathname.includes('/login') && !window.location.pathname.includes('/feed')) {
         toast({
           title: "Signed out successfully",
@@ -218,9 +254,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
       }
       
-      // 5. Force immediate redirect with replace (no back button)
+      // 6. Force immediate redirect with replace (no back button)
       console.log('🚪 SIGNOUT: Redirecting to feed');
-      window.location.replace('/feed');
+      setTimeout(() => {
+        window.location.replace('/feed');
+      }, 100);
       
     } catch (error: any) {
       console.error('🚪 SIGNOUT ERROR:', error);
@@ -234,11 +272,13 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         localStorage.clear();
         sessionStorage.clear();
       } catch (e) {
-        // Ignore storage errors
+        console.log('Storage clear error:', e);
       }
       
       console.log('🚪 SIGNOUT: Error occurred, forcing redirect');
-      window.location.replace('/feed');
+      setTimeout(() => {
+        window.location.replace('/feed');
+      }, 100);
     }
   };
 
