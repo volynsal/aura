@@ -6,7 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Heart, MessageCircle, Share, ArrowLeft, DollarSign, Tag, MoreVertical, Send } from "lucide-react";
+import { ArrowLeft, Heart, MessageCircle, Share, DollarSign, Send } from 'lucide-react';
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
@@ -19,6 +19,7 @@ const NFTView = () => {
   
   const [nft, setNft] = useState<any>(null);
   const [creator, setCreator] = useState<any>(null);
+  const [marketplaceOrder, setMarketplaceOrder] = useState<any>(null);
   const [isLoading, setIsLoading] = useState(true);
   const [isLiked, setIsLiked] = useState(false);
   const [likesCount, setLikesCount] = useState(0);
@@ -56,6 +57,16 @@ const NFTView = () => {
 
       if (profileError) throw profileError;
       setCreator(profileData);
+
+      // Fetch active marketplace order
+      const { data: orderData } = await supabase
+        .from('marketplace_orders')
+        .select('*')
+        .eq('nft_id', id)
+        .eq('status', 'active')
+        .single();
+
+      setMarketplaceOrder(orderData);
 
       // TODO: Fetch likes count and user's like status
       setLikesCount(Math.floor(Math.random() * 100)); // Mock data for now
@@ -149,6 +160,9 @@ const NFTView = () => {
       
       setShowSellDialog(false);
       setSellPrice("");
+      
+      // Refresh the marketplace order
+      fetchNFT();
     } catch (error: any) {
       toast({
         title: "Error listing NFT",
@@ -157,6 +171,37 @@ const NFTView = () => {
       });
     } finally {
       setIsListing(false);
+    }
+  };
+
+  const handleBuy = async () => {
+    if (!marketplaceOrder || !user) return;
+
+    try {
+      const { error } = await supabase
+        .from('marketplace_orders')
+        .update({ 
+          status: 'sold',
+          buyer_id: user.id,
+          sold_at: new Date().toISOString()
+        })
+        .eq('id', marketplaceOrder.id);
+
+      if (error) throw error;
+
+      toast({
+        title: "Purchase successful!",
+        description: `You've purchased ${nft.title} for ${marketplaceOrder.price_eth} ETH`
+      });
+      
+      // Refresh the data
+      fetchNFT();
+    } catch (error: any) {
+      toast({
+        title: "Error purchasing NFT",
+        description: error.message,
+        variant: "destructive"
+      });
     }
   };
 
@@ -185,6 +230,7 @@ const NFTView = () => {
   }
 
   const isOwner = user?.id === nft.creator_id;
+  const isForSale = marketplaceOrder && marketplaceOrder.status === 'active';
 
   return (
     <div className="min-h-screen bg-background">
@@ -206,11 +252,6 @@ const NFTView = () => {
               <Share className="w-4 h-4 mr-2" />
               Share
             </Button>
-            {isOwner && (
-              <Button variant="outline" size="sm">
-                <MoreVertical className="w-4 h-4" />
-              </Button>
-            )}
           </div>
         </div>
 
@@ -262,7 +303,8 @@ const NFTView = () => {
                 {comments.length} Comments
               </Button>
 
-              {isOwner && nft.is_minted && (
+              {/* Show Sell button only for owner when NFT is minted and not currently for sale */}
+              {isOwner && nft.is_minted && !isForSale && (
                 <Dialog open={showSellDialog} onOpenChange={setShowSellDialog}>
                   <DialogTrigger asChild>
                     <Button variant="aura">
@@ -297,6 +339,7 @@ const NFTView = () => {
                         <Button 
                           variant="outline" 
                           onClick={() => setShowSellDialog(false)}
+                          className="flex-1"
                         >
                           Cancel
                         </Button>
@@ -304,6 +347,14 @@ const NFTView = () => {
                     </div>
                   </DialogContent>
                 </Dialog>
+              )}
+              
+              {/* Show Buy button for non-owners when NFT is for sale */}
+              {!isOwner && isForSale && (
+                <Button variant="aura" onClick={handleBuy}>
+                  <DollarSign className="w-4 h-4 mr-2" />
+                  Buy for {marketplaceOrder.price_eth} ETH
+                </Button>
               )}
             </div>
           </div>
@@ -336,10 +387,11 @@ const NFTView = () => {
 
               {/* Metadata */}
               <div className="grid grid-cols-2 gap-4">
-                {nft.price_eth && (
+                {/* Show price only when there's an active marketplace order */}
+                {isForSale && (
                   <div className="p-3 bg-surface rounded-lg">
                     <p className="text-sm text-muted-foreground">Price</p>
-                    <p className="font-medium text-primary">{nft.price_eth} ETH</p>
+                    <p className="font-medium text-primary">{marketplaceOrder.price_eth} ETH</p>
                   </div>
                 )}
                 
