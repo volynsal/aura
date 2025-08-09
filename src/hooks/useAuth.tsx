@@ -243,47 +243,42 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log('🔵 WALLET AUTH START - Address:', walletAddress);
     
     try {
-      // Check if a profile already exists with this wallet address
-      console.log('🔵 WALLET AUTH - Checking for existing profile...');
-      const { data: existingProfile, error: profileError } = await supabase
-        .from('profiles')
-        .select('user_id, username, display_name')
-        .eq('wallet_address', walletAddress.toLowerCase())
-        .single();
-
-      if (profileError && profileError.code !== 'PGRST116') {
-        console.log('🔵 WALLET AUTH - Profile query error:', profileError);
-        throw new Error(`Database error: ${profileError.message}`);
-      }
-
-      if (existingProfile) {
-        console.log('🔵 WALLET AUTH - Found existing profile:', existingProfile);
-        // Try to sign in with the existing user
-        const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
-        
-        const signInResult = await supabase.auth.signInWithPassword({
-          email: walletEmail,
-          password: walletAddress
-        });
-
-        if (!signInResult.error && signInResult.data?.session) {
-          console.log('🔵 WALLET AUTH - SUCCESS - Existing user signed in');
-          toast({
-            title: "Welcome back!",
-            description: "Signed in with your wallet."
-          });
-          return { error: null };
-        } else {
-          console.log('🔵 WALLET AUTH - Failed to sign in existing user:', signInResult.error?.message);
-        }
-      }
-
-      // Create new wallet user
+      // Simple approach: create wallet user directly without checking existing profiles first
       const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
       const username = `user-${walletAddress.slice(2, 8).toLowerCase()}`;
       const displayName = `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`;
       
-      console.log('🔵 WALLET AUTH - Creating new wallet user...', { walletEmail, username, displayName });
+      console.log('🔵 WALLET AUTH - Attempting sign in first...', { walletEmail });
+      
+      // Try to sign in first
+      const signInResult = await supabase.auth.signInWithPassword({
+        email: walletEmail,
+        password: walletAddress
+      });
+
+      console.log('🔵 WALLET AUTH - Sign in attempt:', {
+        success: !signInResult.error,
+        error: signInResult.error?.message,
+        hasUser: !!signInResult.data?.user,
+        hasSession: !!signInResult.data?.session
+      });
+
+      if (!signInResult.error && signInResult.data?.session) {
+        console.log('🔵 WALLET AUTH - SUCCESS - Existing user signed in');
+        toast({
+          title: "Welcome back!",
+          description: "Signed in with your wallet."
+        });
+        return { error: null };
+      }
+
+      // If sign in failed, create new user
+      console.log('🔵 WALLET AUTH - Creating new wallet user...', { 
+        walletEmail, 
+        username, 
+        displayName,
+        walletAddress 
+      });
       
       const signUpResult = await supabase.auth.signUp({
         email: walletEmail,
@@ -301,33 +296,39 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       console.log('🔵 WALLET AUTH - Sign up result:', {
         success: !signUpResult.error,
         error: signUpResult.error?.message,
+        errorCode: signUpResult.error?.name,
         hasUser: !!signUpResult.data?.user,
-        hasSession: !!signUpResult.data?.session
+        hasSession: !!signUpResult.data?.session,
+        userId: signUpResult.data?.user?.id
       });
 
       if (signUpResult.error) {
-        // Handle case where user already exists but sign-in failed
-        if (signUpResult.error.message.includes('already been registered')) {
-          console.log('🔵 WALLET AUTH - User exists, attempting sign in...');
-          const signInResult = await supabase.auth.signInWithPassword({
+        // If user already exists but sign-in failed, try again
+        if (signUpResult.error.message.includes('already been registered') || 
+            signUpResult.error.message.includes('already registered')) {
+          console.log('🔵 WALLET AUTH - User exists, retrying sign in...');
+          
+          const retrySignIn = await supabase.auth.signInWithPassword({
             email: walletEmail,
             password: walletAddress
           });
 
-          if (!signInResult.error && signInResult.data?.session) {
-            console.log('🔵 WALLET AUTH - SUCCESS - Signed in existing user');
+          if (!retrySignIn.error && retrySignIn.data?.session) {
+            console.log('🔵 WALLET AUTH - SUCCESS - Retry sign in worked');
             toast({
               title: "Welcome back!",
               description: "Signed in with your wallet."
             });
             return { error: null };
+          } else {
+            console.log('🔵 WALLET AUTH - Retry sign in also failed:', retrySignIn.error?.message);
           }
         }
         
-        console.log('🔵 WALLET AUTH - FAILED - Sign up error:', signUpResult.error.message);
+        console.log('🔵 WALLET AUTH - FAILED - Sign up error:', signUpResult.error);
         toast({
           title: "Wallet authentication failed",
-          description: signUpResult.error.message,
+          description: `Error: ${signUpResult.error.message}`,
           variant: "destructive"
         });
         return { error: signUpResult.error };
@@ -342,24 +343,30 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
           });
           return { error: null };
         } else {
-          console.log('🔵 WALLET AUTH - User created but needs email confirmation');
+          console.log('🔵 WALLET AUTH - User created but no session - this should not happen with email confirmation disabled');
           toast({
-            title: "Please disable email confirmation",
-            description: "Go to Supabase Auth settings and disable 'Confirm email' for wallet authentication to work.",
+            title: "Account created but sign-in failed",
+            description: "Try disconnecting and reconnecting your wallet.",
             variant: "destructive"
           });
-          return { error: new Error('Email confirmation required - please disable it in Supabase settings') };
+          return { error: new Error('User created but no session established') };
         }
       }
 
-      console.log('🔵 WALLET AUTH - Unexpected state - no user created');
-      return { error: new Error('Failed to create wallet account') };
+      console.log('🔵 WALLET AUTH - No user or session created');
+      toast({
+        title: "Wallet authentication failed",
+        description: "Failed to create or sign in wallet account.",
+        variant: "destructive"
+      });
+      return { error: new Error('No user created') };
 
     } catch (error: any) {
       console.log('🔵 WALLET AUTH - EXCEPTION:', error);
+      console.error('🔵 WALLET AUTH - Full error object:', error);
       toast({
         title: "Wallet authentication error", 
-        description: error.message || "Something went wrong",
+        description: error.message || "Something went wrong during wallet authentication",
         variant: "destructive"
       });
       return { error };
