@@ -286,11 +286,18 @@ const Login = () => {
                     variant="outline" 
                     size="sm"
                     className="flex-1"
-                    onClick={() => {
+                    onClick={async () => {
                       console.log('Manual wallet authentication trigger');
                       if (!walletConnecting && !user) {
                         setWalletConnecting(true);
-                        signInWithWallet(address).finally(() => setWalletConnecting(false));
+                        try {
+                          const result = await signInWithWallet(address);
+                          console.log('Manual authentication result:', result);
+                        } catch (error) {
+                          console.log('Manual authentication error:', error);
+                        } finally {
+                          setWalletConnecting(false);
+                        }
                       }
                     }}
                     disabled={walletConnecting || !!user}
