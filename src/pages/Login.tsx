@@ -238,63 +238,33 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => {
-                  console.log('🔌 Clearing wallet cache before MetaMask connection');
-                  // Clear signout flags for legitimate connection
-                  localStorage.removeItem('signout-in-progress');
-                  sessionStorage.removeItem('signout-in-progress');
-                  // Clear wallet cache before connecting
-                  localStorage.removeItem('wagmi.store');
-                  localStorage.removeItem('wagmi.cache');
-                  localStorage.removeItem('wagmi.recentConnectorId');
-                  
-                  console.log('Available connectors:', connectors.map(c => c.name));
-                  const metamaskConnector = connectors.find(c => c.name.toLowerCase().includes('metamask'));
-                  if (metamaskConnector) {
-                    console.log('Connecting to MetaMask...');
-                    connect({ connector: metamaskConnector });
-                  } else {
-                    console.log('MetaMask connector not found');
-                  }
-                }}
-                disabled={isPending}
-              >
-                <Wallet className="w-4 h-4 mr-2" />
-                MetaMask
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => {
-                  console.log('🔌 Clearing wallet cache before WalletConnect');
-                  // Clear signout flags for legitimate connection
-                  localStorage.removeItem('signout-in-progress');
-                  sessionStorage.removeItem('signout-in-progress');
-                  // Clear wallet cache before connecting
-                  localStorage.removeItem('wagmi.store');
-                  localStorage.removeItem('wagmi.cache');
-                  localStorage.removeItem('wagmi.recentConnectorId');
-                  localStorage.removeItem('walletconnect');
-                  
-                  console.log('Available connectors:', connectors.map(c => c.name));
-                  const walletConnectConnector = connectors.find(c => c.name.toLowerCase().includes('walletconnect'));
-                  if (walletConnectConnector) {
-                    console.log('Connecting to WalletConnect...');
-                    connect({ connector: walletConnectConnector });
-                  } else {
-                    console.log('WalletConnect connector not found');
-                  }
-                }}
-                disabled={isPending}
-              >
-                <Wallet className="w-4 h-4 mr-2" />
-                Trust/Other
-              </Button>
-            </div>
+            <Button 
+              variant="outline" 
+              className="w-full"
+              onClick={() => {
+                console.log('🔌 Clearing wallet cache before MetaMask connection');
+                // Clear signout flags for legitimate connection
+                localStorage.removeItem('signout-in-progress');
+                sessionStorage.removeItem('signout-in-progress');
+                // Clear wallet cache before connecting
+                localStorage.removeItem('wagmi.store');
+                localStorage.removeItem('wagmi.cache');
+                localStorage.removeItem('wagmi.recentConnectorId');
+                
+                console.log('Available connectors:', connectors.map(c => c.name));
+                const metamaskConnector = connectors.find(c => c.name.toLowerCase().includes('metamask'));
+                if (metamaskConnector) {
+                  console.log('Connecting to MetaMask...');
+                  connect({ connector: metamaskConnector });
+                } else {
+                  console.log('MetaMask connector not found');
+                }
+              }}
+              disabled={isPending}
+            >
+              <Wallet className="w-4 h-4 mr-2" />
+              MetaMask
+            </Button>
             
             <Button 
               variant="outline" 
