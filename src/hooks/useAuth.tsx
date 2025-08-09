@@ -53,14 +53,19 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         console.log('🔥 AUTH STATE CHANGE:', { event, hasSession: !!session, hasUser: !!session?.user });
         
         // CHECK FOR SIGNOUT FLAG IMMEDIATELY to prevent re-auth
-        const signoutInProgress = localStorage.getItem('signout-in-progress');
+        const signoutInProgress = localStorage.getItem('signout-in-progress') || sessionStorage.getItem('signout-in-progress');
         if (signoutInProgress && event === 'SIGNED_IN') {
           const signoutTime = parseInt(signoutInProgress);
           const timeSinceSignout = Date.now() - signoutTime;
           
-          if (timeSinceSignout < 10000) { // Block for 10 seconds
+          if (timeSinceSignout < 5000) { // Reduced to 5 seconds for mobile compatibility
             console.log('🚫 BLOCKING AUTH STATE SIGN IN: Recent signout detected', timeSinceSignout, 'ms ago');
             return; // Don't update state - block the sign in
+          } else {
+            // Clear the flag if enough time has passed
+            localStorage.removeItem('signout-in-progress');
+            sessionStorage.removeItem('signout-in-progress');
+            console.log('🔄 CLEARING signout flag - enough time passed');
           }
         }
         
@@ -206,6 +211,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     // 1. SET SIGNOUT FLAG IMMEDIATELY - BEFORE doing anything else
     console.log('🚪 SIGNOUT: Setting signout flag to block re-auth');
     localStorage.setItem('signout-in-progress', Date.now().toString());
+    sessionStorage.setItem('signout-in-progress', Date.now().toString());
     
     try {
       // 1. IMMEDIATELY clear local state to prevent any re-auth triggers
@@ -353,6 +359,11 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signInWithWallet = async (walletAddress: string) => {
     console.log('🔵 WALLET AUTH START - Address:', walletAddress);
+    
+    // Clear any signout flags when intentionally signing in with wallet
+    localStorage.removeItem('signout-in-progress');
+    sessionStorage.removeItem('signout-in-progress');
+    console.log('🔵 WALLET AUTH - Cleared signout flags for legitimate sign-in');
     
     try {
       // Simple approach: create wallet user directly without checking existing profiles first

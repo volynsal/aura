@@ -47,6 +47,7 @@ const Login = () => {
       } else {
         // Clean up the flag if enough time has passed
         localStorage.removeItem('signout-in-progress');
+        sessionStorage.removeItem('signout-in-progress');
       }
     }
     
@@ -243,6 +244,9 @@ const Login = () => {
                 className="w-full"
                 onClick={() => {
                   console.log('🔌 Clearing wallet cache before MetaMask connection');
+                  // Clear signout flags for legitimate connection
+                  localStorage.removeItem('signout-in-progress');
+                  sessionStorage.removeItem('signout-in-progress');
                   // Clear wallet cache before connecting
                   localStorage.removeItem('wagmi.store');
                   localStorage.removeItem('wagmi.cache');
@@ -267,6 +271,9 @@ const Login = () => {
                 className="w-full"
                 onClick={() => {
                   console.log('🔌 Clearing wallet cache before WalletConnect');
+                  // Clear signout flags for legitimate connection
+                  localStorage.removeItem('signout-in-progress');
+                  sessionStorage.removeItem('signout-in-progress');
                   // Clear wallet cache before connecting
                   localStorage.removeItem('wagmi.store');
                   localStorage.removeItem('wagmi.cache');
@@ -301,6 +308,10 @@ const Login = () => {
                   disconnect();
                   await new Promise(resolve => setTimeout(resolve, 500)); // Wait for disconnect
                 }
+                
+                // Clear signout flags for legitimate connection
+                localStorage.removeItem('signout-in-progress');
+                sessionStorage.removeItem('signout-in-progress');
                 
                 // Clear ALL wallet-related storage
                 const keysToRemove = [
