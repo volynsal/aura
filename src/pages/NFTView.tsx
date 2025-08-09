@@ -339,14 +339,14 @@ const NFTView = () => {
       />
       
       <div className="min-h-screen bg-background">
-      <div className="max-w-4xl mx-auto px-4 py-6">
+      <div className="max-w-4xl mx-auto px-4 py-4 sm:py-6">
         {/* Header */}
-        <div className="flex items-center justify-between mb-6">
+        <div className="flex items-center justify-between mb-4 sm:mb-6">
           <Button 
             variant="ghost" 
             size="sm" 
             onClick={() => navigate(-1)}
-            className="text-muted-foreground hover:text-foreground"
+            className="text-muted-foreground hover:text-foreground min-h-[44px] -ml-2"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
             Back
@@ -358,6 +358,7 @@ const NFTView = () => {
               size="sm" 
               onClick={handleShare}
               disabled={isSharing}
+              className="min-h-[44px]"
             >
               {linkCopied ? (
                 <Check className="w-4 h-4 mr-2" />
@@ -369,19 +370,20 @@ const NFTView = () => {
           </div>
         </div>
 
-        <div className="grid lg:grid-cols-2 gap-8">
+        <div className="grid lg:grid-cols-2 gap-6 lg:gap-8">
           {/* Image Section */}
           <div className="space-y-4">
             <div className="relative bg-surface rounded-lg overflow-hidden">
               <img 
                 src={nft.image_url} 
                 alt={nft.title}
-                className="w-full aspect-square object-cover"
+                className="w-full aspect-square object-cover touch-manipulation"
+                style={{ userSelect: 'none' }}
               />
               
               {/* Status Badges */}
-              <div className="absolute top-4 right-4 flex gap-2">
-                <Badge variant="secondary" className="bg-black/50 text-white">
+              <div className="absolute top-3 right-3 flex gap-2 flex-wrap">
+                <Badge variant="secondary" className="bg-black/50 text-white text-xs">
                   NFT
                 </Badge>
                 {nft.is_minted ? (
@@ -402,17 +404,17 @@ const NFTView = () => {
             </div>
 
             {/* Action Buttons */}
-            <div className="flex gap-3">
+            <div className="flex flex-col sm:flex-row gap-3">
               <Button
                 variant={isLiked ? "default" : "outline"}
-                className="flex-1"
+                className="flex-1 min-h-[44px]" // Larger touch target for mobile
                 onClick={handleLike}
               >
                 <Heart className={`w-4 h-4 mr-2 ${isLiked ? 'fill-current' : ''}`} />
                 {likesCount} Likes
               </Button>
               
-              <Button variant="outline" className="flex-1">
+              <Button variant="outline" className="flex-1 min-h-[44px]">
                 <MessageCircle className="w-4 h-4 mr-2" />
                 {comments.length} Comments
               </Button>
@@ -421,7 +423,7 @@ const NFTView = () => {
               {isOwner && nft.is_minted && !isForSale && (
                 <Dialog open={showSellDialog} onOpenChange={setShowSellDialog}>
                   <DialogTrigger asChild>
-                    <Button variant="aura">
+                    <Button variant="aura" className="min-h-[44px]">
                       <DollarSign className="w-4 h-4 mr-2" />
                       Sell
                     </Button>
@@ -465,7 +467,7 @@ const NFTView = () => {
               
               {/* Show Buy button for non-owners when NFT is for sale */}
               {!isOwner && isForSale && (
-                <Button variant="aura" onClick={handleBuy}>
+                <Button variant="aura" onClick={handleBuy} className="min-h-[44px]">
                   <DollarSign className="w-4 h-4 mr-2" />
                   Buy for {marketplaceOrder.price_eth} ETH
                 </Button>
