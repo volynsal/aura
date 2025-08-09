@@ -19,17 +19,23 @@ const metadata = {
 
 const chains = [mainnet, polygon, arbitrum, base] as const;
 
-// Configure connectors explicitly
+// Configure connectors with mobile-friendly options
 const connectors = [
   walletConnect({ 
     projectId,
     metadata,
     showQrModal: true
   }),
-  metaMask(),
+  metaMask({
+    dappMetadata: metadata,
+    useDeeplink: true, // Enable deep linking for mobile
+    preferDesktop: false // Prefer mobile app over desktop
+  }),
   coinbaseWallet({
     appName: metadata.name,
-    appLogoUrl: metadata.icons[0]
+    appLogoUrl: metadata.icons[0],
+    preference: 'smartWalletOnly', // Use smart wallet for better mobile support
+    version: '4'
   })
 ];
 
@@ -37,7 +43,11 @@ const config = defaultWagmiConfig({
   chains,
   projectId,
   metadata,
-  connectors
+  connectors,
+  enableWalletConnect: true, // Ensure WalletConnect is enabled
+  enableInjected: true, // Enable injected wallets
+  enableEIP6963: true, // Enable EIP-6963 for better wallet detection
+  enableCoinbase: true // Enable Coinbase SDK
 });
 
 interface Web3ProviderProps {
