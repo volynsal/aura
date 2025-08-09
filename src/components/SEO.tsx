@@ -44,23 +44,23 @@ export function SEO({ title, description, path = "/", image, structuredData }: S
       <link rel="canonical" href={url} />
       <meta name="description" content={description} />
 
-      {/* Open Graph tags - use key attribute to force replacement */}
-      <meta key="og:title" property="og:title" content={title} />
-      <meta key="og:site_name" property="og:site_name" content="Aura" />
-      <meta key="og:description" property="og:description" content={description} />
-      <meta key="og:type" property="og:type" content="article" />
-      <meta key="og:url" property="og:url" content={url} />
-      <meta key="og:image" property="og:image" content={imageUrl} />
-      <meta key="og:image:secure_url" property="og:image:secure_url" content={imageUrl} />
-      <meta key="og:image:type" property="og:image:type" content={getImageType(imageUrl)} />
-      <meta key="og:image:width" property="og:image:width" content="1200" />
-      <meta key="og:image:height" property="og:image:height" content="630" />
+      {/* Open Graph tags */}
+      <meta property="og:title" content={title} />
+      <meta property="og:site_name" content="Aura" />
+      <meta property="og:description" content={description} />
+      <meta property="og:type" content="article" />
+      <meta property="og:url" content={url} />
+      <meta property="og:image" content={imageUrl} />
+      <meta property="og:image:secure_url" content={imageUrl} />
+      <meta property="og:image:type" content={getImageType(imageUrl)} />
+      <meta property="og:image:width" content="1200" />
+      <meta property="og:image:height" content="630" />
 
-      {/* Twitter Card tags - use key attribute to force replacement */}
-      <meta key="twitter:card" name="twitter:card" content="summary_large_image" />
-      <meta key="twitter:title" name="twitter:title" content={title} />
-      <meta key="twitter:description" name="twitter:description" content={description} />
-      <meta key="twitter:image" name="twitter:image" content={imageUrl} />
+      {/* Twitter Card tags */}
+      <meta name="twitter:card" content="summary_large_image" />
+      <meta name="twitter:title" content={title} />
+      <meta name="twitter:description" content={description} />
+      <meta name="twitter:image" content={imageUrl} />
 
       {structuredData && (
         <script type="application/ld+json">
