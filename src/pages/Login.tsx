@@ -188,13 +188,19 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-3 gap-2">
+            <div className="grid grid-cols-2 gap-3">
               <Button 
                 variant="outline" 
                 className="w-full"
                 onClick={() => {
-                  const metamaskConnector = connectors.find(c => c.name === 'MetaMask');
-                  if (metamaskConnector) connect({ connector: metamaskConnector });
+                  console.log('Available connectors:', connectors.map(c => c.name));
+                  const metamaskConnector = connectors.find(c => c.name.toLowerCase().includes('metamask'));
+                  if (metamaskConnector) {
+                    console.log('Connecting to MetaMask...');
+                    connect({ connector: metamaskConnector });
+                  } else {
+                    console.log('MetaMask connector not found');
+                  }
                 }}
                 disabled={isPending}
               >
@@ -205,27 +211,40 @@ const Login = () => {
                 variant="outline" 
                 className="w-full"
                 onClick={() => {
-                  const walletConnectConnector = connectors.find(c => c.name === 'WalletConnect');
-                  if (walletConnectConnector) connect({ connector: walletConnectConnector });
+                  console.log('Available connectors:', connectors.map(c => c.name));
+                  const walletConnectConnector = connectors.find(c => c.name.toLowerCase().includes('walletconnect'));
+                  if (walletConnectConnector) {
+                    console.log('Connecting to WalletConnect...');
+                    connect({ connector: walletConnectConnector });
+                  } else {
+                    console.log('WalletConnect connector not found');
+                  }
                 }}
                 disabled={isPending}
               >
                 <Wallet className="w-4 h-4 mr-2" />
-                Trust
-              </Button>
-              <Button 
-                variant="outline" 
-                className="w-full"
-                onClick={() => {
-                  const coinbaseConnector = connectors.find(c => c.name === 'Coinbase Wallet');
-                  if (coinbaseConnector) connect({ connector: coinbaseConnector });
-                }}
-                disabled={isPending}
-              >
-                <Chrome className="w-4 h-4 mr-2" />
-                Coinbase
+                Trust/Other
               </Button>
             </div>
+            
+            <Button 
+              variant="outline" 
+              className="w-full mt-3"
+              onClick={() => {
+                console.log('Available connectors:', connectors.map(c => c.name));
+                const coinbaseConnector = connectors.find(c => c.name.toLowerCase().includes('coinbase'));
+                if (coinbaseConnector) {
+                  console.log('Connecting to Coinbase...');
+                  connect({ connector: coinbaseConnector });
+                } else {
+                  console.log('Coinbase connector not found');
+                }
+              }}
+              disabled={isPending}
+            >
+              <Chrome className="w-4 h-4 mr-2" />
+              Coinbase Wallet
+            </Button>
             
             {isConnected && address && (
               <div className="mt-4 p-3 bg-surface-elevated rounded-md">
