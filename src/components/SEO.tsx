@@ -16,6 +16,9 @@ export function SEO({ title, description, path = "/", image, structuredData }: S
   const finalImage = image || defaultImage;
   const imageUrl = finalImage?.startsWith("http") ? finalImage : (SITE_URL ? `${SITE_URL}${finalImage}` : finalImage);
   
+  // Debug logging
+  console.log("SEO Component - Final Image URL:", imageUrl);
+  
   // Determine image type for better social media compatibility
   const getImageType = (url: string) => {
     if (url.includes('.gif')) return 'image/gif';
@@ -30,15 +33,7 @@ export function SEO({ title, description, path = "/", image, structuredData }: S
       <link rel="canonical" href={url} />
       <meta name="description" content={description} />
 
-      {/* Remove existing meta tags first to ensure our tags take precedence */}
-      <meta property="og:title" content="" />
-      <meta property="og:description" content="" />
-      <meta property="og:image" content="" />
-      <meta name="twitter:title" content="" />
-      <meta name="twitter:description" content="" />
-      <meta name="twitter:image" content="" />
-
-      {/* Set our custom meta tags */}
+      {/* Open Graph tags */}
       <meta property="og:title" content={title} />
       <meta property="og:site_name" content="Aura" />
       <meta property="og:description" content={description} />
