@@ -15,7 +15,14 @@ import AuraNavbar from "./components/AuraNavbar";
 import { AuthProvider } from "./hooks/useAuth";
 import { Web3Provider } from "./components/Web3Provider";
 import { HelmetProvider } from "react-helmet-async";
-const queryClient = new QueryClient();
+const queryClient = new QueryClient({
+  defaultOptions: {
+    queries: {
+      staleTime: 1000 * 60 * 5, // 5 minutes
+      refetchOnWindowFocus: false,
+    },
+  },
+});
 
 const App = () => (
   <QueryClientProvider client={queryClient}>
