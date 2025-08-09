@@ -73,13 +73,17 @@ const NFTView = () => {
       if (profileError) throw profileError;
       setCreator(profileData);
 
-      // Fetch active marketplace order
-      const { data: orderData } = await supabase
+      // Fetch active marketplace order (use maybeSingle to handle 0 or 1 results)
+      const { data: orderData, error: orderError } = await supabase
         .from('marketplace_orders')
         .select('*')
         .eq('nft_id', id)
         .eq('status', 'active')
-        .single();
+        .maybeSingle(); // This handles 0 or 1 results without throwing an error
+
+      if (orderError) {
+        console.log('Marketplace order fetch error (non-critical):', orderError);
+      }
 
       setMarketplaceOrder(orderData);
 
