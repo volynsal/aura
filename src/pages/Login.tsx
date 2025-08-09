@@ -32,7 +32,7 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  // Auto-authenticate when wallet connects with debouncing
+  // Auto-authenticate when wallet connects
   useEffect(() => {
     console.log('Wallet connection state:', { isConnected, address, walletConnecting, user });
     
@@ -40,7 +40,7 @@ const Login = () => {
       console.log('Starting wallet authentication for:', address);
       setWalletConnecting(true);
       
-      const timeoutId = setTimeout(async () => {
+      const authenticateWallet = async () => {
         console.log('🔄 Executing signInWithWallet for:', address);
         try {
           const result = await signInWithWallet(address);
@@ -53,12 +53,12 @@ const Login = () => {
           }
         } catch (error) {
           console.log('💥 Exception during signInWithWallet:', error);
+        } finally {
+          setWalletConnecting(false);
         }
-        
-        setWalletConnecting(false);
-      }, 1000);
-
-      return () => clearTimeout(timeoutId);
+      };
+      
+      authenticateWallet();
     }
   }, [isConnected, address, signInWithWallet, walletConnecting, user]);
 
