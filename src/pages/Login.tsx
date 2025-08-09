@@ -316,6 +316,9 @@ const Login = () => {
                       console.log('🔌 Disconnecting wallet');
                       disconnect();
                       setWalletConnecting(false);
+                      // Clear any cached wallet state
+                      localStorage.removeItem('walletconnect');
+                      localStorage.removeItem('wagmi.store');
                     }}
                   >
                     Disconnect

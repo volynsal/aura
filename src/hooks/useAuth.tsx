@@ -158,14 +158,18 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         });
       }
       
-      // Always clear local state
+      // Always clear local state and redirect to feed
       setSession(null);
       setUser(null);
+      
+      // Redirect to feed page after sign out
+      window.location.href = '/feed';
     } catch (error: any) {
       console.error('Sign out exception:', error);
       // Clear local state even if sign out fails
       setSession(null);
       setUser(null);
+      window.location.href = '/feed';
     }
   };
 
