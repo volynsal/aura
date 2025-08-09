@@ -77,7 +77,7 @@ const AuraNavbar = () => {
                      Create
                    </Button>
                  </Link>
-                 <Link to="/login">
+                 <Link to={user ? "/profile" : "/login"}>
                    <Button variant={location.pathname === '/profile' ? 'aura' : 'minimal'} size="sm">
                      <User className="w-4 h-4 sm:mr-2" />
                      <span className="hidden sm:inline">Profile</span>
