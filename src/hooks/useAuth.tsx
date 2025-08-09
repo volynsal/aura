@@ -186,8 +186,8 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
   const signInWithWallet = async (walletAddress: string) => {
     try {
-      // Create a unique email for wallet users
-      const walletEmail = `${walletAddress.toLowerCase()}@wallet.local`;
+      // Create a valid email format for wallet users
+      const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
       
       // Try to sign in first (existing wallet user)
       const { error: signInError } = await supabase.auth.signInWithPassword({
@@ -203,40 +203,58 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { error: null };
       }
 
-      // If sign in fails, create new account for this wallet
-      const { error: signUpError } = await supabase.auth.signUp({
-        email: walletEmail,
-        password: walletAddress,
-        options: {
-          emailRedirectTo: `${window.location.origin}/`,
-          data: {
-            wallet_address: walletAddress,
-            display_name: `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+      // Only try to create account if it's an invalid credentials error (user doesn't exist)
+      if (signInError.message.includes('Invalid login credentials')) {
+        const { error: signUpError } = await supabase.auth.signUp({
+          email: walletEmail,
+          password: walletAddress,
+          options: {
+            emailRedirectTo: `${window.location.origin}/`,
+            data: {
+              wallet_address: walletAddress,
+              display_name: `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`
+            }
           }
-        }
-      });
-
-      if (signUpError) {
-        toast({
-          title: "Wallet authentication failed",
-          description: signUpError.message,
-          variant: "destructive"
         });
-        return { error: signUpError };
+
+        if (signUpError) {
+          // Don't show toast for rate limit errors to prevent spam
+          if (!signUpError.message.includes('rate limit')) {
+            toast({
+              title: "Wallet authentication failed",
+              description: signUpError.message,
+              variant: "destructive"
+            });
+          }
+          return { error: signUpError };
+        }
+
+        toast({
+          title: "Account created!",
+          description: "Your wallet has been connected and account created."
+        });
+        return { error: null };
       }
 
-      toast({
-        title: "Account created!",
-        description: "Your wallet has been connected and account created."
-      });
+      // For other errors (like rate limits), don't show toast to prevent spam
+      if (!signInError.message.includes('rate limit')) {
+        toast({
+          title: "Wallet authentication failed",
+          description: signInError.message,
+          variant: "destructive"
+        });
+      }
+      return { error: signInError };
 
-      return { error: null };
     } catch (error: any) {
-      toast({
-        title: "Wallet authentication failed",
-        description: error.message,
-        variant: "destructive"
-      });
+      // Don't show toast for rate limit errors
+      if (!error.message?.includes('rate limit')) {
+        toast({
+          title: "Wallet authentication failed",
+          description: error.message,
+          variant: "destructive"
+        });
+      }
       return { error };
     }
   };

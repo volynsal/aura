@@ -16,6 +16,7 @@ const Login = () => {
   const [password, setPassword] = useState("");
   const [name, setName] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+  const [walletConnecting, setWalletConnecting] = useState(false);
   
   const { signUp, signIn, signInWithWallet, user } = useAuth();
   const navigate = useNavigate();
@@ -29,12 +30,25 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  // Auto-authenticate when wallet connects
+  // Auto-authenticate when wallet connects with debouncing
   useEffect(() => {
-    if (isConnected && address) {
-      signInWithWallet(address);
+    if (isConnected && address && !walletConnecting && !user) {
+      setWalletConnecting(true);
+      
+      const timeoutId = setTimeout(async () => {
+        const result = await signInWithWallet(address);
+        
+        // Stop trying if rate limited
+        if (result.error?.message?.includes('rate limit')) {
+          console.log('Rate limited, stopping wallet authentication attempts');
+        }
+        
+        setWalletConnecting(false);
+      }, 1000); // 1 second delay to prevent rapid calls
+
+      return () => clearTimeout(timeoutId);
     }
-  }, [isConnected, address, signInWithWallet]);
+  }, [isConnected, address, signInWithWallet, walletConnecting, user]);
 
   const handleSignUp = async () => {
     if (!email || !password || !name) return;
