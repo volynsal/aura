@@ -197,8 +197,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signInWithWallet = async (walletAddress: string) => {
-    console.log('WALLET AUTH START - Address:', walletAddress);
-    console.log('WALLET AUTH START - Supabase client available:', !!supabase);
+    console.log('🔵 WALLET AUTH START - Address:', walletAddress);
+    console.log('🔵 WALLET AUTH START - Supabase client available:', !!supabase);
+    console.log('🔵 WALLET AUTH START - Current user state:', user);
+    console.log('🔵 WALLET AUTH START - Current session state:', session);
     
     try {
       // Create a valid email format for wallet users

@@ -55,12 +55,7 @@ export function Web3Provider({ children }: Web3ProviderProps) {
         projectId,
         enableAnalytics: false, // Disable to prevent double loading
         enableOnramp: true,
-        allowUnsupportedChain: false,
-        tokens: {
-          1: {
-            address: '0xA0b86a33E6441b342c22e4b4BdC4E5E61d66e59f'
-          }
-        }
+        allowUnsupportedChain: false
       });
       isWeb3ModalInitialized = true;
     }
