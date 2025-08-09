@@ -188,7 +188,7 @@ const Login = () => {
               </div>
             </div>
 
-            <div className="grid grid-cols-2 gap-3">
+            <div className="grid grid-cols-3 gap-2">
               <Button 
                 variant="outline" 
                 className="w-full"
@@ -211,7 +211,19 @@ const Login = () => {
                 disabled={isPending}
               >
                 <Wallet className="w-4 h-4 mr-2" />
-                Trust Wallet
+                Trust
+              </Button>
+              <Button 
+                variant="outline" 
+                className="w-full"
+                onClick={() => {
+                  const coinbaseConnector = connectors.find(c => c.name === 'Coinbase Wallet');
+                  if (coinbaseConnector) connect({ connector: coinbaseConnector });
+                }}
+                disabled={isPending}
+              >
+                <Chrome className="w-4 h-4 mr-2" />
+                Coinbase
               </Button>
             </div>
             

@@ -1,7 +1,7 @@
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { WagmiProvider } from 'wagmi';
-import { mainnet, polygon, arbitrum } from 'wagmi/chains';
+import { mainnet, polygon, arbitrum, base } from 'wagmi/chains';
 
 import { ReactNode } from 'react';
 
@@ -16,7 +16,7 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 };
 
-const chains = [mainnet, polygon, arbitrum] as const;
+const chains = [mainnet, polygon, arbitrum, base] as const;
 const config = defaultWagmiConfig({
   chains,
   projectId,
