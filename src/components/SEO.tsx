@@ -17,7 +17,9 @@ export function SEO({ title, description, path = "/", image, structuredData }: S
   const imageUrl = finalImage?.startsWith("http") ? finalImage : (SITE_URL ? `${SITE_URL}${finalImage}` : finalImage);
   
   // Debug logging
+  console.log("SEO Component - Title:", title);
   console.log("SEO Component - Final Image URL:", imageUrl);
+  console.log("SEO Component - Original Image:", image);
   
   // Determine image type for better social media compatibility
   const getImageType = (url: string) => {

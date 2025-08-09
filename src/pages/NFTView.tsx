@@ -42,14 +42,18 @@ const NFTView = () => {
   // Check if meta tags are being set correctly - but only after we have NFT data
   useEffect(() => {
     if (nft?.image_url) {
+      console.log("NFT data loaded:", nft.title, nft.image_url);
+      console.log("Creator data loaded:", creator?.display_name || creator?.username);
+      
       setTimeout(() => {
         const ogImage = document.querySelector('meta[property="og:image"]');
         const ogTitle = document.querySelector('meta[property="og:title"]');
         console.log("Current og:image meta tag:", ogImage?.getAttribute('content'));
         console.log("Current og:title meta tag:", ogTitle?.getAttribute('content'));
+        console.log("Expected image URL:", getAbsoluteImageUrl(nft.image_url));
       }, 1000);
     }
-  }, [nft?.image_url]);
+  }, [nft?.image_url, creator]);
 
   const fetchNFT = async () => {
     try {
