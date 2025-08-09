@@ -6,22 +6,10 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogTrigger } from "@/components/ui/dialog";
-import { Settings, Share, Heart, Bookmark, Rss, Quote, Image, Music, Upload, X } from "lucide-react";
-import { Link } from "react-router-dom";
+import { Settings, Share, Heart, Upload, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
-
-const userProfile = {
-  username: "vibe_seeker",
-  displayName: "Maya Chen",
-  bio: "Digital nomad collecting moments that move me 🌙 Currently vibing: melancholic",
-  followers: "2.4K",
-  following: "847",
-  auraScore: "✨ 94",
-  joinedDate: "March 2024",
-  avatar: "/placeholder.svg"
-};
 
 const userPosts = [
   { 
@@ -49,82 +37,6 @@ const userPosts = [
     tags: ["#quotes", "#3am thoughts", "#existential"],
     notes: 2847,
     timestamp: "2 days ago"
-  },
-  { 
-    id: 4, 
-    type: "image", 
-    content: "local cryptid spotted at the coffee shop again (it's me, I'm the cryptid)",
-    tags: ["#cryptid", "#coffee", "#self portrait"],
-    image: "/placeholder.svg",
-    notes: 891,
-    timestamp: "3 days ago"
-  },
-  { 
-    id: 5, 
-    type: "text", 
-    content: "why does every song sound like a soundtrack to my life when it's 2am and I'm having Feelings™",
-    tags: ["#2am", "#feelings", "#music", "#relatable"],
-    notes: 3456,
-    timestamp: "4 days ago"
-  },
-  { 
-    id: 6, 
-    type: "image", 
-    content: "found this old polaroid in a thrift store and now I'm emotionally attached to strangers from the 90s",
-    tags: ["#thrift", "#polaroid", "#vintage", "#nostalgia"],
-    image: "/placeholder.svg",
-    notes: 1829,
-    timestamp: "5 days ago"
-  },
-  { 
-    id: 7, 
-    type: "text", 
-    content: "me: I'm gonna have a productive day\nalso me: *spends 4 hours researching the etymology of random words*",
-    tags: ["#productivity", "#adhd", "#relatable", "#etymology"],
-    notes: 4732,
-    timestamp: "6 days ago"
-  },
-  { 
-    id: 8, 
-    type: "quote", 
-    content: "the urge to disappear and start a new life as a forest witch grows stronger every monday",
-    tags: ["#forest witch", "#monday mood", "#escape fantasy"],
-    notes: 6284,
-    timestamp: "1 week ago"
-  },
-  { 
-    id: 9, 
-    type: "image", 
-    content: "proof that I can look mysterious and ethereal when the lighting is just right (and the camera quality is terrible)",
-    tags: ["#selfie", "#mysterious", "#ethereal", "#bad camera quality"],
-    image: "/placeholder.svg",
-    notes: 2156,
-    timestamp: "1 week ago"
-  },
-  { 
-    id: 10, 
-    type: "text", 
-    content: "hot take: the best conversations happen in grocery store aisles at 11pm when you're both questioning your life choices",
-    tags: ["#hot take", "#grocery store", "#11pm thoughts", "#life choices"],
-    notes: 3847,
-    timestamp: "1 week ago"
-  },
-  { 
-    id: 11, 
-    type: "image", 
-    content: "accidentally created art while procrastinating on actual art",
-    tags: ["#procrastination", "#accidental art", "#irony"],
-    image: "/placeholder.svg",
-    notes: 1945,
-    timestamp: "2 weeks ago"
-  },
-  { 
-    id: 12, 
-    type: "text", 
-    content: "shoutout to my anxiety for always keeping me on my toes and also ruining everything",
-    tags: ["#anxiety", "#mental health", "#relatable", "#dark humor"],
-    notes: 5672,
-    timestamp: "2 weeks ago"
   }
 ];
 
@@ -134,26 +46,80 @@ const savedCollections = [
   { name: "Future Nostalgia", pieces: 15, mood: "nostalgic", preview: "/placeholder.svg" }
 ];
 
-const auraActivity = [
-  { type: "minted", item: "Midnight Frequency #7", time: "2 hours ago", mood: "dark" },
-  { type: "curated", item: "Digital Solitude collection", time: "5 hours ago", mood: "melancholic" },
-  { type: "vibed", item: "Neon Dreams by cyber_artist", time: "1 day ago", mood: "euphoric" },
-  { type: "collected", item: "Void Walker #12", time: "2 days ago", mood: "dark" }
-];
-
 const Profile = () => {
   const [isOwnProfile] = useState(true);
   const [isEditing, setIsEditing] = useState(false);
+  const [profile, setProfile] = useState<any>(null);
   const [editForm, setEditForm] = useState({
-    username: userProfile.username,
-    bio: userProfile.bio,
-    avatar_url: userProfile.avatar
+    username: '',
+    bio: '',
+    avatar_url: ''
   });
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [isUploading, setIsUploading] = useState(false);
+  const [isLoading, setIsLoading] = useState(true);
   
   const { user } = useAuth();
   const { toast } = useToast();
+
+  // Fetch profile data
+  useEffect(() => {
+    if (user) {
+      fetchProfile();
+    }
+  }, [user]);
+
+  const fetchProfile = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('*')
+        .eq('user_id', user.id)
+        .maybeSingle();
+
+      if (error) throw error;
+
+      if (data) {
+        setProfile(data);
+        setEditForm({
+          username: data.username || '',
+          bio: data.bio || '',
+          avatar_url: data.avatar_url || ''
+        });
+      } else {
+        // Create initial profile if it doesn't exist
+        const { data: newProfile, error: createError } = await supabase
+          .from('profiles')
+          .insert({
+            user_id: user.id,
+            username: user.email?.split('@')[0] || 'user',
+            bio: '',
+            avatar_url: ''
+          })
+          .select()
+          .single();
+
+        if (createError) throw createError;
+        
+        setProfile(newProfile);
+        setEditForm({
+          username: newProfile.username || '',
+          bio: newProfile.bio || '',
+          avatar_url: newProfile.avatar_url || ''
+        });
+      }
+    } catch (error: any) {
+      toast({
+        title: "Error loading profile",
+        description: error.message,
+        variant: "destructive"
+      });
+    } finally {
+      setIsLoading(false);
+    }
+  };
 
   const handleAvatarChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -198,7 +164,7 @@ const Profile = () => {
       }
 
       // Update profile in database
-      const { error } = await supabase
+      const { data, error } = await supabase
         .from('profiles')
         .upsert({
           user_id: user.id,
@@ -207,10 +173,15 @@ const Profile = () => {
           avatar_url: avatarUrl
         }, {
           onConflict: 'user_id'
-        });
+        })
+        .select()
+        .single();
 
       if (error) throw error;
 
+      // Update local state
+      setProfile(data);
+      
       toast({
         title: "Profile updated!",
         description: "Your profile has been successfully updated."
@@ -229,25 +200,46 @@ const Profile = () => {
     }
   };
 
+  if (isLoading) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <div className="w-8 h-8 border-2 border-primary border-t-transparent rounded-full animate-spin mx-auto mb-2"></div>
+          <p className="text-muted-foreground">Loading profile...</p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!profile) {
+    return (
+      <div className="min-h-screen bg-background flex items-center justify-center">
+        <div className="text-center">
+          <p className="text-muted-foreground">Profile not found</p>
+        </div>
+      </div>
+    );
+  }
+
   return (
     <div className="min-h-screen bg-background">
       <div className="max-w-2xl mx-auto px-4 py-6">
-        {/* Tumblr-style Header */}
+        {/* Profile Header */}
         <div className="text-center mb-6 pb-6 border-b border-border/30">
           <Avatar className="w-20 h-20 mx-auto mb-3">
-            <AvatarImage src={userProfile.avatar} />
-            <AvatarFallback className="text-2xl">{userProfile.displayName[0]}</AvatarFallback>
+            <AvatarImage src={profile.avatar_url} />
+            <AvatarFallback className="text-2xl">{profile.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
           </Avatar>
           
-          <h1 className="text-2xl font-bold mb-1">{userProfile.username}</h1>
+          <h1 className="text-2xl font-bold mb-1">{profile.username || 'Anonymous'}</h1>
           <p className="text-muted-foreground text-sm mb-4 max-w-md mx-auto leading-relaxed">
-            {userProfile.bio}
+            {profile.bio || 'No bio yet'}
           </p>
           
           <div className="flex justify-center gap-4 text-xs text-muted-foreground mb-4">
-            <span>Since {userProfile.joinedDate}</span>
+            <span>Since {new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
             <span>•</span>
-            <span>Aura {userProfile.auraScore}</span>
+            <span>Aura ✨ 94</span>
           </div>
           
           {isOwnProfile ? (
@@ -268,7 +260,7 @@ const Profile = () => {
                     <div className="flex flex-col items-center space-y-2">
                       <Avatar className="w-20 h-20">
                         <AvatarImage src={editForm.avatar_url} />
-                        <AvatarFallback className="text-2xl">{editForm.username[0]?.toUpperCase()}</AvatarFallback>
+                        <AvatarFallback className="text-2xl">{editForm.username[0]?.toUpperCase() || 'U'}</AvatarFallback>
                       </Avatar>
                       <div className="flex gap-2">
                         <label htmlFor="avatar-upload">
@@ -337,9 +329,9 @@ const Profile = () => {
                         onClick={() => {
                           setIsEditing(false);
                           setEditForm({
-                            username: userProfile.username,
-                            bio: userProfile.bio,
-                            avatar_url: userProfile.avatar
+                            username: profile.username || '',
+                            bio: profile.bio || '',
+                            avatar_url: profile.avatar_url || ''
                           });
                           setAvatarFile(null);
                         }}
@@ -362,7 +354,7 @@ const Profile = () => {
           )}
         </div>
 
-        {/* Tumblr-style Navigation */}
+        {/* Tabs */}
         <Tabs defaultValue="posts" className="w-full">
           <TabsList className="w-full grid grid-cols-4 mb-6 bg-surface/50">
             <TabsTrigger value="posts" className="text-xs">Posts</TabsTrigger>
@@ -384,11 +376,11 @@ const Profile = () => {
                   {/* Post Header */}
                   <div className="flex items-center gap-3 p-3 border-b border-border/20">
                     <Avatar className="w-6 h-6">
-                      <AvatarImage src={userProfile.avatar} />
-                      <AvatarFallback className="text-xs">{userProfile.username[0]}</AvatarFallback>
+                      <AvatarImage src={profile.avatar_url} />
+                      <AvatarFallback className="text-xs">{profile.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
                     </Avatar>
                     <div className="flex-1">
-                      <span className="font-medium text-xs">{userProfile.username}</span>
+                      <span className="font-medium text-xs">{profile.username}</span>
                     </div>
                     <button className="text-muted-foreground hover:text-foreground">
                       <span className="text-xs">•••</span>
