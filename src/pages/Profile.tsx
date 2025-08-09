@@ -205,6 +205,8 @@ const Profile = () => {
           username: editForm.username,
           bio: editForm.bio,
           avatar_url: avatarUrl
+        }, {
+          onConflict: 'user_id'
         });
 
       if (error) throw error;
