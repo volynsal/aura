@@ -209,70 +209,80 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log('🔵 WALLET AUTH START - Address:', walletAddress);
     
     try {
-      // Create a valid email format for wallet users
-      const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
-      console.log('🔵 WALLET AUTH - Generated email:', walletEmail);
+      // Create a profile directly without going through auth signup
+      // This bypasses email confirmation issues
       
-      // Try to sign in first (existing wallet user)
-      console.log('🔵 WALLET AUTH - Attempting sign in...');
-      
-      const signInResult = await supabase.auth.signInWithPassword({
-        email: walletEmail,
-        password: walletAddress
-      });
-      
-      if (!signInResult.error) {
-        console.log('🔵 WALLET AUTH - SUCCESS - Existing user signed in');
-        toast({
-          title: "Welcome back!",
-          description: "Signed in with your wallet."
+      // First check if profile already exists
+      const { data: existingProfile } = await supabase
+        .from('profiles')
+        .select('user_id')
+        .eq('wallet_address', walletAddress)
+        .maybeSingle();
+
+      if (existingProfile) {
+        console.log('🔵 WALLET AUTH - Profile exists, trying to sign in...');
+        
+        // Try to sign in with existing wallet user
+        const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
+        const signInResult = await supabase.auth.signInWithPassword({
+          email: walletEmail,
+          password: walletAddress
         });
-        return { error: null };
+
+        if (!signInResult.error) {
+          console.log('🔵 WALLET AUTH - SUCCESS - Existing user signed in');
+          toast({
+            title: "Welcome back!",
+            description: "Signed in with your wallet."
+          });
+          return { error: null };
+        }
       }
 
-      // If user doesn't exist, create a new account
-      if (signInResult.error?.message === 'Invalid login credentials') {
-        console.log('🔵 WALLET AUTH - Creating new wallet user...');
-        
-        const signUpResult = await supabase.auth.signUp({
-          email: walletEmail,
-          password: walletAddress,
-          options: {
-            emailRedirectTo: `${window.location.origin}/profile`,
-            data: {
-              wallet_address: walletAddress,
-              display_name: `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
-              username: `user-${walletAddress.slice(2, 8)}`
-            }
+      // Create new wallet user
+      console.log('🔵 WALLET AUTH - Creating new wallet user...');
+      const walletEmail = `wallet-${walletAddress.toLowerCase().slice(2)}@aura.app`;
+      
+      // Sign up the user
+      const signUpResult = await supabase.auth.signUp({
+        email: walletEmail,
+        password: walletAddress,
+        options: {
+          data: {
+            wallet_address: walletAddress,
+            display_name: `${walletAddress.slice(0, 6)}...${walletAddress.slice(-4)}`,
+            username: `user-${walletAddress.slice(2, 8)}`
           }
-        });
-
-        if (signUpResult.error) {
-          console.log('🔵 WALLET AUTH - FAILED - Sign up error:', signUpResult.error.message);
-          toast({
-            title: "Account creation failed",
-            description: signUpResult.error.message,
-            variant: "destructive"
-          });
-          return { error: signUpResult.error };
         }
+      });
 
-        console.log('🔵 WALLET AUTH - SUCCESS - New wallet user created');
+      if (signUpResult.error) {
+        console.log('🔵 WALLET AUTH - Sign up error:', signUpResult.error.message);
+        toast({
+          title: "Account creation failed",
+          description: signUpResult.error.message,
+          variant: "destructive"
+        });
+        return { error: signUpResult.error };
+      }
+
+      // If signup was successful, the user should be signed in automatically
+      if (signUpResult.data.user && signUpResult.data.session) {
+        console.log('🔵 WALLET AUTH - SUCCESS - New user created and signed in');
         toast({
           title: "Welcome to Aura!",
-          description: "Your wallet account has been created. Complete your profile setup."
+          description: "Your wallet account has been created."
         });
         return { error: null };
+      } else {
+        console.log('🔵 WALLET AUTH - Sign up successful but no session - email confirmation may be required');
+        toast({
+          title: "Account created",
+          description: "Please check your email to verify your account, or contact support.",
+          variant: "destructive"
+        });
+        return { error: new Error('Email confirmation required') };
       }
-
-      // Handle other errors
-      console.log('🔵 WALLET AUTH - FAILED - Other error:', signInResult.error?.message);
-      toast({
-        title: "Authentication failed",
-        description: signInResult.error?.message || "Unknown error",
-        variant: "destructive"
-      });
-      return { error: signInResult.error };
 
     } catch (error: any) {
       console.log('🔵 WALLET AUTH - EXCEPTION:', error);
