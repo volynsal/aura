@@ -10,6 +10,7 @@ import { Settings, Share, Heart, Upload, X } from "lucide-react";
 import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import { useNavigate } from "react-router-dom";
 
 const userPosts = [
   { 
@@ -47,7 +48,16 @@ const savedCollections = [
 ];
 
 const Profile = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
   const [isOwnProfile] = useState(true);
+
+  // Redirect to login if not authenticated
+  useEffect(() => {
+    if (!user) {
+      navigate('/login');
+    }
+  }, [user, navigate]);
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<any>(null);
   const [editForm, setEditForm] = useState({
@@ -59,7 +69,6 @@ const Profile = () => {
   const [isUploading, setIsUploading] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
   
-  const { user } = useAuth();
   const { toast } = useToast();
 
   // Fetch profile data

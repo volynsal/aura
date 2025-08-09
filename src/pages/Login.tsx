@@ -32,28 +32,35 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  // Manual wallet authentication only
-  const handleWalletAuth = async () => {
-    if (!address || walletConnecting || user) return;
+  // Auto-authenticate when wallet connects (for signup flow)
+  useEffect(() => {
+    console.log('Wallet connection state:', { isConnected, address, walletConnecting, user });
     
-    console.log('🔄 Manual wallet authentication for:', address);
-    setWalletConnecting(true);
-    
-    try {
-      const result = await signInWithWallet(address);
-      console.log('✅ signInWithWallet completed:', result);
+    if (isConnected && address && !walletConnecting && !user) {
+      console.log('Starting wallet authentication for:', address);
+      setWalletConnecting(true);
       
-      if (result.error) {
-        console.log('❌ Authentication failed:', result.error.message);
-      } else {
-        console.log('🎉 Wallet authentication successful!');
-      }
-    } catch (error) {
-      console.log('💥 Exception during signInWithWallet:', error);
-    } finally {
-      setWalletConnecting(false);
+      const authenticateWallet = async () => {
+        console.log('🔄 Executing signInWithWallet for:', address);
+        try {
+          const result = await signInWithWallet(address);
+          console.log('✅ signInWithWallet completed:', result);
+          
+          if (result.error) {
+            console.log('❌ Authentication failed:', result.error.message);
+          } else {
+            console.log('🎉 Wallet authentication successful!');
+          }
+        } catch (error) {
+          console.log('💥 Exception during signInWithWallet:', error);
+        } finally {
+          setWalletConnecting(false);
+        }
+      };
+      
+      authenticateWallet();
     }
-  };
+  }, [isConnected, address, signInWithWallet, walletConnecting, user]);
 
   const handleSignUp = async () => {
     if (!email || !password || !name) return;
@@ -284,7 +291,19 @@ const Login = () => {
                   <Button 
                     variant="outline" 
                     size="sm"
-                    onClick={handleWalletAuth}
+                    onClick={async () => {
+                      if (!user && address) {
+                        setWalletConnecting(true);
+                        try {
+                          const result = await signInWithWallet(address);
+                          console.log('🔄 Manual authentication result:', result);
+                        } catch (error) {
+                          console.log('💥 Manual authentication error:', error);
+                        } finally {
+                          setWalletConnecting(false);
+                        }
+                      }
+                    }}
                     disabled={walletConnecting || !!user}
                   >
                     {walletConnecting ? "Auth..." : "Sign In"}
