@@ -60,6 +60,7 @@ const Profile = () => {
   }, [user, navigate]);
   const [isEditing, setIsEditing] = useState(false);
   const [profile, setProfile] = useState<any>(null);
+  const [userNFTs, setUserNFTs] = useState<any[]>([]);
   const [editForm, setEditForm] = useState({
     username: '',
     bio: '',
@@ -75,8 +76,31 @@ const Profile = () => {
   useEffect(() => {
     if (user) {
       fetchProfile();
+      fetchUserNFTs();
     }
   }, [user]);
+
+  const fetchUserNFTs = async () => {
+    if (!user) return;
+    
+    try {
+      const { data, error } = await supabase
+        .from('nfts')
+        .select('*')
+        .eq('creator_id', user.id)
+        .order('created_at', { ascending: false });
+
+      if (error) throw error;
+      setUserNFTs(data || []);
+    } catch (error: any) {
+      console.error('Error fetching NFTs:', error);
+      toast({
+        title: "Error loading NFTs",
+        description: error.message,
+        variant: "destructive"
+      });
+    }
+  };
 
   const fetchProfile = async () => {
     if (!user) return;
@@ -377,99 +401,120 @@ const Profile = () => {
           </TabsList>
 
           <TabsContent value="posts" className="mt-6">
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-max">
-              {userPosts.map((post, index) => (
-                <article 
-                  key={post.id} 
-                  className="bg-surface border border-border/30 rounded-lg overflow-hidden"
-                  style={{ 
-                    gridRowEnd: post.type === "text" && post.content.length > 100 ? "span 2" : "auto"
-                  }}
+            {userNFTs.length === 0 ? (
+              <div className="text-center py-12">
+                <div className="w-24 h-24 bg-primary/20 rounded-full mx-auto mb-4 flex items-center justify-center">
+                  <span className="text-2xl">🎨</span>
+                </div>
+                <h3 className="text-xl font-bold mb-2">No NFTs Yet</h3>
+                <p className="text-muted-foreground mb-6">Upload your first NFT to get started</p>
+                <Button 
+                  onClick={() => navigate('/create')}
+                  variant="aura"
                 >
-                  {/* Post Header */}
-                  <div className="flex items-center gap-3 p-3 border-b border-border/20">
-                    <Avatar className="w-6 h-6">
-                      <AvatarImage src={profile.avatar_url} />
-                      <AvatarFallback className="text-xs">{profile.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1">
-                      <span className="font-medium text-xs">{profile.username}</span>
+                  Upload NFT
+                </Button>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 auto-rows-max">
+                {userNFTs.map((nft, index) => (
+                  <article 
+                    key={nft.id} 
+                    className="bg-surface border border-border/30 rounded-lg overflow-hidden hover:border-primary/50 transition-colors"
+                  >
+                    {/* NFT Header */}
+                    <div className="flex items-center gap-3 p-3 border-b border-border/20">
+                      <Avatar className="w-6 h-6">
+                        <AvatarImage src={profile.avatar_url} />
+                        <AvatarFallback className="text-xs">{profile.username?.[0]?.toUpperCase() || 'U'}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1">
+                        <span className="font-medium text-xs">{profile.username}</span>
+                        <span className="text-xs text-muted-foreground ml-2">
+                          {new Date(nft.created_at).toLocaleDateString()}
+                        </span>
+                      </div>
+                      <button className="text-muted-foreground hover:text-foreground">
+                        <span className="text-xs">•••</span>
+                      </button>
                     </div>
-                    <button className="text-muted-foreground hover:text-foreground">
-                      <span className="text-xs">•••</span>
-                    </button>
-                  </div>
-                  
-                  {/* Post Content */}
-                  <div className="p-3">
-                    {post.type === "image" && post.image && (
-                      <div className="mb-3">
-                        <img 
-                          src={post.image} 
-                          alt={post.content || "User post image"} 
-                          className="w-full rounded-md object-cover"
-                          style={{ 
-                            height: `${180 + (index % 4) * 60}px`
-                          }}
-                          loading="lazy"
-                          decoding="async"
-                        />
-                      </div>
-                    )}
                     
-                    {post.type === "quote" && (
-                      <div className="mb-3 p-4 bg-surface-elevated rounded-md min-h-[120px] flex items-center">
-                        <blockquote className="text-sm italic leading-relaxed">
-                          "{post.content}"
-                          {post.source && (
-                            <cite className="block text-xs text-muted-foreground mt-2 not-italic">
-                              — {post.source}
-                            </cite>
+                    {/* NFT Image */}
+                    <div className="relative">
+                      <img 
+                        src={nft.image_url} 
+                        alt={nft.title} 
+                        className="w-full object-cover"
+                        style={{ 
+                          height: `${200 + (index % 3) * 40}px`
+                        }}
+                        loading="lazy"
+                        decoding="async"
+                      />
+                      {/* NFT Badge */}
+                      <div className="absolute top-2 right-2">
+                        <Badge variant="secondary" className="text-xs bg-black/50 text-white">
+                          NFT
+                        </Badge>
+                      </div>
+                    </div>
+                    
+                    {/* NFT Content */}
+                    <div className="p-3">
+                      <h3 className="font-medium text-sm mb-1">{nft.title}</h3>
+                      {nft.description && (
+                        <p className="text-xs text-muted-foreground mb-2 line-clamp-2">
+                          {nft.description}
+                        </p>
+                      )}
+                      
+                      {/* Price & Rarity */}
+                      <div className="flex items-center justify-between mb-3">
+                        {nft.price_eth && (
+                          <span className="text-xs font-medium text-primary">
+                            {nft.price_eth} ETH
+                          </span>
+                        )}
+                        {nft.rarity && (
+                          <Badge variant="outline" className="text-xs capitalize">
+                            {nft.rarity}
+                          </Badge>
+                        )}
+                      </div>
+                      
+                      {/* Attributes */}
+                      {nft.attributes && nft.attributes.length > 0 && (
+                        <div className="flex flex-wrap gap-1 mb-3">
+                          {nft.attributes.slice(0, 2).map((attr: any, idx: number) => (
+                            <span key={idx} className="text-xs bg-surface-elevated px-2 py-1 rounded">
+                              {attr.trait_type}: {attr.value}
+                            </span>
+                          ))}
+                          {nft.attributes.length > 2 && (
+                            <span className="text-xs text-muted-foreground">+{nft.attributes.length - 2}</span>
                           )}
-                        </blockquote>
-                      </div>
-                    )}
-                    
-                    {post.type === "text" && (
-                      <div className="mb-3">
-                        <p className="text-sm leading-relaxed">{post.content}</p>
-                      </div>
-                    )}
-                    
-                    {(post.type === "image" && post.content) && (
-                      <p className="text-sm leading-relaxed mb-3">{post.content}</p>
-                    )}
-                    
-                    {/* Tags */}
-                    <div className="flex flex-wrap gap-1 mb-3">
-                      {post.tags.slice(0, 3).map((tag, idx) => (
-                        <button key={idx} className="text-xs text-primary hover:underline">
-                          {tag}
-                        </button>
-                      ))}
-                      {post.tags.length > 3 && (
-                        <span className="text-xs text-muted-foreground">+{post.tags.length - 3}</span>
+                        </div>
                       )}
                     </div>
-                  </div>
-                  
-                  {/* Post Footer */}
-                  <div className="px-3 pb-3 flex items-center justify-between border-t border-border/20 pt-2">
-                    <span className="text-xs text-muted-foreground">
-                      {post.notes.toLocaleString()} notes
-                    </span>
-                    <div className="flex gap-3">
-                      <button className="text-muted-foreground hover:text-primary transition-colors">
-                        <span className="text-sm">↻</span>
-                      </button>
-                      <button className="text-muted-foreground hover:text-red-500 transition-colors">
-                        <Heart className="w-3 h-3" />
-                      </button>
+                    
+                    {/* NFT Footer */}
+                    <div className="px-3 pb-3 flex items-center justify-between border-t border-border/20 pt-2">
+                      <span className="text-xs text-muted-foreground">
+                        {nft.is_minted ? 'Minted' : 'Not Minted'}
+                      </span>
+                      <div className="flex gap-3">
+                        <button className="text-muted-foreground hover:text-primary transition-colors">
+                          <span className="text-sm">↻</span>
+                        </button>
+                        <button className="text-muted-foreground hover:text-red-500 transition-colors">
+                          <Heart className="w-3 h-3" />
+                        </button>
+                      </div>
                     </div>
-                  </div>
-                </article>
-              ))}
-            </div>
+                  </article>
+                ))}
+              </div>
+            )}
           </TabsContent>
 
           <TabsContent value="saved" className="mt-6">
