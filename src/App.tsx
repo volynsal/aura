@@ -16,7 +16,6 @@ import AuraNavbar from "./components/AuraNavbar";
 import { AuthProvider } from "./hooks/useAuth";
 import { Web3Provider } from "./components/Web3Provider";
 import { HelmetProvider } from "react-helmet-async";
-import SEO from "./components/SEO";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -29,12 +28,6 @@ const queryClient = new QueryClient({
 const App = () => (
   <QueryClientProvider client={queryClient}>
     <HelmetProvider>
-      {/* Default SEO for all pages */}
-      <SEO 
-        title="Aura — Your mood is your gallery"
-        description="Aura: Your mood is your gallery. Share and discover digital art by vibe."
-        image="/lovable-uploads/c01519dd-0698-4c23-b3a7-e5af5415a354.png"
-      />
       <Web3Provider>
         <AuthProvider>
           <TooltipProvider>
