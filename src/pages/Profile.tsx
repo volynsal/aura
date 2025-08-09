@@ -137,30 +137,21 @@ const Profile = () => {
   const uploadAvatar = async (file: File) => {
     if (!user?.id) throw new Error('User not authenticated');
     
-    console.log('Starting avatar upload for user:', user.id);
-    console.log('File details:', { name: file.name, size: file.size, type: file.type });
-    
     const fileExt = file.name.split('.').pop();
     const fileName = `${user.id}/avatar.${fileExt}`;
     
-    console.log('Uploading to path:', fileName);
-    
-    const { error: uploadError, data: uploadData } = await supabase.storage
+    const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(fileName, file, { upsert: true });
 
     if (uploadError) {
-      console.error('Upload error details:', uploadError);
       throw new Error(`Failed to upload avatar: ${uploadError.message}`);
     }
-
-    console.log('Upload successful:', uploadData);
 
     const { data } = supabase.storage
       .from('avatars')
       .getPublicUrl(fileName);
 
-    console.log('Public URL generated:', data.publicUrl);
     return data.publicUrl;
   };
 
