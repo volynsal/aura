@@ -53,9 +53,13 @@ export function Web3Provider({ children }: Web3ProviderProps) {
       createWeb3Modal({
         wagmiConfig: config,
         projectId,
-        enableAnalytics: false, // Disable to prevent double loading
+        enableAnalytics: false, // Disable to prevent analytics errors
         enableOnramp: true,
-        allowUnsupportedChain: false
+        allowUnsupportedChain: false,
+        themeMode: 'dark',
+        themeVariables: {
+          '--w3m-z-index': 1000
+        }
       });
       isWeb3ModalInitialized = true;
     }
