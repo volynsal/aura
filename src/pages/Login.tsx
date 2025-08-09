@@ -32,35 +32,32 @@ const Login = () => {
     }
   }, [user, navigate]);
 
-  // Auto-authenticate when wallet connects with debouncing
+  // Auto-authenticate when wallet connects
   useEffect(() => {
-    console.log('Wallet connection state:', { isConnected, address, walletConnecting, user });
+    console.log('🔍 Wallet state check:', { isConnected, address, walletConnecting, user });
     
-    if (isConnected && address && !walletConnecting && !user) {
-      console.log('Starting wallet authentication for:', address);
+    if (isConnected && address && !user) {
+      console.log('🔄 Wallet connected, starting authentication...', address);
       setWalletConnecting(true);
       
-      const timeoutId = setTimeout(async () => {
-        console.log('🔄 Executing signInWithWallet for:', address);
-        try {
-          const result = await signInWithWallet(address);
-          console.log('✅ signInWithWallet completed:', result);
-          
+      // Call signInWithWallet immediately
+      signInWithWallet(address)
+        .then((result) => {
+          console.log('🔄 signInWithWallet completed:', result);
           if (result.error) {
             console.log('❌ Authentication failed:', result.error.message);
           } else {
-            console.log('🎉 Wallet authentication successful!');
+            console.log('✅ Authentication successful!');
           }
-        } catch (error) {
+        })
+        .catch((error) => {
           console.log('💥 Exception during signInWithWallet:', error);
-        }
-        
-        setWalletConnecting(false);
-      }, 1000);
-
-      return () => clearTimeout(timeoutId);
+        })
+        .finally(() => {
+          setWalletConnecting(false);
+        });
     }
-  }, [isConnected, address, signInWithWallet, walletConnecting, user]);
+  }, [isConnected, address, signInWithWallet, user]);
 
   const handleSignUp = async () => {
     if (!email || !password || !name) return;
