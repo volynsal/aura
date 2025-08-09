@@ -6,7 +6,7 @@ import { mainnet, polygon, arbitrum, base } from 'wagmi/chains';
 import { ReactNode } from 'react';
 
 // Get projectId from WalletConnect Cloud
-const projectId = 'your-project-id-here';
+const projectId = '6cdf8f3385abe52c71db1e86d8a627d6';
 
 // Create wagmi config
 const metadata = {
