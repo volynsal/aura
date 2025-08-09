@@ -135,14 +135,19 @@ const Profile = () => {
   };
 
   const uploadAvatar = async (file: File) => {
+    if (!user?.id) throw new Error('User not authenticated');
+    
     const fileExt = file.name.split('.').pop();
-    const fileName = `${user?.id}/avatar.${fileExt}`;
+    const fileName = `${user.id}/avatar.${fileExt}`;
     
     const { error: uploadError } = await supabase.storage
       .from('avatars')
       .upload(fileName, file, { upsert: true });
 
-    if (uploadError) throw uploadError;
+    if (uploadError) {
+      console.error('Upload error:', uploadError);
+      throw uploadError;
+    }
 
     const { data } = supabase.storage
       .from('avatars')
