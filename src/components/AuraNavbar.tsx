@@ -89,8 +89,9 @@ const AuraNavbar = () => {
                       variant="minimal" 
                       size="sm" 
                       onClick={async () => {
+                        console.log('🚪 Navbar logout clicked');
                         await signOut();
-                        navigate('/feed');
+                        // signOut now handles the redirect
                       }}
                       className="text-muted-foreground hover:text-foreground"
                     >

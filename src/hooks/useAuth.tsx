@@ -167,22 +167,29 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signOut = async () => {
+    console.log('🚪 Starting complete logout...');
+    
     try {
-      // Always attempt to sign out regardless of session state
+      // Clear all wallet-related localStorage first
+      localStorage.removeItem('walletconnect');
+      localStorage.removeItem('wagmi.store');
+      localStorage.removeItem('wagmi.cache'); 
+      localStorage.removeItem('wagmi.wallet');
+      localStorage.removeItem('wagmi.injected.shimDisconnect');
+      localStorage.removeItem('wagmi.recentConnectorId');
+      
+      // Sign out from Supabase with local scope to clear session
       const { error } = await supabase.auth.signOut({ scope: 'local' });
       
-      if (error) {
+      if (error && !error.message.includes('session')) {
         console.error('Sign out error:', error);
-        // Don't show error toast for missing session - just clear local state
-        if (!error.message.includes('session')) {
-          toast({
-            title: "Sign out failed",
-            description: error.message,
-            variant: "destructive"
-          });
-        }
+        toast({
+          title: "Sign out failed", 
+          description: error.message,
+          variant: "destructive"
+        });
       } else {
-        // Only show success toast if not on login page
+        console.log('✅ Supabase logout successful');
         if (!window.location.pathname.includes('/login')) {
           toast({
             title: "Signed out",
@@ -195,11 +202,24 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
       setSession(null);
       setUser(null);
       
+      console.log('✅ Complete logout successful');
+      
+      // Force page reload to clear any cached state
+      setTimeout(() => {
+        window.location.href = '/feed';
+      }, 100);
+      
     } catch (error: any) {
-      console.error('Sign out exception:', error);
-      // Clear local state even if sign out fails
-      setSession(null);
+      console.error('❌ Error during logout:', error);
+      
+      // Force clear everything even if there's an error
       setUser(null);
+      setSession(null);
+      localStorage.clear();
+      
+      setTimeout(() => {
+        window.location.href = '/feed';
+      }, 100);
     }
   };
 
