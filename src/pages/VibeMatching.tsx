@@ -7,6 +7,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
+import { useSearchParams } from "react-router-dom";
 
 // Dynamic cards sourced from NFTs and user-selected moods
 const VibeMatching = () => {
@@ -22,6 +23,18 @@ const VibeMatching = () => {
   const [userMoods, setUserMoods] = useState<string[]>([]);
   const [creatorMap, setCreatorMap] = useState<Record<string, string>>({});
   const [creatorSearchMap, setCreatorSearchMap] = useState<Record<string, { display: string; username: string }>>({});
+
+  const [searchParams] = useSearchParams();
+
+  useEffect(() => {
+    const q = (searchParams.get('q') || '').trim();
+    if (q) {
+      if (q !== moodQuery) setMoodQuery(q);
+      const moods = q.split(',').map(m => m.toLowerCase().trim()).filter(Boolean).slice(0, 5);
+      setUserMoods(moods);
+      console.log('VibeMatching: URL param q detected', { q, moods });
+    }
+  }, [searchParams]);
 
   const currentCard = cards[currentIndex];
 
