@@ -18,8 +18,8 @@ const AuraNavbar = () => {
         <div className="flex items-center justify-between min-w-max px-3 sm:px-6 max-w-6xl mx-auto">
           <div className="flex items-center gap-4 sm:gap-8 flex-shrink-0">
             <Link to="/" className="flex items-center gap-2 sm:gap-3">
-              <img src={auraLogo} alt="Aura logo — mood-based art platform" className="w-6 h-6 sm:w-10 sm:h-10" />
-              <h1 className="text-lg sm:text-3xl font-bold">
+              <img src={auraLogo} alt="Aura logo — mood-based art platform" className="w-8 h-8 sm:w-10 sm:h-10" />
+              <h1 className="text-xl sm:text-3xl font-bold">
                 <span className="text-primary">AURA</span>
               </h1>
             </Link>
