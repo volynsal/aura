@@ -185,78 +185,77 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
     console.log('🚪 SIGNOUT: Starting logout process...');
     console.log('🚪 SIGNOUT: Current user before logout:', user?.id);
     console.log('🚪 SIGNOUT: Current session before logout:', !!session);
-    
+
     try {
-      // 1. Clear local state immediately
+      // 0. Mark signout in progress to block auto re-auth (e.g., wallet auto-connect)
+      const now = Date.now().toString();
+      try {
+        localStorage.setItem('signout-in-progress', now);
+        sessionStorage.setItem('signout-in-progress', now);
+      } catch (e) {
+        console.log('🚪 SIGNOUT: Unable to set signout-in-progress flag', e);
+      }
+
+      // 1. Clear local auth state immediately (optimistic UI)
       console.log('🚪 SIGNOUT: Clearing local state immediately');
       setSession(null);
       setUser(null);
       setLoading(false);
-      
-      // 2. Sign out from Supabase
-      console.log('🚪 SIGNOUT: Calling Supabase signOut');
-      const { error } = await supabase.auth.signOut();
-      
+
+      // 2. Revoke tokens and clear Supabase session (GLOBAL)
+      console.log('🚪 SIGNOUT: Calling Supabase signOut (global)');
+      const { error } = await supabase.auth.signOut({ scope: 'global' });
+
       if (error) {
         console.error('🚪 SIGNOUT: Supabase error:', error);
         // Continue with cleanup even if there's an error
       } else {
         console.log('🚪 SIGNOUT: Supabase logout successful');
       }
-      
-      // 3. Clear sensitive storage items (simplified for mobile compatibility)
-      console.log('🚪 SIGNOUT: Clearing storage');
+
+      // 3. Clear sensitive storage/caches that can trigger re-auth
+      console.log('🚪 SIGNOUT: Clearing storage caches');
       try {
-        // Only clear specific items that might interfere
         const keysToRemove = [
           'walletconnect',
-          'wagmi.store', 
+          'wagmi.store',
           'wagmi.cache',
-          'wagmi.recentConnectorId'
+          'wagmi.recentConnectorId',
+          // Supabase auth token key (project specific)
+          'sb-oyacwfzdaciskhlclrby-auth-token'
         ];
-        
-        keysToRemove.forEach(key => {
-          try {
-            localStorage.removeItem(key);
-          } catch (e) {
-            console.log('🚪 SIGNOUT: Storage error for key:', key, e);
-          }
+        keysToRemove.forEach((key) => {
+          try { localStorage.removeItem(key); } catch {}
+          try { sessionStorage.removeItem(key); } catch {}
         });
       } catch (e) {
-        console.log('🚪 SIGNOUT: Storage clear error (ignoring):', e);
+        console.log('🚪 SIGNOUT: Storage clear error (ignored):', e);
       }
-      
-      // 4. Show success message
-      console.log('🚪 SIGNOUT: Logout process completed');
-      
+
+      // 4. Notify and redirect to Login to avoid private pages flicker
       toast({
-        title: "Signed out successfully",
-        description: "Redirecting to feed..."
+        title: 'Signed out successfully',
+        description: 'Redirecting to login...'
       });
-      
-      // 5. Use React Router navigation instead of window.location
-      console.log('🚪 SIGNOUT: Redirecting to feed');
-      // Use a shorter delay for better mobile experience
-      setTimeout(() => {
-        window.location.href = '/feed';
-      }, 500);
-      
+
+      console.log('🚪 SIGNOUT: Redirecting to /login');
+      // Ensure we navigate after signOut resolves
+      window.location.replace('/login');
+
     } catch (error: any) {
       console.error('🚪 SIGNOUT ERROR:', error);
-      
+
       // Even if there's an error, clear everything
       setUser(null);
       setSession(null);
       setLoading(false);
-      
+
       toast({
-        title: "Signed out",
-        description: "Redirecting to feed..."
+        title: 'Signed out',
+        description: 'Redirecting to login...'
       });
-      
-      setTimeout(() => {
-        window.location.href = '/feed';
-      }, 500);
+
+      window.location.replace('/login');
     }
   };
 
