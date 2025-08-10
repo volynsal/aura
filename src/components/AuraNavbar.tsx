@@ -16,7 +16,7 @@ const AuraNavbar = () => {
     <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-12 flex items-center">
       <div className="w-full overflow-x-auto scrollbar-hide">
         <div className="flex items-center justify-between min-w-max px-3 sm:px-6 max-w-6xl mx-auto">
-          <div className="flex items-center gap-4 sm:gap-8 flex-shrink-0">
+          <div className="flex items-center gap-6 sm:gap-8 flex-shrink-0">
             <Link to="/" className="flex items-center gap-2 sm:gap-3">
               <img src={auraLogo} alt="Aura logo — mood-based art platform" className="w-8 h-8 sm:w-10 sm:h-10" />
               <h1 className="text-xl sm:text-3xl font-bold">
