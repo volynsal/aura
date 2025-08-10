@@ -105,25 +105,42 @@ const UserProfile = () => {
       ) : (
         <>
           <header className="mb-6">
-            <div className="flex items-center gap-4">
-              <Avatar className="w-16 h-16">
-                <AvatarImage src={profile.avatar_url || undefined} alt={`${displayName} avatar`} />
-                <AvatarFallback>{displayName.slice(0,2).toUpperCase()}</AvatarFallback>
-              </Avatar>
-              <div>
-                <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{displayName}</h1>
-                <p className="text-sm text-muted-foreground">@{profile.username}</p>
-                {profile.bio && (
-                  <p className="text-sm text-muted-foreground mt-2 max-w-2xl">{profile.bio}</p>
-                )}
+            <div className="flex items-start justify-between gap-4">
+              <div className="flex items-center gap-4">
+                <Avatar className="w-16 h-16">
+                  <AvatarImage src={profile.avatar_url || undefined} alt={`${displayName} avatar`} />
+                  <AvatarFallback>{displayName.slice(0,2).toUpperCase()}</AvatarFallback>
+                </Avatar>
+                <div>
+                  <h1 className="text-2xl sm:text-3xl font-bold text-foreground">{displayName}</h1>
+                  <p className="text-sm text-muted-foreground">@{profile.username}</p>
+                  {profile.bio && (
+                    <p className="text-sm text-muted-foreground mt-2 max-w-2xl">{profile.bio}</p>
+                  )}
+                </div>
               </div>
+              {!isOwner && (
+                <Button variant="aura" onClick={() => setSubscribeOpen(true)}>Subscribe</Button>
+              )}
             </div>
           </header>
+
+          {!isOwner && (
+            <Card className="mb-6">
+              <CardContent className="py-4 flex items-center justify-between gap-4">
+                <div>
+                  <p className="font-medium">Support {displayName} to unlock full gallery</p>
+                  <p className="text-sm text-muted-foreground">Get access to all premium posts and drops.</p>
+                </div>
+                <Button variant="aura" onClick={() => setSubscribeOpen(true)}>Subscribe</Button>
+              </CardContent>
+            </Card>
+          )}
 
           <section>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-semibold">Artworks</h2>
-              {!isOwner && nfts.length > previewLimit && (
+              {!isOwner && (
                 <Button variant="aura" size="sm" onClick={() => setSubscribeOpen(true)}>
                   Subscribe
                 </Button>
