@@ -712,21 +712,27 @@ const Profile = () => {
           <TabsContent value="activity" className="mt-6">
             <div className="text-center py-12">
               <h3 className="text-xl font-bold mb-2">Following</h3>
-              <p className="text-muted-foreground mb-6">Blogs you're following will appear here</p>
-              <div className="space-y-4 max-w-md mx-auto">
-                {(followedArtists.length ? followedArtists : ["aesthetic_dreams", "void_poetry", "digital_nostalgia"]).map((blog) => (
-                  <div key={blog} className="flex items-center gap-3 p-3 bg-surface border border-border rounded-lg">
-                    <Avatar className="w-10 h-10">
-                      <AvatarFallback>{blog[0].toUpperCase()}</AvatarFallback>
-                    </Avatar>
-                    <div className="flex-1 text-left">
-                      <p className="font-medium">{blog}</p>
-                      <p className="text-xs text-muted-foreground">Active 2h ago</p>
+              {followedArtists.length === 0 ? (
+                <>
+                  <p className="text-muted-foreground mb-6">You’re not following anyone yet.</p>
+                  <Button variant="aura" size="sm" onClick={() => navigate('/discover')}>Discover artists</Button>
+                </>
+              ) : (
+                <div className="space-y-4 max-w-md mx-auto">
+                  {followedArtists.map((name) => (
+                    <div key={name} className="flex items-center gap-3 p-3 bg-surface border border-border rounded-lg">
+                      <Avatar className="w-10 h-10">
+                        <AvatarFallback>{name[0]?.toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div className="flex-1 text-left">
+                        <p className="font-medium">{name}</p>
+                        <p className="text-xs text-muted-foreground">Following</p>
+                      </div>
+                      <Button variant="outline" size="sm" onClick={() => handleUnfollow(name)}>Unfollow</Button>
                     </div>
-                    <Button variant="outline" size="sm" onClick={() => handleUnfollow(blog)}>Unfollow</Button>
-                  </div>
-                ))}
-              </div>
+                  ))}
+                </div>
+              )}
             </div>
           </TabsContent>
 
