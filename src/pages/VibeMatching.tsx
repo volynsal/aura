@@ -1,55 +1,14 @@
-import { useState, useRef } from "react";
+import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { Heart, X, RotateCcw, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
+import { Input } from "@/components/ui/input";
+import SEO from "@/components/SEO";
+import { supabase } from "@/integrations/supabase/client";
 
-const vibeCards = [
-  {
-    id: 1,
-    type: "artwork",
-    title: "Neon Solitude #47",
-    artist: "synthwave_dreams",
-    artistAvatar: "/placeholder.svg",
-    mood: "melancholic",
-    image: "/placeholder.svg",
-    description: "Finding beauty in the lonely glow of city lights...",
-    rarity: "rare"
-  },
-  {
-    id: 2,
-    type: "artist",
-    name: "digital_rebel",
-    avatar: "/placeholder.svg",
-    specialties: ["chaotic", "dark", "rebellious"],
-    followers: "8.4K",
-    recentWork: "Chaos Theory Series",
-    description: "Breaking digital boundaries since 2019"
-  },
-  {
-    id: 3,
-    type: "artwork",
-    title: "Ethereal Dreams",
-    artist: "void_painter",
-    artistAvatar: "/placeholder.svg",
-    mood: "ethereal",
-    image: "/placeholder.svg",
-    description: "Floating between dimensions",
-    rarity: "legendary"
-  },
-  {
-    id: 4,
-    type: "collector",
-    name: "vibe_seeker",
-    avatar: "/placeholder.svg",
-    vibes: ["melancholic", "ethereal", "dark"],
-    collection: 247,
-    auraScore: 94,
-    description: "Collecting moments that move me"
-  }
-];
-
+// Dynamic cards sourced from NFTs and user-selected moods
 const VibeMatching = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
   const [matches, setMatches] = useState<number[]>([]);
@@ -57,7 +16,65 @@ const VibeMatching = () => {
   const [isDragging, setIsDragging] = useState(false);
   const cardRef = useRef<HTMLDivElement>(null);
 
-  const currentCard = vibeCards[currentIndex];
+  const [nfts, setNfts] = useState<any[]>([]);
+  const [cards, setCards] = useState<any[]>([]);
+  const [moodQuery, setMoodQuery] = useState("");
+  const [userMoods, setUserMoods] = useState<string[]>([]);
+
+  const currentCard = cards[currentIndex];
+
+  useEffect(() => {
+    const fetchNFTs = async () => {
+      const { data, error } = await supabase
+        .from('nfts')
+        .select('id,title,description,image_url,rarity,attributes')
+        .limit(100);
+      if (!error) setNfts(data || []);
+    };
+    fetchNFTs();
+  }, []);
+
+  useEffect(() => {
+    const normalized = userMoods.map(m => m.toLowerCase().trim()).filter(Boolean);
+    const computed = (nfts || []).map((nft: any) => {
+      const moods: string[] = ((nft?.attributes as any[]) || [])
+        .filter((a: any) => (a?.trait_type || '').toLowerCase() === 'mood')
+        .map((a: any) => (a?.value || '').toLowerCase().trim())
+        .filter(Boolean);
+      const matches = normalized.length
+        ? moods.filter((m) => normalized.includes(m)).length
+        : 0;
+      const score = normalized.length > 0
+        ? Math.round((matches / normalized.length) * 100)
+        : 0;
+      return {
+        id: nft.id,
+        type: 'artwork',
+        title: nft.title,
+        artist: 'creator',
+        artistAvatar: '/placeholder.svg',
+        mood: moods[0] || 'mood',
+        image: nft.image_url,
+        description: nft.description || '',
+        rarity: nft.rarity || 'common',
+        match: score,
+      };
+    })
+    .sort((a, b) => b.match - a.match);
+
+    const filtered = normalized.length ? computed.filter(c => c.match > 0) : computed;
+    setCards(filtered);
+    setCurrentIndex(0);
+  }, [nfts, userMoods]);
+
+  const handleFindMatches = () => {
+    const moods = moodQuery
+      .split(',')
+      .map(m => m.toLowerCase().trim())
+      .filter(Boolean)
+      .slice(0, 5);
+    setUserMoods(moods);
+  };
 
   const handleSwipe = (direction: 'left' | 'right') => {
     if (direction === 'right') {
@@ -65,7 +82,7 @@ const VibeMatching = () => {
     }
     
     // Move to next card
-    if (currentIndex < vibeCards.length - 1) {
+    if (currentIndex < cards.length - 1) {
       setCurrentIndex(currentIndex + 1);
     } else {
       setCurrentIndex(0); // Loop back to start
@@ -133,11 +150,25 @@ const VibeMatching = () => {
   }
 
   return (
-    <div className="max-w-md mx-auto relative">
-      {/* Cards Stack */}
+    <>
+      <SEO title="Vibe Matching - Find mood-based art" description="Discover NFTs that match your mood and aesthetic." />
+      <div className="max-w-md mx-auto relative">
+        <div className="mb-6">
+          <label className="block text-sm font-medium mb-2">Your mood(s)</label>
+          <div className="flex gap-2">
+            <Input
+              placeholder="e.g., melancholic, ethereal"
+              value={moodQuery}
+              onChange={(e) => setMoodQuery(e.target.value)}
+            />
+            <Button variant="aura" onClick={handleFindMatches}>Find</Button>
+          </div>
+          <p className="mt-2 text-xs text-muted-foreground">Tip: comma-separated, up to 5 moods.</p>
+        </div>
+        {/* Cards Stack */}
       <div className="relative h-96 mb-6">
         {/* Next card (background) */}
-        {vibeCards[currentIndex + 1] && (
+        {cards[currentIndex + 1] && (
           <Card className="absolute inset-0 bg-surface-elevated border-border scale-95 opacity-60">
             <CardContent className="p-0 h-full">
               <div className="h-full bg-gradient-to-b from-transparent to-black/60 rounded-lg" />
@@ -293,6 +324,7 @@ const VibeMatching = () => {
         </div>
       )}
     </div>
+    </>
   );
 };
 
