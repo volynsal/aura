@@ -13,10 +13,10 @@ const AuraNavbar = () => {
   const [globalQuery, setGlobalQuery] = useState("");
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-12 flex items-center">
+    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-14 sm:h-12 flex items-center">
       <div className="w-full overflow-x-auto scrollbar-hide">
-        <div className="flex items-center justify-between min-w-max px-3 sm:px-6 max-w-6xl mx-auto">
-          <div className="flex items-center gap-6 sm:gap-8 flex-shrink-0">
+        <div className="flex items-center justify-between min-w-max px-4 sm:px-6 max-w-6xl mx-auto">
+          <div className="flex items-center gap-8 sm:gap-8 flex-shrink-0">
             <Link to="/" className="flex items-center gap-2 sm:gap-3">
               <img src={auraLogo} alt="Aura logo — mood-based art platform" className="w-8 h-8 sm:w-10 sm:h-10" />
               <h1 className="text-xl sm:text-3xl font-bold">
@@ -45,26 +45,26 @@ const AuraNavbar = () => {
             )}
           </div>
           
-          <div className="flex items-center gap-1 sm:gap-4 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
             {isLandingPage ? (
               <>
                 <Link to="/vibe-matching">
-                  <Button variant="minimal" size="sm" className="text-xs px-2 py-1 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="minimal" size="sm" className="text-xs px-3 py-2 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
                     Find Vibes
                   </Button>
                 </Link>
                 <Link to="/create">
-                  <Button variant="minimal" size="sm" className="text-xs px-2 py-1 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="minimal" size="sm" className="text-xs px-3 py-2 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
                     Create & Earn
                   </Button>
                 </Link>
                 <Link to="/checkout">
-                  <Button variant="minimal" size="sm" className="text-xs px-2 py-1 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="minimal" size="sm" className="text-xs px-3 py-2 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
                     Checkout Demo
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button variant="aura" size="sm" className="text-xs px-2 py-1 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="aura" size="sm" className="text-xs px-3 py-2 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
                     Unlock My Invite
                   </Button>
                 </Link>
