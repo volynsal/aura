@@ -130,7 +130,7 @@ const AuraFeed = () => {
       {/* Mood Filter Bar */}
       <div className="mb-6">
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
-          <div className="flex items-center gap-2 min-w-max">
+          <div className="flex items-center gap-2 min-w-max mx-auto">
             {['all', 'contemplative', 'serene', 'energetic', 'melancholic', 'hopeful', 'nostalgic'].map((mood) => (
               <button
                 key={mood}
