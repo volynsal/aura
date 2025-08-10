@@ -141,6 +141,11 @@ const AuraFeed = () => {
         </div>
       </div>
 
+      {/* Explore Heading */}
+      <div className="text-center my-10">
+        <h2 className="text-4xl md:text-5xl font-bold">Explore</h2>
+      </div>
+
       {/* Feed Grid */}
       <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-6">
         {nftPosts.map((post) => (
