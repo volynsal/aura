@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -61,6 +61,13 @@ const vibeCollections = [
 const Discover = () => {
   const [followedArtists, setFollowedArtists] = useState<Set<string>>(new Set());
 
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('aura_followed_usernames') || '[]');
+      if (Array.isArray(stored)) setFollowedArtists(new Set(stored));
+    } catch {}
+  }, []);
+
   const handleFollow = (artistName: string) => {
     const newFollowed = new Set(followedArtists);
     if (newFollowed.has(artistName)) {
@@ -69,6 +76,7 @@ const Discover = () => {
       newFollowed.add(artistName);
     }
     setFollowedArtists(newFollowed);
+    try { localStorage.setItem('aura_followed_usernames', JSON.stringify(Array.from(newFollowed))); } catch {}
   };
 
   return (

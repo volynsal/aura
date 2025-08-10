@@ -32,6 +32,7 @@ const VibeMatching = () => {
       if (q !== moodQuery) setMoodQuery(q);
       const moods = q.split(',').map(m => m.toLowerCase().trim()).filter(Boolean).slice(0, 5);
       setUserMoods(moods);
+      try { localStorage.setItem('aura_user_moods', JSON.stringify(moods)); } catch {}
       console.log('VibeMatching: URL param q detected', { q, moods });
     }
   }, [searchParams]);
@@ -147,12 +148,17 @@ const VibeMatching = () => {
        .slice(0, 5);
      console.log('VibeMatching: search submit', { moodQuery, parsed: moods });
      setUserMoods(moods);
+     try { localStorage.setItem('aura_user_moods', JSON.stringify(moods)); } catch {}
    };
 
   const handleSwipe = (direction: 'left' | 'right') => {
-    if (direction === 'right') {
-      setMatches(prev => [...prev, currentCard.id]);
-    }
+  if (direction === 'right') {
+    setMatches(prev => {
+      const next = [...prev, currentCard.id];
+      try { localStorage.setItem('aura_liked_nft_ids', JSON.stringify(next)); } catch {}
+      return next;
+    });
+  }
     
     // Move to next card
     if (currentIndex < cards.length - 1) {
@@ -239,7 +245,11 @@ const VibeMatching = () => {
             />
             <Button variant="aura" onClick={handleFindMatches}>Search</Button>
             {userMoods.length > 0 && (
-              <Button variant="outline" onClick={() => { setUserMoods([]); setMoodQuery(''); }}>
+              <Button variant="outline" onClick={() => { 
+                setUserMoods([]); 
+                setMoodQuery(''); 
+                try { localStorage.removeItem('aura_user_moods'); } catch {}
+              }}>
                 Clear
               </Button>
             )}

@@ -6,6 +6,7 @@ import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
+import SEO from "@/components/SEO";
 
 const moods = ["common", "rare", "epic", "legendary"]; // Updated to match rarity values
 
@@ -16,6 +17,35 @@ const Feed = () => {
   const [likedPosts, setLikedPosts] = useState<Set<string>>(new Set());
   const [feedNFTs, setFeedNFTs] = useState<any[]>([]);
   const [isLoading, setIsLoading] = useState(true);
+  const [userMoods, setUserMoods] = useState<string[]>([]);
+  const [followedUsernames, setFollowedUsernames] = useState<string[]>([]);
+  const [followedCreatorIds, setFollowedCreatorIds] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const moods = JSON.parse(localStorage.getItem('aura_user_moods') || '[]');
+      const follows = JSON.parse(localStorage.getItem('aura_followed_usernames') || '[]');
+      if (Array.isArray(moods)) setUserMoods(moods);
+      if (Array.isArray(follows)) setFollowedUsernames(follows);
+    } catch {}
+  }, []);
+
+  useEffect(() => {
+    const mapUsernamesToIds = async () => {
+      if (!followedUsernames || followedUsernames.length === 0) {
+        setFollowedCreatorIds([]);
+        return;
+      }
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('user_id, username')
+        .in('username', followedUsernames);
+      if (!error && data) {
+        setFollowedCreatorIds(data.map((p: any) => p.user_id));
+      }
+    };
+    mapUsernamesToIds();
+  }, [followedUsernames]);
 
   useEffect(() => {
     fetchFeedNFTs();
@@ -35,7 +65,7 @@ const Feed = () => {
         `)
         .eq('is_minted', true) // Only show minted NFTs in the feed
         .order('created_at', { ascending: false })
-        .limit(20);
+        .limit(50);
 
       if (nftError) throw nftError;
       
@@ -95,6 +125,47 @@ const Feed = () => {
     ? feedNFTs.filter(post => post.mood === selectedMood)
     : feedNFTs;
 
+  // Mood-aware scoring similar to VibeMatching
+  const tokens = (userMoods || []).map(m => m.toLowerCase().trim()).filter(Boolean);
+  const getAttributeMoods = (nft: any): string[] => {
+    const attrs = (nft?.attributes as any[]) || [];
+    return attrs
+      .filter((a: any) => (a?.trait_type || '').toLowerCase() === 'mood')
+      .map((a: any) => (a?.value || '').toLowerCase().trim())
+      .filter(Boolean);
+  };
+  const scoreByMoods = (nft: any, tks: string[], artistName: string): number => {
+    if (!tks.length) return 0;
+    const moods = getAttributeMoods(nft);
+    const titleLower = (nft?.title || '').toLowerCase();
+    const descLower = (nft?.description || '').toLowerCase();
+    const artistLower = (artistName || '').toLowerCase();
+    const matches = tks.reduce((acc, t) => (
+      acc + (moods.includes(t) || titleLower.includes(t) || descLower.includes(t) || artistLower.includes(t) ? 1 : 0)
+    ), 0);
+    return Math.round((matches / tks.length) * 100);
+  };
+
+  const vibedPosts = tokens.length
+    ? feedNFTs
+        .map(p => ({ post: p, score: scoreByMoods(p.nftData, tokens, p.artist) }))
+        .filter(x => x.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 8)
+        .map(x => x.post)
+    : [];
+
+  const followedPosts = followedCreatorIds.length
+    ? feedNFTs.filter(p => followedCreatorIds.includes(p.nftData.creator_id)).slice(0, 8)
+    : [];
+
+  const trendingPosts = tokens.length
+    ? feedNFTs
+        .filter(p => scoreByMoods(p.nftData, tokens, p.artist) > 0)
+        .sort((a, b) => new Date(b.nftData.created_at).getTime() - new Date(a.nftData.created_at).getTime())
+        .slice(0, 8)
+    : feedNFTs.slice(0, 8);
+
   if (isLoading) {
     return (
       <div className="min-h-screen bg-background flex items-center justify-center">
@@ -108,6 +179,7 @@ const Feed = () => {
 
   return (
     <div className="min-h-screen bg-background">
+      <SEO title="AURA Feed — Personalized NFTs" description="Curated NFT feed based on your vibes, follows, and trends." />
       {/* Mood Filter Bar */}
       <div className="sticky top-16 z-40 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="max-w-2xl mx-auto px-4 py-3">
