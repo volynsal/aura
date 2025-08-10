@@ -49,22 +49,22 @@ const AuraNavbar = () => {
             {isLandingPage ? (
               <>
                 <Link to="/vibe-matching">
-                  <Button variant="minimal" size="sm" className="text-xs px-3 py-2 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="minimal" size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2 whitespace-nowrap">
                     Find Vibes
                   </Button>
                 </Link>
                 <Link to="/create">
-                  <Button variant="minimal" size="sm" className="text-xs px-3 py-2 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="minimal" size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2 whitespace-nowrap">
                     Create & Earn
                   </Button>
                 </Link>
                 <Link to="/checkout">
-                  <Button variant="minimal" size="sm" className="text-xs px-3 py-2 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="minimal" size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2 whitespace-nowrap">
                     Checkout Demo
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button variant="aura" size="sm" className="text-xs px-3 py-2 sm:text-sm sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="aura" size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2 whitespace-nowrap">
                     Unlock My Invite
                   </Button>
                 </Link>
