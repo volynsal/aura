@@ -3,7 +3,7 @@ import { Link } from "react-router-dom";
 
 const AuraHero = () => {
   return (
-    <section className="relative py-12 md:py-24 px-4 md:px-6 bg-gradient-to-b from-background to-surface-elevated">
+    <section className="relative pt-12 md:pt-24 pb-8 md:pb-10 px-4 md:px-6 bg-gradient-to-b from-background to-surface-elevated">
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8 md:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight leading-tight">
