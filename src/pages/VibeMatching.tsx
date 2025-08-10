@@ -378,7 +378,7 @@ const VibeMatching = () => {
           <CardContent className="p-0 h-full relative">
             {currentCard.type === 'artwork' && (
               <>
-                <div className="h-full bg-surface-elevated">
+                <div className="h-full bg-surface-elevated rounded-lg overflow-hidden mx-3 sm:mx-4">
                   <img 
                     src={currentCard.image} 
                     alt={currentCard.title}
@@ -386,7 +386,7 @@ const VibeMatching = () => {
                   />
                 </div>
                 <div className="absolute inset-y-0 left-3 right-3 sm:left-4 sm:right-4 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-lg" />
-                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
+                <div className="absolute bottom-0 left-3 right-3 sm:left-4 sm:right-4 p-6 text-white">
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant="secondary" className="capitalize">
                       {currentCard.mood}
