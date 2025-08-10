@@ -88,13 +88,15 @@ const Create = () => {
         </div>
 
         <Tabs defaultValue="boards" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="boards">My Boards</TabsTrigger>
-            <TabsTrigger value="upload">Upload NFT</TabsTrigger>
-            <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
-            <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
-            <TabsTrigger value="earnings">Earnings</TabsTrigger>
-          </TabsList>
+          <div className="overflow-x-auto scrollbar-hide mb-6">
+            <TabsList className="flex w-max min-w-full justify-start gap-1 bg-surface-elevated p-1">
+              <TabsTrigger value="boards" className="whitespace-nowrap px-3 sm:px-4">My Boards</TabsTrigger>
+              <TabsTrigger value="upload" className="whitespace-nowrap px-3 sm:px-4">Upload NFT</TabsTrigger>
+              <TabsTrigger value="subscriptions" className="whitespace-nowrap px-3 sm:px-4">Subscription</TabsTrigger>
+              <TabsTrigger value="marketplace" className="whitespace-nowrap px-3 sm:px-4">Marketplace</TabsTrigger>
+              <TabsTrigger value="earnings" className="whitespace-nowrap px-3 sm:px-4">Earnings</TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="boards" className="mt-6">
             <div className="flex justify-between items-center mb-6">
