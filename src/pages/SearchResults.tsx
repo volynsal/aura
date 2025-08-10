@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useState } from "react";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, Link, useNavigate } from "react-router-dom";
 import { SEO } from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
@@ -30,6 +30,7 @@ const SearchResults = () => {
   const [loading, setLoading] = useState(false);
   const [profiles, setProfiles] = useState<Profile[]>([]);
   const [posts, setPosts] = useState<NFT[]>([]);
+  const navigate = useNavigate();
 
   // Extract moods from creator posts
   const moods = useMemo(() => {
@@ -167,20 +168,31 @@ const SearchResults = () => {
             <h2 className="text-lg font-semibold">Users</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-4">
-            {profiles.map((p) => (
-              <Card key={p.user_id}>
-                <CardHeader className="flex flex-row items-center gap-3">
-                  <Avatar>
-                    <AvatarImage src={p.avatar_url || undefined} alt={`${p.display_name || p.username || "User"} avatar`} />
-                    <AvatarFallback>{(p.display_name || p.username || "U").slice(0,2).toUpperCase()}</AvatarFallback>
-                  </Avatar>
-                  <div>
-                    <CardTitle className="text-base">{p.display_name || p.username || "User"}</CardTitle>
-                    <p className="text-xs text-muted-foreground">@{p.username || "unknown"}</p>
-                  </div>
-                </CardHeader>
-              </Card>
-            ))}
+            {profiles.map((p) => {
+              const username = (p.username || "").trim();
+              const href = username ? `/vibe-matching?q=${encodeURIComponent(username)}` : "#";
+              return (
+                <Link
+                  to={href}
+                  key={p.user_id}
+                  onClick={() => console.info("SearchResults: click user", { user: p.username, id: p.user_id })}
+                  className="block"
+                >
+                  <Card className="hover:border-primary/50 transition-colors cursor-pointer">
+                    <CardHeader className="flex flex-row items-center gap-3">
+                      <Avatar>
+                        <AvatarImage src={p.avatar_url || undefined} alt={`${p.display_name || p.username || "User"} avatar`} />
+                        <AvatarFallback>{(p.display_name || p.username || "U").slice(0,2).toUpperCase()}</AvatarFallback>
+                      </Avatar>
+                      <div>
+                        <CardTitle className="text-base">{p.display_name || p.username || "User"}</CardTitle>
+                        <p className="text-xs text-muted-foreground">@{p.username || "unknown"}</p>
+                      </div>
+                    </CardHeader>
+                  </Card>
+                </Link>
+              );
+            })}
           </div>
         </section>
       )}
@@ -194,19 +206,26 @@ const SearchResults = () => {
           </div>
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
             {posts.map((nft) => (
-              <Card key={nft.id} className="overflow-hidden">
-                <CardContent className="p-0">
-                  <img
-                    src={nft.image_url}
-                    alt={`${nft.title} NFT image`}
-                    loading="lazy"
-                    className="w-full h-40 object-cover"
-                  />
-                </CardContent>
-                <CardHeader>
-                  <CardTitle className="text-sm line-clamp-1">{nft.title}</CardTitle>
-                </CardHeader>
-              </Card>
+              <Link
+                to={`/nft/${nft.id}`}
+                key={nft.id}
+                onClick={() => console.info('SearchResults: click post', { id: nft.id })}
+                className="block"
+              >
+                <Card className="overflow-hidden hover:border-primary/50 transition-colors cursor-pointer">
+                  <CardContent className="p-0">
+                    <img
+                      src={nft.image_url}
+                      alt={`${nft.title} NFT image`}
+                      loading="lazy"
+                      className="w-full h-40 object-cover"
+                    />
+                  </CardContent>
+                  <CardHeader>
+                    <CardTitle className="text-sm line-clamp-1">{nft.title}</CardTitle>
+                  </CardHeader>
+                </Card>
+              </Link>
             ))}
           </div>
         </section>
@@ -221,9 +240,19 @@ const SearchResults = () => {
           </div>
           <div className="flex flex-wrap gap-2">
             {moods.map((m) => (
-              <span key={m} className="px-3 py-1 rounded-full bg-surface-elevated text-sm text-foreground border border-border">
+              <button
+                key={m}
+                type="button"
+                onClick={() => {
+                  console.info('SearchResults: click mood', { mood: m, from: q });
+                  const next = q ? `${q},${m}` : m;
+                  navigate(`/vibe-matching?q=${encodeURIComponent(next)}`);
+                }}
+                className="px-3 py-1 rounded-full bg-surface-elevated text-sm text-foreground border border-border hover:border-primary/50 transition-colors"
+                aria-label={`Filter by mood ${m}`}
+              >
                 {m}
-              </span>
+              </button>
             ))}
           </div>
         </section>
