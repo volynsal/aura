@@ -73,6 +73,22 @@ const Profile = () => {
   
   const { toast } = useToast();
 
+  // Followed artists loaded from localStorage (shared with Discover)
+  const [followedArtists, setFollowedArtists] = useState<string[]>([]);
+
+  useEffect(() => {
+    try {
+      const stored = JSON.parse(localStorage.getItem('aura_followed_usernames') || '[]');
+      if (Array.isArray(stored)) setFollowedArtists(stored);
+    } catch {}
+  }, []);
+
+  const handleUnfollow = (name: string) => {
+    const next = followedArtists.filter(n => n !== name);
+    setFollowedArtists(next);
+    try { localStorage.setItem('aura_followed_usernames', JSON.stringify(next)); } catch {}
+    toast({ title: "Unfollowed", description: `You unfollowed ${name}.` });
+  };
   // Fetch profile data
   useEffect(() => {
     if (user) {
@@ -698,7 +714,7 @@ const Profile = () => {
               <h3 className="text-xl font-bold mb-2">Following</h3>
               <p className="text-muted-foreground mb-6">Blogs you're following will appear here</p>
               <div className="space-y-4 max-w-md mx-auto">
-                {["aesthetic_dreams", "void_poetry", "digital_nostalgia"].map((blog) => (
+                {(followedArtists.length ? followedArtists : ["aesthetic_dreams", "void_poetry", "digital_nostalgia"]).map((blog) => (
                   <div key={blog} className="flex items-center gap-3 p-3 bg-surface border border-border rounded-lg">
                     <Avatar className="w-10 h-10">
                       <AvatarFallback>{blog[0].toUpperCase()}</AvatarFallback>
@@ -707,7 +723,7 @@ const Profile = () => {
                       <p className="font-medium">{blog}</p>
                       <p className="text-xs text-muted-foreground">Active 2h ago</p>
                     </div>
-                    <Button variant="outline" size="sm">Unfollow</Button>
+                    <Button variant="outline" size="sm" onClick={() => handleUnfollow(blog)}>Unfollow</Button>
                   </div>
                 ))}
               </div>
