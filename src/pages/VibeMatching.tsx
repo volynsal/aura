@@ -17,6 +17,7 @@ const VibeMatching = () => {
   const [matches, setMatches] = useState<number[]>([]);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });
   const [isDragging, setIsDragging] = useState(false);
+  const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const cardRef = useRef<HTMLDivElement>(null);
 
   const [nfts, setNfts] = useState<any[]>([]);
@@ -173,48 +174,71 @@ const VibeMatching = () => {
 
   const handleDragStart = (e: React.MouseEvent | React.TouchEvent) => {
     setIsDragging(true);
+    const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
+    const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
+    setStartPos({ x: clientX, y: clientY });
     e.preventDefault();
   };
 
   const handleDragMove = (e: React.MouseEvent | React.TouchEvent) => {
     if (!isDragging) return;
+    e.preventDefault();
     
     const clientX = 'touches' in e ? e.touches[0].clientX : e.clientX;
     const clientY = 'touches' in e ? e.touches[0].clientY : e.clientY;
     
-    if (cardRef.current) {
-      const rect = cardRef.current.getBoundingClientRect();
-      const centerX = rect.left + rect.width / 2;
-      const centerY = rect.top + rect.height / 2;
-      
-      setDragOffset({
-        x: clientX - centerX,
-        y: clientY - centerY
-      });
-    }
+    const deltaX = clientX - startPos.x;
+    const deltaY = clientY - startPos.y;
+    
+    // Constrain vertical movement and prioritize horizontal
+    const constrainedY = Math.max(-50, Math.min(50, deltaY * 0.3));
+    
+    setDragOffset({
+      x: deltaX,
+      y: constrainedY
+    });
   };
 
   const handleDragEnd = () => {
     if (!isDragging) return;
     setIsDragging(false);
     
-    const swipeThreshold = 100;
-    if (Math.abs(dragOffset.x) > swipeThreshold) {
-      handleSwipe(dragOffset.x > 0 ? 'right' : 'left');
+    const swipeThreshold = 80;
+    const velocityThreshold = Math.abs(dragOffset.x) > swipeThreshold;
+    
+    if (velocityThreshold) {
+      const direction = dragOffset.x > 0 ? 'right' : 'left';
+      animateCardExit(direction);
     } else {
+      // Snap back to center
       setDragOffset({ x: 0, y: 0 });
     }
   };
 
+  const animateCardExit = (direction: 'left' | 'right') => {
+    const exitX = direction === 'right' ? window.innerWidth : -window.innerWidth;
+    setDragOffset({ x: exitX, y: dragOffset.y });
+    
+    setTimeout(() => {
+      handleSwipe(direction);
+    }, 200);
+  };
+
   const getRotation = () => {
-    return dragOffset.x * 0.1; // Slight rotation based on drag
+    return Math.max(-15, Math.min(15, dragOffset.x * 0.05)); // Smooth rotation with limits
   };
 
   const getSwipeDirection = () => {
-    if (Math.abs(dragOffset.x) > 50) {
+    if (Math.abs(dragOffset.x) > 60) {
       return dragOffset.x > 0 ? 'right' : 'left';
     }
     return null;
+  };
+
+  const getSwipeOpacity = () => {
+    const maxDistance = 150;
+    const distance = Math.abs(dragOffset.x);
+    return Math.max(0.3, 1 - (distance / maxDistance) * 0.7);
   };
 
   if (!currentCard) {
@@ -288,10 +312,11 @@ const VibeMatching = () => {
         {/* Current card */}
         <Card 
           ref={cardRef}
-          className="absolute inset-0 cursor-grab active:cursor-grabbing transition-transform duration-200 border-border overflow-hidden"
+          className="absolute inset-0 cursor-grab active:cursor-grabbing transition-all duration-200 border-border overflow-hidden select-none"
           style={{
             transform: `translate(${dragOffset.x}px, ${dragOffset.y}px) rotate(${getRotation()}deg)`,
-            opacity: isDragging && Math.abs(dragOffset.x) > 50 ? 0.8 : 1
+            opacity: getSwipeOpacity(),
+            transition: isDragging ? 'none' : 'transform 0.3s ease-out, opacity 0.2s ease-out'
           }}
           onMouseDown={handleDragStart}
           onMouseMove={handleDragMove}
@@ -301,6 +326,19 @@ const VibeMatching = () => {
           onTouchMove={handleDragMove}
           onTouchEnd={handleDragEnd}
         >
+          {/* Swipe direction indicators */}
+          {isDragging && getSwipeDirection() && (
+            <div className={`absolute inset-0 flex items-center justify-center z-10 ${
+              getSwipeDirection() === 'right' 
+                ? 'bg-green-500/20 text-green-400' 
+                : 'bg-red-500/20 text-red-400'
+            }`}>
+              <div className="text-6xl font-bold opacity-80">
+                {getSwipeDirection() === 'right' ? '💖' : '👎'}
+              </div>
+            </div>
+          )}
+          
           <CardContent className="p-0 h-full relative">
             {currentCard.type === 'artwork' && (
               <>
@@ -376,21 +414,6 @@ const VibeMatching = () => {
               </div>
             )}
             
-            {/* Swipe indicators */}
-            {getSwipeDirection() === 'left' && (
-              <div className="absolute inset-0 bg-red-500/20 flex items-center justify-center">
-                <div className="bg-red-500 text-white p-4 rounded-full">
-                  <X className="w-8 h-8" />
-                </div>
-              </div>
-            )}
-            {getSwipeDirection() === 'right' && (
-              <div className="absolute inset-0 bg-green-500/20 flex items-center justify-center">
-                <div className="bg-green-500 text-white p-4 rounded-full">
-                  <Heart className="w-8 h-8" />
-                </div>
-              </div>
-            )}
           </CardContent>
         </Card>
       </div>
