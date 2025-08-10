@@ -199,11 +199,11 @@ const Discover = () => {
         </div>
 
         <Tabs defaultValue="artists" className="w-full">
-          <TabsList className="grid w-full grid-cols-4">
-            <TabsTrigger value="artists">Artists</TabsTrigger>
-            <TabsTrigger value="collections">Collections</TabsTrigger>
-            <TabsTrigger value="drops">Ghost Drops</TabsTrigger>
-            <TabsTrigger value="moods">Moods</TabsTrigger>
+          <TabsList className="grid w-full grid-cols-4 gap-1 bg-transparent p-0 h-auto">
+            <TabsTrigger value="artists" className="w-full rounded-md py-2 transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">Artists</TabsTrigger>
+            <TabsTrigger value="collections" className="w-full rounded-md py-2 transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">Collections</TabsTrigger>
+            <TabsTrigger value="drops" className="w-full rounded-md py-2 transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">Ghost Drops</TabsTrigger>
+            <TabsTrigger value="moods" className="w-full rounded-md py-2 transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">Moods</TabsTrigger>
           </TabsList>
 
           <TabsContent value="artists" className="mt-6">
