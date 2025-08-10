@@ -21,6 +21,7 @@ const VibeMatching = () => {
   const [moodQuery, setMoodQuery] = useState("");
   const [userMoods, setUserMoods] = useState<string[]>([]);
   const [creatorMap, setCreatorMap] = useState<Record<string, string>>({});
+  const [creatorSearchMap, setCreatorSearchMap] = useState<Record<string, { display: string; username: string }>>({});
 
   const currentCard = cards[currentIndex];
 
@@ -28,7 +29,7 @@ const VibeMatching = () => {
     const fetchNFTs = async () => {
       const { data, error } = await supabase
         .from('nfts')
-        .select('id,title,description,image_url,rarity,attributes')
+        .select('id,title,description,image_url,rarity,attributes,creator_id')
         .limit(100);
       if (!error) setNfts(data || []);
     };
@@ -45,9 +46,17 @@ const VibeMatching = () => {
         .select('user_id, username, display_name')
         .in('user_id', ids as string[]);
       if (!error && data) {
-        const map: Record<string, string> = {};
-        data.forEach((p: any) => { map[p.user_id] = p.display_name || p.username || 'creator'; });
-        setCreatorMap(map);
+        const nameMap: Record<string, string> = {};
+        const searchMap: Record<string, { display: string; username: string }> = {};
+        data.forEach((p: any) => {
+          nameMap[p.user_id] = p.display_name || p.username || 'creator';
+          searchMap[p.user_id] = {
+            display: (p.display_name || '').toLowerCase(),
+            username: (p.username || '').toLowerCase(),
+          };
+        });
+        setCreatorMap(nameMap);
+        setCreatorSearchMap(searchMap);
       }
     };
     loadProfiles();
@@ -64,7 +73,8 @@ const VibeMatching = () => {
       const artistName = creatorMap[nft.creator_id] || 'creator';
       const titleLower = (nft.title || '').toLowerCase();
       const descLower = (nft.description || '').toLowerCase();
-      const artistLower = artistName.toLowerCase();
+      const searchNames = creatorSearchMap[nft.creator_id] || { display: '', username: '' };
+      const artistLower = `${searchNames.display} ${searchNames.username} ${artistName}`.toLowerCase();
 
       const matchesCount = tokens.reduce((acc, t) => {
         const hit = moods.includes(t) || titleLower.includes(t) || descLower.includes(t) || artistLower.includes(t);
