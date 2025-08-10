@@ -150,7 +150,7 @@ const VibeMatchingDemo = () => {
 
         {/* Static mock data gallery */}
         <section className="mt-10">
-          <h3 className="text-xl font-semibold mb-4">Explore</h3>
+          <h3 className="text-4xl md:text-5xl font-bold mb-4">Explore</h3>
           <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
             {mockGallery.map((item) => (
               <article key={item.id} className="rounded-lg overflow-hidden border border-border bg-surface-elevated">
