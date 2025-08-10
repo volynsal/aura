@@ -108,7 +108,7 @@ export default function OnchainCheckoutDemo() {
       <div className="max-w-2xl mx-auto">
         <Card className="border-border bg-surface">
           <CardHeader>
-            <CardTitle>Onchain Checkout</CardTitle>
+            <CardTitle>Buy Me a Coffee (Onchain)</CardTitle>
             <CardDescription>
               Enter recipient, amount, token, and network, then send in one click.
             </CardDescription>
