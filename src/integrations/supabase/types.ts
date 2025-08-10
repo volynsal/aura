@@ -213,6 +213,7 @@ export type Database = {
       }
       profiles: {
         Row: {
+          aura: number
           avatar_url: string | null
           bio: string | null
           created_at: string | null
@@ -226,6 +227,7 @@ export type Database = {
           wallet_address: string | null
         }
         Insert: {
+          aura?: number
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
@@ -239,6 +241,7 @@ export type Database = {
           wallet_address?: string | null
         }
         Update: {
+          aura?: number
           avatar_url?: string | null
           bio?: string | null
           created_at?: string | null
@@ -350,7 +353,10 @@ export type Database = {
       [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      increment_user_aura: {
+        Args: { _user_id: string; _delta: number }
+        Returns: undefined
+      }
     }
     Enums: {
       [_ in never]: never
