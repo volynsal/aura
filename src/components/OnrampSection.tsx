@@ -20,9 +20,10 @@ export default function OnrampSection() {
   const isAmountValid = Number(amount) >= minAmount;
 
   const handleStart = async () => {
+    if (!isConnected) return; // require connection before opening card checkout
+
     const chainId = network === "base" ? 8453 : 1;
     try {
-      // Try to hint AppKit with preferred defaults
       const options: any = {
         view: "OnRamp",
         chainId,
@@ -30,15 +31,8 @@ export default function OnrampSection() {
         fiatCurrency: "USD",
         amount: Number(amount)
       };
-
-      if (!isConnected) {
-        (document.querySelector("w3m-button") as any)?.click?.();
-        setTimeout(() => (window as any)?.__W3M_INITED && (open as any)(options), 600);
-      } else {
-        await (open as any)(options);
-      }
+      await (open as any)(options);
     } catch (err) {
-      // Fallback to the native element
       const el = document.querySelector("w3m-onramp") as any;
       try {
         el?.setAttribute?.("data-chain-id", String(chainId));
