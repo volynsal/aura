@@ -120,7 +120,7 @@ const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
 
 const AuraFeed = () => {
   return (
-    <div className="max-w-6xl mx-auto px-6 py-8" role="feed" aria-label="NFT feed by mood">
+    <div className="max-w-6xl mx-auto px-6 py-0" role="feed" aria-label="NFT feed by mood">
       {/* Mood Filter Bar */}
       <div className="mb-8">
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
