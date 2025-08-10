@@ -12,7 +12,7 @@ export default function OnrampSection() {
   const { switchChainAsync } = useSwitchChain();
   const [amount, setAmount] = useState<string>("10"); // Fiat amount in USD
   const [token, setToken] = useState<string>("USDC"); // 'USDC' | 'ETH'
-  const [network, setNetwork] = useState<string>("base"); // 'base' | 'ethereum'
+  const [network, setNetwork] = useState<string>("ethereum"); // 'base' | 'ethereum'
 
   const minAmount = 2; // Provider minimum
   const isAmountValid = Number(amount) >= minAmount;
