@@ -296,7 +296,7 @@ const VibeMatching = () => {
       <div className="max-w-md mx-auto relative">
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2 pt-4 md:pt-0">Your mood(s)</label>
-          <div className="flex gap-2">
+          <div className="flex items-center gap-1 sm:gap-2">
             <Input
               placeholder="e.g., melancholic, ethereal"
               value={moodQuery}
@@ -304,14 +304,25 @@ const VibeMatching = () => {
               onKeyDown={(e) => {
                 if (e.key === 'Enter') handleFindMatches();
               }}
+              className="h-9 md:h-10 text-sm md:text-base min-w-0 flex-1"
             />
-            <Button variant="aura" onClick={handleFindMatches}>Search</Button>
+            <Button
+              variant="aura"
+              onClick={handleFindMatches}
+              className="h-9 px-3 text-sm md:h-10 md:px-4 md:text-base"
+            >
+              Search
+            </Button>
             {userMoods.length > 0 && (
-              <Button variant="outline" onClick={() => { 
-                setUserMoods([]); 
-                setMoodQuery(''); 
-                try { localStorage.removeItem('aura_user_moods'); } catch {}
-              }}>
+              <Button
+                variant="outline"
+                onClick={() => { 
+                  setUserMoods([]); 
+                  setMoodQuery(''); 
+                  try { localStorage.removeItem('aura_user_moods'); } catch {}
+                }}
+                className="h-9 px-3 text-sm md:h-10 md:px-4 md:text-base"
+              >
                 Clear
               </Button>
             )}
