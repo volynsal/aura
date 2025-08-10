@@ -32,6 +32,8 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
   const { user } = useAuth();
   const { toast } = useToast();
 
+  const ALLOWED_TRAIT_TYPES = ['mood','trait'] as const;
+
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
     if (file) {
@@ -51,7 +53,15 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
   });
 
   const addAttribute = () => {
-    setAttributes([...attributes, { trait_type: '', value: '' }]);
+    if (attributes.length >= 5) {
+      toast({
+        title: 'Limit reached',
+        description: 'You can add up to 5 attributes only.',
+        variant: 'destructive',
+      });
+      return;
+    }
+    setAttributes([...attributes, { trait_type: 'mood', value: '' }]);
   };
 
   const updateAttribute = (index: number, field: 'trait_type' | 'value', value: string) => {
@@ -98,6 +108,32 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
       // Upload image
       const imageUrl = await uploadImage(imageFile);
 
+      // Validate and normalize attributes
+      if (attributes.length > 5) {
+        toast({
+          title: 'Too many attributes',
+          description: 'Please limit to 5 attributes.',
+          variant: 'destructive',
+        });
+        setIsUploading(false);
+        return;
+      }
+
+      const cleanedAttributes = attributes
+        .map(a => ({ trait_type: a.trait_type?.toLowerCase().trim(), value: a.value?.trim() }))
+        .filter(a => a.trait_type && a.value);
+
+      const hasInvalid = cleanedAttributes.some(a => !ALLOWED_TRAIT_TYPES.includes(a.trait_type as any));
+      if (hasInvalid) {
+        toast({
+          title: 'Invalid attribute type',
+          description: "Trait type must be 'mood' or 'trait'.",
+          variant: 'destructive',
+        });
+        setIsUploading(false);
+        return;
+      }
+
       // Create NFT record
       const { error: nftError } = await supabase
         .from('nfts')
@@ -110,7 +146,7 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
           price_usd: priceUsd ? parseFloat(priceUsd) : null,
           rarity,
           is_exclusive: isExclusive,
-          attributes: attributes.filter(attr => attr.trait_type && attr.value)
+          attributes: cleanedAttributes,
         });
 
       if (nftError) throw nftError;
@@ -267,22 +303,28 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
         {/* Attributes */}
         <div className="space-y-4">
           <div className="flex items-center justify-between">
-            <Label>Attributes</Label>
-            <Button type="button" variant="outline" size="sm" onClick={addAttribute}>
+            <Label>
+              Attributes <span className="text-muted-foreground">({attributes.length}/5)</span>
+            </Label>
+            <Button type="button" variant="outline" size="sm" onClick={addAttribute} disabled={attributes.length >= 5}>
               <Plus className="h-4 w-4 mr-2" />
-              Add Trait
+              Add Attribute
             </Button>
           </div>
           
           {attributes.map((attr, index) => (
             <div key={index} className="flex gap-2 items-center">
+              <Select value={attr.trait_type} onValueChange={(v) => updateAttribute(index, 'trait_type', v)}>
+                <SelectTrigger className="w-40">
+                  <SelectValue placeholder="Type" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="mood">Mood</SelectItem>
+                  <SelectItem value="trait">Trait</SelectItem>
+                </SelectContent>
+              </Select>
               <Input
-                placeholder="Trait type"
-                value={attr.trait_type}
-                onChange={(e) => updateAttribute(index, 'trait_type', e.target.value)}
-              />
-              <Input
-                placeholder="Value"
+                placeholder={attr.trait_type === 'mood' ? 'e.g., melancholic, ethereal' : 'Value'}
                 value={attr.value}
                 onChange={(e) => updateAttribute(index, 'value', e.target.value)}
               />
