@@ -48,17 +48,17 @@ const AuraNavbar = () => {
           <div className="flex items-center gap-2 sm:gap-4">
             {isLandingPage ? (
               <>
-                <Link to="/vibe-matching" className="hidden sm:block">
+                <Link to="/vibe-matching">
                   <Button variant="minimal" size="sm">
                     Find Vibes
                   </Button>
                 </Link>
-                <Link to="/create" className="hidden sm:block">
+                <Link to="/create">
                   <Button variant="minimal" size="sm">
                     Create & Earn
                   </Button>
                 </Link>
-                <Link to="/checkout" className="hidden sm:block">
+                <Link to="/checkout">
                   <Button variant="minimal" size="sm">
                     Checkout Demo
                   </Button>
