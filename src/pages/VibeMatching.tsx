@@ -257,6 +257,42 @@ const VibeMatching = () => {
   return (
     <>
       <SEO title="Vibe Matching - Find mood-based art" description="Discover NFTs that match your mood and aesthetic." />
+      {/* Mobile Navigation Banner */}
+      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border md:hidden">
+        <div className="flex items-center gap-1 px-2 py-2 overflow-x-auto scrollbar-hide">
+          <Button
+            variant="ghost"
+            size="sm"
+            className="shrink-0 text-xs px-3 py-1.5 h-auto hover-scale"
+            onClick={() => navigate('/feed')}
+          >
+            Feed
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="shrink-0 text-xs px-3 py-1.5 h-auto hover-scale"
+            onClick={() => navigate('/discover')}
+          >
+            Discover
+          </Button>
+          <Button
+            variant="default"
+            size="sm"
+            className="shrink-0 text-xs px-3 py-1.5 h-auto bg-primary text-primary-foreground"
+          >
+            Match
+          </Button>
+          <Button
+            variant="ghost"
+            size="sm"
+            className="shrink-0 text-xs px-3 py-1.5 h-auto hover-scale"
+            onClick={() => navigate('/create')}
+          >
+            Create
+          </Button>
+        </div>
+      </div>
       <div className="max-w-md mx-auto relative">
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2">Your mood(s)</label>
