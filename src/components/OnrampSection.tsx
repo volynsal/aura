@@ -4,14 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useWeb3Modal } from "@web3modal/wagmi/react";
-import { useAccount } from "wagmi";
 import { useState } from "react";
+import { useChainId, useSwitchChain } from "wagmi";
 
 export default function OnrampSection() {
-  const { open } = useWeb3Modal();
-  const { isConnected } = useAccount();
-
+  const currentChainId = useChainId();
+  const { switchChainAsync } = useSwitchChain();
   const [amount, setAmount] = useState<string>("10"); // Fiat amount in USD
   const [token, setToken] = useState<string>("USDC"); // 'USDC' | 'ETH'
   const [network, setNetwork] = useState<string>("base"); // 'base' | 'ethereum'
@@ -20,28 +18,20 @@ export default function OnrampSection() {
   const isAmountValid = Number(amount) >= minAmount;
 
   const handleStart = async () => {
-    if (!isConnected) return; // require connection before opening card checkout
-
     const chainId = network === "base" ? 8453 : 1;
     try {
-      const options: any = {
-        view: "OnRamp",
-        chainId,
-        asset: token,
-        fiatCurrency: "USD",
-        amount: Number(amount)
-      };
-      await (open as any)(options);
-    } catch (err) {
-      const el = document.querySelector("w3m-onramp") as any;
-      try {
-        el?.setAttribute?.("data-chain-id", String(chainId));
-        el?.setAttribute?.("data-asset", token);
-        el?.setAttribute?.("data-fiat-currency", "USD");
-        el?.setAttribute?.("data-amount", amount);
-      } catch {}
-      el?.click?.();
-    }
+      if (currentChainId !== chainId && switchChainAsync) {
+        await switchChainAsync({ chainId });
+      }
+    } catch {}
+    const el = document.querySelector("w3m-onramp") as any;
+    try {
+      el?.setAttribute?.("data-chain-id", String(chainId));
+      el?.setAttribute?.("data-asset", token);
+      el?.setAttribute?.("data-fiat-currency", "USD");
+      el?.setAttribute?.("data-amount", amount);
+    } catch {}
+    el?.click?.();
   };
   return (
     <section className="py-8">
