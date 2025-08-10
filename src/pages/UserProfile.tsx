@@ -119,9 +119,6 @@ const UserProfile = () => {
                   )}
                 </div>
               </div>
-              {!isOwner && (
-                <Button variant="aura" onClick={() => setSubscribeOpen(true)}>Subscribe</Button>
-              )}
             </div>
           </header>
 
