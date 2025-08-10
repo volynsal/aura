@@ -26,13 +26,18 @@ const VibeMatching = () => {
   const currentCard = cards[currentIndex];
 
   useEffect(() => {
-    const fetchNFTs = async () => {
-      const { data, error } = await supabase
-        .from('nfts')
-        .select('id,title,description,image_url,rarity,attributes,creator_id')
-        .limit(100);
-      if (!error) setNfts(data || []);
-    };
+     const fetchNFTs = async () => {
+       const { data, error } = await supabase
+         .from('nfts')
+         .select('id,title,description,image_url,rarity,attributes,creator_id')
+         .limit(100);
+       if (error) {
+         console.error('VibeMatching: fetchNFTs error', error);
+       } else {
+         console.log('VibeMatching: fetched NFTs', { count: data?.length, sample: (data || []).slice(0, 3) });
+         setNfts(data || []);
+       }
+     };
     fetchNFTs();
   }, []);
 
@@ -41,30 +46,43 @@ const VibeMatching = () => {
     const loadProfiles = async () => {
       const ids = Array.from(new Set((nfts || []).map((n: any) => n.creator_id).filter(Boolean)));
       if (ids.length === 0) { setCreatorMap({}); return; }
-      const { data, error } = await supabase
-        .from('profiles')
-        .select('user_id, username, display_name')
-        .in('user_id', ids as string[]);
-      if (!error && data) {
-        const nameMap: Record<string, string> = {};
-        const searchMap: Record<string, { display: string; username: string }> = {};
-        data.forEach((p: any) => {
-          nameMap[p.user_id] = p.display_name || p.username || 'creator';
-          searchMap[p.user_id] = {
-            display: (p.display_name || '').toLowerCase(),
-            username: (p.username || '').toLowerCase(),
-          };
-        });
-        setCreatorMap(nameMap);
-        setCreatorSearchMap(searchMap);
-      }
+       const { data, error } = await supabase
+         .from('profiles')
+         .select('user_id, username, display_name')
+         .in('user_id', ids as string[]);
+       if (!error && data) {
+         const nameMap: Record<string, string> = {};
+         const searchMap: Record<string, { display: string; username: string }> = {};
+         data.forEach((p: any) => {
+           nameMap[p.user_id] = p.display_name || p.username || 'creator';
+           searchMap[p.user_id] = {
+             display: (p.display_name || '').toLowerCase(),
+             username: (p.username || '').toLowerCase(),
+           };
+         });
+         console.log('VibeMatching: loaded profiles', {
+           creatorIds: ids,
+           count: data.length,
+           sample: data.slice(0, 3),
+         });
+         setCreatorMap(nameMap);
+         setCreatorSearchMap(searchMap);
+       } else if (error) {
+         console.error('VibeMatching: loadProfiles error', error);
+       }
     };
     loadProfiles();
   }, [nfts]);
 
   useEffect(() => {
-    const tokens = userMoods.map(m => m.toLowerCase().trim()).filter(Boolean);
-    const computed = (nfts || []).map((nft: any) => {
+     const tokens = userMoods.map(m => m.toLowerCase().trim()).filter(Boolean);
+     console.log('VibeMatching: compute start', {
+       tokens,
+       nftsCount: nfts?.length,
+       creatorMapSize: Object.keys(creatorMap || {}).length,
+       creatorSearchMapSize: Object.keys(creatorSearchMap || {}).length,
+     });
+     const computed = (nfts || []).map((nft: any) => {
       const moods: string[] = ((nft?.attributes as any[]) || [])
         .filter((a: any) => (a?.trait_type || '').toLowerCase() === 'mood')
         .map((a: any) => (a?.value || '').toLowerCase().trim())
@@ -98,19 +116,25 @@ const VibeMatching = () => {
     })
     .sort((a, b) => b.match - a.match);
 
-    const filtered = tokens.length ? computed.filter(c => c.match > 0) : computed;
-    setCards(filtered);
-    setCurrentIndex(0);
+     const filtered = tokens.length ? computed.filter(c => c.match > 0) : computed;
+     console.log('VibeMatching: compute result', {
+       computed: computed.length,
+       filtered: filtered.length,
+       sample: filtered.slice(0, 3).map(c => ({ title: c.title, artist: c.artist, match: c.match }))
+     });
+     setCards(filtered);
+     setCurrentIndex(0);
   }, [nfts, userMoods, creatorMap, creatorSearchMap]);
 
-  const handleFindMatches = () => {
-    const moods = moodQuery
-      .split(',')
-      .map(m => m.toLowerCase().trim())
-      .filter(Boolean)
-      .slice(0, 5);
-    setUserMoods(moods);
-  };
+   const handleFindMatches = () => {
+     const moods = moodQuery
+       .split(',')
+       .map(m => m.toLowerCase().trim())
+       .filter(Boolean)
+       .slice(0, 5);
+     console.log('VibeMatching: search submit', { moodQuery, parsed: moods });
+     setUserMoods(moods);
+   };
 
   const handleSwipe = (direction: 'left' | 'right') => {
     if (direction === 'right') {
