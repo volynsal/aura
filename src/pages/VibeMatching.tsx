@@ -258,8 +258,8 @@ const VibeMatching = () => {
     <>
       <SEO title="Vibe Matching - Find mood-based art" description="Discover NFTs that match your mood and aesthetic." />
       {/* Mobile Navigation Banner */}
-      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
-        <div className="flex gap-2 px-4 py-3 min-w-max">
+      <div className="lg:hidden bg-surface/50 border-b border-border/30">
+        <div className="flex gap-2 px-4 py-3 overflow-x-auto scrollbar-hide">
           <Button 
             variant="ghost" 
             size="sm" 
