@@ -161,9 +161,11 @@ const Create = () => {
         </div>
 
         <Tabs defaultValue="boards" className="w-full">
-          <TabsList className="grid w-full grid-cols-5">
-            <TabsTrigger value="boards">My Boards</TabsTrigger>
-            <Button asChild variant="link" className="px-2">
+          <TabsList className="grid w-full grid-cols-5 gap-1">
+            <TabsTrigger value="boards" className="w-full h-9 rounded-md transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
+              My Boards
+            </TabsTrigger>
+            <Button asChild variant="link" className="px-2 w-full h-9 justify-center">
               <a
                 href="https://chatgpt.com/g/g-Yxt9Kr5MD-mintlab"
                 target="_blank"
@@ -173,9 +175,15 @@ const Create = () => {
                 MintLab <ArrowUpRight className="w-4 h-4 inline-block ml-1" />
               </a>
             </Button>
-            <TabsTrigger value="upload">Upload NFT</TabsTrigger>
-            <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
-            <TabsTrigger value="earnings">Earnings</TabsTrigger>
+            <TabsTrigger value="upload" className="w-full h-9 rounded-md transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
+              Upload NFT
+            </TabsTrigger>
+            <TabsTrigger value="subscriptions" className="w-full h-9 rounded-md transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
+              Subscriptions
+            </TabsTrigger>
+            <TabsTrigger value="earnings" className="w-full h-9 rounded-md transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
+              Earnings
+            </TabsTrigger>
           </TabsList>
 
           <TabsContent value="boards" className="mt-6">
