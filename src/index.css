@@ -192,65 +192,97 @@ All colors MUST be HSL.
   99% { opacity: 0.8; }
 }
 
-@keyframes glitch-skew {
-  0% { transform: skew(0deg); }
-  10% { transform: skew(-2deg); }
-  20% { transform: skew(1deg); }
-  30% { transform: skew(-1deg); }
-  40% { transform: skew(2deg); }
-  50% { transform: skew(-1deg); }
-  60% { transform: skew(1deg); }
-  70% { transform: skew(-2deg); }
-  80% { transform: skew(0deg); }
-  90% { transform: skew(1deg); }
-  100% { transform: skew(0deg); }
+@keyframes tv-static {
+  0% { 
+    background-position: 0px 0px;
+    opacity: 0.8;
+  }
+  10% { 
+    background-position: -10px 5px;
+    opacity: 0.9;
+  }
+  20% { 
+    background-position: 8px -3px;
+    opacity: 0.7;
+  }
+  30% { 
+    background-position: -5px 8px;
+    opacity: 0.85;
+  }
+  40% { 
+    background-position: 12px -6px;
+    opacity: 0.75;
+  }
+  50% { 
+    background-position: -8px 10px;
+    opacity: 0.9;
+  }
+  60% { 
+    background-position: 6px -8px;
+    opacity: 0.8;
+  }
+  70% { 
+    background-position: -12px 4px;
+    opacity: 0.7;
+  }
+  80% { 
+    background-position: 9px -7px;
+    opacity: 0.85;
+  }
+  90% { 
+    background-position: -6px 9px;
+    opacity: 0.75;
+  }
+  100% { 
+    background-position: 0px 0px;
+    opacity: 0.8;
+  }
 }
 
-@keyframes glitch-color {
-  0% { filter: hue-rotate(0deg) saturate(1); }
-  20% { filter: hue-rotate(90deg) saturate(1.5); }
-  40% { filter: hue-rotate(180deg) saturate(0.8); }
-  60% { filter: hue-rotate(270deg) saturate(1.2); }
-  80% { filter: hue-rotate(360deg) saturate(1); }
-  100% { filter: hue-rotate(0deg) saturate(1); }
-}
-
-@keyframes glitch-position {
-  0% { transform: translate(0); }
-  10% { transform: translate(-2px, 1px); }
-  20% { transform: translate(1px, -1px); }
-  30% { transform: translate(-1px, 2px); }
-  40% { transform: translate(2px, -2px); }
-  50% { transform: translate(-2px, -1px); }
-  60% { transform: translate(1px, 2px); }
-  70% { transform: translate(-1px, -2px); }
-  80% { transform: translate(2px, 1px); }
-  90% { transform: translate(-1px, -1px); }
-  100% { transform: translate(0); }
+@keyframes tv-flicker {
+  0% { filter: brightness(1) contrast(1); }
+  5% { filter: brightness(0.8) contrast(1.2); }
+  10% { filter: brightness(1.2) contrast(0.9); }
+  15% { filter: brightness(0.9) contrast(1.1); }
+  20% { filter: brightness(1.1) contrast(0.8); }
+  25% { filter: brightness(0.7) contrast(1.3); }
+  30% { filter: brightness(1.3) contrast(0.7); }
+  35% { filter: brightness(0.85) contrast(1.15); }
+  40% { filter: brightness(1.15) contrast(0.85); }
+  45% { filter: brightness(0.95) contrast(1.05); }
+  50% { filter: brightness(1.05) contrast(0.95); }
+  55% { filter: brightness(0.75) contrast(1.25); }
+  60% { filter: brightness(1.25) contrast(0.75); }
+  65% { filter: brightness(0.9) contrast(1.1); }
+  70% { filter: brightness(1.1) contrast(0.9); }
+  75% { filter: brightness(0.8) contrast(1.2); }
+  80% { filter: brightness(1.2) contrast(0.8); }
+  85% { filter: brightness(0.95) contrast(1.05); }
+  90% { filter: brightness(1.05) contrast(0.95); }
+  95% { filter: brightness(0.85) contrast(1.15); }
+  100% { filter: brightness(1) contrast(1); }
 }
 
 .glitch-active {
-  animation: 
-    glitch-skew 0.4s ease-in-out,
-    glitch-color 0.4s ease-in-out,
-    glitch-position 0.4s ease-in-out;
+  animation: tv-flicker 0.4s ease-in-out;
   animation-iteration-count: 1;
 }
 
 .glitch-active::before {
   content: '';
-  position: absolute;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: linear-gradient(
-    45deg,
-    transparent 30%,
-    hsl(var(--primary) / 0.1) 50%,
-    transparent 70%
-  );
+  background-image: 
+    radial-gradient(circle, transparent 50%, rgba(128, 128, 128, 0.1) 50%),
+    linear-gradient(90deg, transparent 50%, rgba(128, 128, 128, 0.05) 50%),
+    linear-gradient(transparent 50%, rgba(128, 128, 128, 0.05) 50%);
+  background-size: 4px 4px, 2px 2px, 2px 2px;
+  background-color: rgba(128, 128, 128, 0.15);
   pointer-events: none;
-  z-index: 1000;
-  animation: glitch-position 0.4s ease-in-out;
+  z-index: 9999;
+  animation: tv-static 0.4s ease-in-out;
+  mix-blend-mode: multiply;
 }
