@@ -18,6 +18,7 @@ import { Web3Provider } from "./components/Web3Provider";
 import { HelmetProvider } from "react-helmet-async";
 import SEO from "./components/SEO";
 import SearchResults from "./pages/SearchResults";
+import UserProfile from "./pages/UserProfile";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -50,6 +51,7 @@ const App = () => (
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/vibe-matching" element={<VibeMatching />} />
                 <Route path="/search" element={<SearchResults />} />
+                <Route path="/u/:username" element={<UserProfile />} />
                 <Route path="/create" element={<Create />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/nft/:id" element={<NFTView />} />
