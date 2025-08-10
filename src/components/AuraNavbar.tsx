@@ -101,49 +101,6 @@ const AuraNavbar = () => {
                      Create
                    </Button>
                  </Link>
-                 {/* Mobile icon nav */}
-                 <div className="flex sm:hidden items-center gap-1">
-                   <Link to="/feed" aria-label="Feed">
-                     <Button
-                       variant={location.pathname === '/feed' ? 'aura' : 'minimal'}
-                       size="icon"
-                     >
-                       <Home className="w-4 h-4" />
-                     </Button>
-                   </Link>
-                   <Link to="/discover" aria-label="Discover">
-                     <Button
-                       variant={location.pathname === '/discover' ? 'aura' : 'minimal'}
-                       size="icon"
-                     >
-                       <Compass className="w-4 h-4" />
-                     </Button>
-                   </Link>
-                   <Link to="/checkout" aria-label="Checkout">
-                     <Button
-                       variant={location.pathname === '/checkout' ? 'aura' : 'minimal'}
-                       size="icon"
-                     >
-                       <ShoppingCart className="w-4 h-4" />
-                     </Button>
-                   </Link>
-                   <Link to="/vibe-matching" aria-label="Match">
-                     <Button
-                       variant={location.pathname === '/vibe-matching' ? 'aura' : 'minimal'}
-                       size="icon"
-                     >
-                       <Heart className="w-4 h-4" />
-                     </Button>
-                   </Link>
-                   <Link to="/create" aria-label="Create">
-                     <Button
-                       variant={location.pathname === '/create' ? 'aura' : 'minimal'}
-                       size="icon"
-                     >
-                       <Palette className="w-4 h-4" />
-                     </Button>
-                   </Link>
-                 </div>
                  <Link to={user ? "/profile" : "/login"}>
                    <Button variant={location.pathname === '/profile' ? 'aura' : 'minimal'} size="sm">
                      <User className="w-4 h-4 sm:mr-2" />
