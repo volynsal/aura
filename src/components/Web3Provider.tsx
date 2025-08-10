@@ -2,7 +2,7 @@ import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { WagmiProvider } from 'wagmi';
 import { mainnet, polygon, arbitrum, base, baseSepolia } from 'wagmi/chains';
-import { walletConnect, metaMask, coinbaseWallet } from 'wagmi/connectors';
+import { metaMask, coinbaseWallet } from 'wagmi/connectors';
 
 import { ReactNode, useEffect } from 'react';
 
@@ -21,11 +21,6 @@ const chains = [baseSepolia, base, mainnet, polygon, arbitrum] as const;
 
 // Configure connectors with mobile-friendly options
 const connectors = [
-  walletConnect({ 
-    projectId,
-    metadata,
-    showQrModal: true
-  }),
   metaMask({
     dappMetadata: metadata,
     useDeeplink: true, // Enable deep linking for mobile
@@ -34,7 +29,7 @@ const connectors = [
   coinbaseWallet({
     appName: metadata.name,
     appLogoUrl: metadata.icons[0],
-    preference: 'smartWalletOnly', // Use smart wallet for better mobile support
+    preference: 'all', // Allow both smart wallet and wallet link
     version: '4'
   })
 ];
@@ -44,7 +39,7 @@ const config = defaultWagmiConfig({
   projectId,
   metadata,
   connectors,
-  enableWalletConnect: true, // Ensure WalletConnect is enabled
+  enableWalletConnect: false, // Disable WalletConnect to avoid relayer/origin issues
   enableInjected: true, // Enable injected wallets
   enableEIP6963: true, // Enable EIP-6963 for better wallet detection
   enableCoinbase: true // Enable Coinbase SDK
