@@ -1,18 +1,6 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
-import { Button } from "@/components/ui/button";
-import { useToast } from "@/hooks/use-toast";
 export default function OnrampSection() {
-  const { toast } = useToast();
-  const handleStart = () => {
-    const el = document.querySelector("w3m-onramp") as any;
-    if (el && typeof el.click === "function") {
-      el.click();
-    } else {
-      (document.querySelector("w3m-button") as any)?.click?.();
-      toast({ title: "Connect wallet to start onramp" });
-    }
-  };
   return (
     <section className="py-8">
       <div className="max-w-2xl mx-auto">
@@ -30,12 +18,8 @@ export default function OnrampSection() {
             <Separator className="bg-border" />
             <div className="flex items-center justify-between">
               <div className="text-sm text-muted-foreground">Start onramp flow</div>
-              <Button onClick={handleStart} variant="aura" size="sm">
-                Buy Crypto with Card
-              </Button>
-              {/* Hidden native onramp element we trigger programmatically */}
               {/* eslint-disable-next-line react/no-unknown-property */}
-              <w3m-onramp size="md" style={{ display: "none" }}></w3m-onramp>
+              <w3m-onramp size="md"></w3m-onramp>
             </div>
           </CardContent>
         </Card>
