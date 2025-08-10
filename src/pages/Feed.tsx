@@ -4,6 +4,7 @@ import { Badge } from "@/components/ui/badge";
 import { Heart, MessageCircle, Bookmark, Share, MoreHorizontal } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { useNavigate } from "react-router-dom";
+import MobileSectionNav from "@/components/MobileSectionNav";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
@@ -203,42 +204,7 @@ const Feed = () => {
     <div className="min-h-screen bg-background">
       <SEO title="AURA Feed — Personalized NFTs" description="Curated NFT feed based on your vibes, follows, and trends." />
       
-      {/* Mobile Navigation Banner */}
-      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
-        <div className="flex gap-2 px-4 py-3 min-w-max">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
-          >
-            Feed
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/discover')}
-          >
-            Discover
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/vibe-matching')}
-          >
-            Match
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/create')}
-          >
-            Create
-          </Button>
-        </div>
-      </div>
+      <MobileSectionNav />
       
       {/* Mood Filter Bar */}
       <div className="sticky top-12 z-40 bg-background/90 backdrop-blur-md border-b border-border">

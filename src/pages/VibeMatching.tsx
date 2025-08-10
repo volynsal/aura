@@ -3,6 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
 import { useNavigate } from "react-router-dom";
+import MobileSectionNav from "@/components/MobileSectionNav";
 import { Heart, X, RotateCcw, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -261,42 +262,7 @@ const VibeMatching = () => {
   return (
     <>
       <SEO title="Vibe Matching - Find mood-based art" description="Discover NFTs that match your mood and aesthetic." />
-      {/* Mobile Navigation Banner */}
-      <div className="lg:hidden bg-surface/50 border-b border-border/30">
-        <div className="flex gap-2 px-4 py-3 overflow-x-auto scrollbar-hide">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/feed')}
-          >
-            Feed
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/discover')}
-          >
-            Discover
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
-          >
-            Match
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/create')}
-          >
-            Create
-          </Button>
-        </div>
-      </div>
+      <MobileSectionNav />
       <div className="w-full mx-auto relative px-4 sm:max-w-lg sm:px-4">
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2 pt-4 md:pt-0">Your mood(s)</label>

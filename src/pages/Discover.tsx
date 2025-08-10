@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import MobileSectionNav from "@/components/MobileSectionNav";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
@@ -154,60 +155,7 @@ const Discover = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mobile Navigation Banner */}
-      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
-        <div className="flex gap-2 px-4 py-3 min-w-max">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            aria-label="Feed"
-            onClick={() => navigate('/feed')}
-          >
-            <Home className="w-4 h-4 mr-2" />
-            Feed
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
-            aria-label="Discover"
-          >
-            <Compass className="w-4 h-4 mr-2" />
-            Discover
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            aria-label="Checkout"
-            onClick={() => navigate('/checkout')}
-          >
-            <ShoppingCart className="w-4 h-4 mr-2" />
-            Checkout
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            aria-label="Match"
-            onClick={() => navigate('/vibe-matching')}
-          >
-            <Heart className="w-4 h-4 mr-2" />
-            Match
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            aria-label="Create"
-            onClick={() => navigate('/create')}
-          >
-            <Palette className="w-4 h-4 mr-2" />
-            Create
-          </Button>
-        </div>
-      </div>
+      <MobileSectionNav />
       
       <div className="pt-6">
       <div className="max-w-4xl mx-auto px-4">

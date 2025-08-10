@@ -7,6 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Palette, TrendingUp, Coins, Eye, Heart, Share, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
+import MobileSectionNav from "@/components/MobileSectionNav";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -125,42 +126,7 @@ const Create = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mobile Navigation Banner */}
-      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
-        <div className="flex gap-2 px-4 py-3 min-w-max">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/feed')}
-          >
-            Feed
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/discover')}
-          >
-            Discover
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/vibe-matching')}
-          >
-            Match
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
-          >
-            Create
-          </Button>
-        </div>
-      </div>
+      <MobileSectionNav />
       
       <div className="pt-6">
       <div className="max-w-4xl mx-auto px-4">
