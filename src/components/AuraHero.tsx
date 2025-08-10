@@ -7,25 +7,28 @@ const AuraHero = () => {
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8 md:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight leading-tight">
-            Your mood is your gallery
+            Curation is the new flex.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">
-            Discover and collect NFTs by how they make you feel. Aura is where digital art and emotion collide.
+            Swipe to sculpt your feed, stack moodboards that earn, subscribe to visionary creators like the Medicis, and mint AI pieces in MintLab.
           </p>
         </div>
         
-        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center mb-12 md:mb-16">
-          <Link to="/discover">
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center mb-6 md:mb-8">
+          <Link to="/vibe-matching">
             <Button variant="aura" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
-              Start exploring
+              Start swiping
             </Button>
           </Link>
-          <Link to="/vibe-matching">
+          <Link to="/create">
             <Button variant="subtle" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
-              Learn more
+              Build a moodboard
             </Button>
           </Link>
         </div>
+        <p className="text-xs sm:text-sm text-muted-foreground mb-12 md:mb-16">
+          Swipe • Curate-to-earn • Memberships • MintLab AI NFTs
+        </p>
 
         {/* Stats */}
         <div className="grid grid-cols-3 gap-4 sm:gap-8 max-w-sm sm:max-w-md mx-auto">
