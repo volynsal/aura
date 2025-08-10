@@ -258,35 +258,35 @@ const VibeMatching = () => {
     <>
       <SEO title="Vibe Matching - Find mood-based art" description="Discover NFTs that match your mood and aesthetic." />
       {/* Mobile Navigation Banner */}
-      <div className="sticky top-0 z-50 bg-background/95 backdrop-blur supports-[backdrop-filter]:bg-background/60 border-b border-border md:hidden">
-        <div className="flex items-center gap-1 px-2 py-2 overflow-x-auto scrollbar-hide">
-          <Button
-            variant="ghost"
-            size="sm"
-            className="shrink-0 text-xs px-3 py-1.5 h-auto hover-scale"
+      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
+        <div className="flex gap-2 px-4 py-3 min-w-max">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
             onClick={() => navigate('/feed')}
           >
             Feed
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="shrink-0 text-xs px-3 py-1.5 h-auto hover-scale"
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
             onClick={() => navigate('/discover')}
           >
             Discover
           </Button>
-          <Button
-            variant="default"
-            size="sm"
-            className="shrink-0 text-xs px-3 py-1.5 h-auto bg-primary text-primary-foreground"
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
           >
             Match
           </Button>
-          <Button
-            variant="ghost"
-            size="sm"
-            className="shrink-0 text-xs px-3 py-1.5 h-auto hover-scale"
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
             onClick={() => navigate('/create')}
           >
             Create
