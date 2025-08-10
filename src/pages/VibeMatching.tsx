@@ -20,6 +20,7 @@ const VibeMatching = () => {
   const [cards, setCards] = useState<any[]>([]);
   const [moodQuery, setMoodQuery] = useState("");
   const [userMoods, setUserMoods] = useState<string[]>([]);
+  const [creatorMap, setCreatorMap] = useState<Record<string, string>>({});
 
   const currentCard = cards[currentIndex];
 
@@ -34,24 +35,49 @@ const VibeMatching = () => {
     fetchNFTs();
   }, []);
 
+  // Load creator usernames for fetched NFTs
   useEffect(() => {
-    const normalized = userMoods.map(m => m.toLowerCase().trim()).filter(Boolean);
+    const loadProfiles = async () => {
+      const ids = Array.from(new Set((nfts || []).map((n: any) => n.creator_id).filter(Boolean)));
+      if (ids.length === 0) { setCreatorMap({}); return; }
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('user_id, username, display_name')
+        .in('user_id', ids as string[]);
+      if (!error && data) {
+        const map: Record<string, string> = {};
+        data.forEach((p: any) => { map[p.user_id] = p.display_name || p.username || 'creator'; });
+        setCreatorMap(map);
+      }
+    };
+    loadProfiles();
+  }, [nfts]);
+
+  useEffect(() => {
+    const tokens = userMoods.map(m => m.toLowerCase().trim()).filter(Boolean);
     const computed = (nfts || []).map((nft: any) => {
       const moods: string[] = ((nft?.attributes as any[]) || [])
         .filter((a: any) => (a?.trait_type || '').toLowerCase() === 'mood')
         .map((a: any) => (a?.value || '').toLowerCase().trim())
         .filter(Boolean);
-      const matches = normalized.length
-        ? moods.filter((m) => normalized.includes(m)).length
-        : 0;
-      const score = normalized.length > 0
-        ? Math.round((matches / normalized.length) * 100)
-        : 0;
+
+      const artistName = creatorMap[nft.creator_id] || 'creator';
+      const titleLower = (nft.title || '').toLowerCase();
+      const descLower = (nft.description || '').toLowerCase();
+      const artistLower = artistName.toLowerCase();
+
+      const matchesCount = tokens.reduce((acc, t) => {
+        const hit = moods.includes(t) || titleLower.includes(t) || descLower.includes(t) || artistLower.includes(t);
+        return acc + (hit ? 1 : 0);
+      }, 0);
+
+      const score = tokens.length > 0 ? Math.round((matchesCount / tokens.length) * 100) : 0;
+
       return {
         id: nft.id,
         type: 'artwork',
         title: nft.title,
-        artist: 'creator',
+        artist: artistName,
         artistAvatar: '/placeholder.svg',
         mood: moods[0] || 'mood',
         image: nft.image_url,
@@ -62,10 +88,10 @@ const VibeMatching = () => {
     })
     .sort((a, b) => b.match - a.match);
 
-    const filtered = normalized.length ? computed.filter(c => c.match > 0) : computed;
+    const filtered = tokens.length ? computed.filter(c => c.match > 0) : computed;
     setCards(filtered);
     setCurrentIndex(0);
-  }, [nfts, userMoods]);
+  }, [nfts, userMoods, creatorMap]);
 
   const handleFindMatches = () => {
     const moods = moodQuery
