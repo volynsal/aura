@@ -181,8 +181,8 @@ const Feed = () => {
     <div className="min-h-screen bg-background">
       <SEO title="AURA Feed — Personalized NFTs" description="Curated NFT feed based on your vibes, follows, and trends." />
       {/* Mood Filter Bar */}
-      <div className="sticky top-0 z-40 bg-background/90 backdrop-blur-md border-b border-border">
-        <div className="max-w-2xl mx-auto px-4 py-0">
+      <div className="sticky top-14 z-40 bg-background/90 backdrop-blur-md border-b border-border">
+        <div className="max-w-4xl mx-auto px-4 py-3">
           <div className="flex gap-2 overflow-x-auto scrollbar-hide">
             <Button
               variant={selectedMood === null ? "aura" : "minimal"}
