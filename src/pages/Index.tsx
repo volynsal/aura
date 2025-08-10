@@ -22,7 +22,8 @@ const Index = () => {
           }
         }}
       />
-      <AuraFeed />
+      <AuraHero />
+      <VibeMatchingDemo />
     </div>
   );
 };
