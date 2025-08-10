@@ -170,30 +170,32 @@ const Create = () => {
         </div>
 
         <Tabs defaultValue="boards" className="w-full">
-          <TabsList className="grid w-full grid-cols-5 gap-1 bg-transparent p-0 h-auto">
-            <TabsTrigger value="boards" className="w-full rounded-md py-2 transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
-              My Boards
-            </TabsTrigger>
-            <Button asChild variant="link" className="px-2 w-full justify-center py-2">
-              <a
-                href="https://chatgpt.com/g/g-Yxt9Kr5MD-mintlab"
-                target="_blank"
-                rel="noopener noreferrer"
-                aria-label="Open MintLab in a new tab"
-              >
-                MintLab <ArrowUpRight className="w-4 h-4 inline-block ml-1" />
-              </a>
-            </Button>
-            <TabsTrigger value="upload" className="w-full rounded-md py-2 transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
-              Upload NFT
-            </TabsTrigger>
-            <TabsTrigger value="subscriptions" className="w-full rounded-md py-2 transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
-              Subscriptions
-            </TabsTrigger>
-            <TabsTrigger value="earnings" className="w-full rounded-md py-2 transition-colors duration-200 data-[state=active]:bg-primary/15 data-[state=active]:text-primary">
-              Earnings
-            </TabsTrigger>
-          </TabsList>
+          <div className="mb-6 overflow-x-auto scrollbar-hide">
+            <TabsList className="inline-flex h-10 items-center justify-start rounded-md bg-muted p-1 text-muted-foreground w-max">
+              <TabsTrigger value="boards" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
+                My Boards
+              </TabsTrigger>
+              <Button asChild variant="ghost" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium">
+                <a
+                  href="https://chatgpt.com/g/g-Yxt9Kr5MD-mintlab"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  aria-label="Open MintLab in a new tab"
+                >
+                  MintLab <ArrowUpRight className="w-4 h-4 inline-block ml-1" />
+                </a>
+              </Button>
+              <TabsTrigger value="upload" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
+                Upload NFT
+              </TabsTrigger>
+              <TabsTrigger value="subscriptions" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
+                Subscriptions
+              </TabsTrigger>
+              <TabsTrigger value="earnings" className="inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-sm font-medium ring-offset-background transition-all focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 data-[state=active]:bg-background data-[state=active]:text-foreground data-[state=active]:shadow-sm">
+                Earnings
+              </TabsTrigger>
+            </TabsList>
+          </div>
 
           <TabsContent value="boards" className="mt-6">
             <div className="flex justify-between items-center mb-6">
