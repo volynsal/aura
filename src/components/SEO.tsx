@@ -12,7 +12,7 @@ const SITE_URL = typeof window !== "undefined" ? window.location.origin : "";
 
 export function SEO({ title, description, path = "/", image, structuredData }: SEOProps) {
   const url = SITE_URL ? `${SITE_URL}${path}` : path;
-  const defaultImage = "/og-aura.png?v=2";
+  const defaultImage = "/lovable-uploads/bae1fb83-3cef-4194-92f0-681955365ded.png?v=1";
   
   // For NFT pages, use a specific social sharing approach
   const isNFTPage = path.startsWith('/nft/');

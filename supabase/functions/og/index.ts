@@ -15,7 +15,7 @@ serve(async (req) => {
     const { searchParams } = new URL(req.url);
     const title = searchParams.get("title") || "Aura — Your mood is your gallery";
     const description = searchParams.get("description") || "Aura: Share and discover digital art by vibe.";
-    const image = searchParams.get("image") || "https://preview--aura-mood-gallery.lovable.app/og-aura.png?v=2";
+    const image = searchParams.get("image") || "https://preview--aura-mood-gallery.lovable.app/lovable-uploads/bae1fb83-3cef-4194-92f0-681955365ded.png?v=1";
     const redirect = searchParams.get("redirect") || "https://preview--aura-mood-gallery.lovable.app/";
     const canonical = searchParams.get("canonical") || redirect;
 
