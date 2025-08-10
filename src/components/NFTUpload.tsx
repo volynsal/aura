@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
 import { Badge } from '@/components/ui/badge';
 import { Upload, X, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -304,17 +304,8 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
           
           {attributes.map((attr, index) => (
             <div key={index} className="flex gap-2 items-center">
-              <Select value={attr.trait_type} onValueChange={(v) => updateAttribute(index, 'trait_type', v)}>
-                <SelectTrigger className="w-40">
-                  <SelectValue placeholder="Type" />
-                </SelectTrigger>
-                <SelectContent>
-                  <SelectItem value="mood">Mood</SelectItem>
-                  <SelectItem value="trait">Trait</SelectItem>
-                </SelectContent>
-              </Select>
               <Input
-                placeholder={attr.trait_type === 'mood' ? 'e.g., melancholic, ethereal' : 'Value'}
+                placeholder="e.g., melancholic, ethereal"
                 value={attr.value}
                 onChange={(e) => updateAttribute(index, 'value', e.target.value)}
               />
@@ -328,6 +319,7 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
               </Button>
             </div>
           ))}
+
         </div>
 
         {/* Actions */}
