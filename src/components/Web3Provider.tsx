@@ -59,7 +59,7 @@ let isWeb3ModalInitialized = false;
 export function Web3Provider({ children }: Web3ProviderProps) {
   // Initialize Web3Modal only once globally
   useEffect(() => {
-    if (!isWeb3ModalInitialized) {
+    if (!(window as any).__W3M_INITED) {
       createWeb3Modal({
         wagmiConfig: config,
         projectId,
@@ -71,7 +71,7 @@ export function Web3Provider({ children }: Web3ProviderProps) {
           '--w3m-z-index': 1000
         }
       });
-      isWeb3ModalInitialized = true;
+      (window as any).__W3M_INITED = true;
     }
   }, []);
 
