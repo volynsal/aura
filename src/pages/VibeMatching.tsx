@@ -9,6 +9,7 @@ import { Input } from "@/components/ui/input";
 import SEO from "@/components/SEO";
 import { supabase } from "@/integrations/supabase/client";
 import { useSearchParams } from "react-router-dom";
+import { useSwipeGlitch } from "@/hooks/useSwipeGlitch";
 
 // Dynamic cards sourced from NFTs and user-selected moods
 const VibeMatching = () => {
@@ -28,6 +29,9 @@ const VibeMatching = () => {
   const [creatorSearchMap, setCreatorSearchMap] = useState<Record<string, { display: string; username: string }>>({});
 
   const [searchParams] = useSearchParams();
+
+  // Initialize swipe glitch effect
+  useSwipeGlitch();
 
   useEffect(() => {
     const q = (searchParams.get('q') || '').trim();

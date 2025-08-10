@@ -13,7 +13,6 @@ import { supabase } from "@/integrations/supabase/client";
 import { useAccount } from "wagmi";
 import NFTUpload from "@/components/NFTUpload";
 import SubscriptionTiers from "@/components/SubscriptionTiers";
-import { useSwipeGlitch } from "@/hooks/useSwipeGlitch";
 
 const moods = ["ethereal", "dark", "vibrant", "melancholic", "euphoric", "chaotic", "serene", "rebellious"];
 
@@ -123,9 +122,6 @@ const Create = () => {
       setNewBoard({ title: "", description: "", mood: "", selectedNFTs: [] });
     }
   };
-
-  // Initialize swipe glitch effect
-  useSwipeGlitch();
 
   return (
     <div className="min-h-screen bg-background">
