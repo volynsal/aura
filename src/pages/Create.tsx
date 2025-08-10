@@ -10,6 +10,7 @@ import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
+import { useAccount } from "wagmi";
 import NFTUpload from "@/components/NFTUpload";
 import SubscriptionTiers from "@/components/SubscriptionTiers";
 
@@ -66,7 +67,8 @@ const Create = () => {
   const { toast } = useToast();
   const [walletAddress, setWalletAddress] = useState<string>('');
   const [savingWallet, setSavingWallet] = useState(false);
-
+  const { address, isConnected } = useAccount();
+ 
   useEffect(() => {
     const loadWallet = async () => {
       if (!user) return;
@@ -81,6 +83,13 @@ const Create = () => {
     };
     loadWallet();
   }, [user]);
+
+  // Auto-fill payout wallet from connected wallet
+  useEffect(() => {
+    if (isConnected && address) {
+      setWalletAddress(address);
+    }
+  }, [isConnected, address]);
 
   const saveWallet = async () => {
     if (!user) return;
@@ -278,6 +287,18 @@ const Create = () => {
                     <Button onClick={saveWallet} disabled={savingWallet} variant="aura">
                       {savingWallet ? 'Saving…' : 'Save'}
                     </Button>
+                  </div>
+                  <div className="flex items-center justify-between pt-2">
+                    <div className="text-xs text-muted-foreground">
+                      Status: {isConnected ? `Connected (${address?.slice(0,6)}...${address?.slice(-4)})` : "Not connected"}
+                    </div>
+                    <div className="flex items-center gap-2">
+                      {/* eslint-disable-next-line react/no-unknown-property */}
+                      <w3m-button balance="hide" size="sm"></w3m-button>
+                      <Button variant="secondary" size="sm" onClick={() => address && setWalletAddress(address)}>
+                        Use connected wallet
+                      </Button>
+                    </div>
                   </div>
                 </div>
               </CardContent>
