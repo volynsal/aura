@@ -101,7 +101,7 @@ const VibeMatching = () => {
     const filtered = tokens.length ? computed.filter(c => c.match > 0) : computed;
     setCards(filtered);
     setCurrentIndex(0);
-  }, [nfts, userMoods, creatorMap]);
+  }, [nfts, userMoods, creatorMap, creatorSearchMap]);
 
   const handleFindMatches = () => {
     const moods = moodQuery
