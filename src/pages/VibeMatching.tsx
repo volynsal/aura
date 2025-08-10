@@ -293,7 +293,7 @@ const VibeMatching = () => {
           </Button>
         </div>
       </div>
-      <div className="w-full mx-auto relative px-1 sm:max-w-lg sm:px-4">
+      <div className="w-full mx-auto relative px-4 sm:max-w-lg sm:px-4">
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2 pt-4 md:pt-0">Your mood(s)</label>
           <div className="flex items-center gap-2 flex-wrap">
