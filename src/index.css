@@ -191,3 +191,66 @@ All colors MUST be HSL.
   0%, 98%, 100% { opacity: 1; }
   99% { opacity: 0.8; }
 }
+
+@keyframes glitch-skew {
+  0% { transform: skew(0deg); }
+  10% { transform: skew(-2deg); }
+  20% { transform: skew(1deg); }
+  30% { transform: skew(-1deg); }
+  40% { transform: skew(2deg); }
+  50% { transform: skew(-1deg); }
+  60% { transform: skew(1deg); }
+  70% { transform: skew(-2deg); }
+  80% { transform: skew(0deg); }
+  90% { transform: skew(1deg); }
+  100% { transform: skew(0deg); }
+}
+
+@keyframes glitch-color {
+  0% { filter: hue-rotate(0deg) saturate(1); }
+  20% { filter: hue-rotate(90deg) saturate(1.5); }
+  40% { filter: hue-rotate(180deg) saturate(0.8); }
+  60% { filter: hue-rotate(270deg) saturate(1.2); }
+  80% { filter: hue-rotate(360deg) saturate(1); }
+  100% { filter: hue-rotate(0deg) saturate(1); }
+}
+
+@keyframes glitch-position {
+  0% { transform: translate(0); }
+  10% { transform: translate(-2px, 1px); }
+  20% { transform: translate(1px, -1px); }
+  30% { transform: translate(-1px, 2px); }
+  40% { transform: translate(2px, -2px); }
+  50% { transform: translate(-2px, -1px); }
+  60% { transform: translate(1px, 2px); }
+  70% { transform: translate(-1px, -2px); }
+  80% { transform: translate(2px, 1px); }
+  90% { transform: translate(-1px, -1px); }
+  100% { transform: translate(0); }
+}
+
+.glitch-active {
+  animation: 
+    glitch-skew 0.4s ease-in-out,
+    glitch-color 0.4s ease-in-out,
+    glitch-position 0.4s ease-in-out;
+  animation-iteration-count: 1;
+}
+
+.glitch-active::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: linear-gradient(
+    45deg,
+    transparent 30%,
+    hsl(var(--primary) / 0.1) 50%,
+    transparent 70%
+  );
+  pointer-events: none;
+  z-index: 1000;
+  animation: glitch-position 0.4s ease-in-out;
+}
