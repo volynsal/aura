@@ -39,7 +39,7 @@ const config = defaultWagmiConfig({
   projectId,
   metadata,
   connectors,
-  enableWalletConnect: false, // Disable WalletConnect to avoid relayer/origin issues
+  enableWalletConnect: true, // Enable WalletConnect to show more wallets (Rainbow, Trust, etc.)
   enableInjected: true, // Enable injected wallets
   enableEIP6963: true, // Enable EIP-6963 for better wallet detection
   enableCoinbase: true // Enable Coinbase SDK
