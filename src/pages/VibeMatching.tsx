@@ -293,7 +293,7 @@ const VibeMatching = () => {
           </Button>
         </div>
       </div>
-      <div className="max-w-md mx-auto relative px-4 sm:px-0">
+      <div className="max-w-lg mx-auto relative px-2 sm:px-4">
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2 pt-4 md:pt-0">Your mood(s)</label>
           <div className="flex items-center gap-2 flex-wrap">
@@ -346,7 +346,7 @@ const VibeMatching = () => {
           <p className="mt-2 text-xs text-muted-foreground">Tip: comma-separated, up to 5 moods.</p>
         </div>
         {/* Cards Stack */}
-      <div className="relative h-96 mb-6">
+      <div className="relative h-[500px] mb-6">
         {/* Next card (background) */}
         {cards[currentIndex + 1] && (
           <Card className="absolute inset-0 bg-surface-elevated border-border scale-95 opacity-60">
