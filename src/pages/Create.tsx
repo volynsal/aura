@@ -1,16 +1,17 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Plus, Palette, TrendingUp, Coins, Eye, Heart, Share } from "lucide-react";
+import { Plus, Palette, TrendingUp, Coins, Eye, Heart, Share, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import NFTUpload from "@/components/NFTUpload";
 import SubscriptionTiers from "@/components/SubscriptionTiers";
-import NFTMarketplace from "@/components/NFTMarketplace";
 
 const moods = ["ethereal", "dark", "vibrant", "melancholic", "euphoric", "chaotic", "serene", "rebellious"];
 
@@ -62,7 +63,39 @@ const Create = () => {
   const [showUploadDialog, setShowUploadDialog] = useState(false);
   
   const { user } = useAuth();
+  const { toast } = useToast();
+  const [walletAddress, setWalletAddress] = useState<string>('');
+  const [savingWallet, setSavingWallet] = useState(false);
 
+  useEffect(() => {
+    const loadWallet = async () => {
+      if (!user) return;
+      const { data, error } = await supabase
+        .from('profiles')
+        .select('wallet_address')
+        .eq('user_id', user.id)
+        .single();
+      if (!error && data) {
+        setWalletAddress(data.wallet_address || '');
+      }
+    };
+    loadWallet();
+  }, [user]);
+
+  const saveWallet = async () => {
+    if (!user) return;
+    setSavingWallet(true);
+    const { error } = await supabase
+      .from('profiles')
+      .update({ wallet_address: walletAddress.trim() || null })
+      .eq('user_id', user.id);
+    if (error) {
+      toast({ title: 'Could not save wallet', description: error.message, variant: 'destructive' });
+    } else {
+      toast({ title: 'Payout wallet updated' });
+    }
+    setSavingWallet(false);
+  };
   const handleNFTToggle = (nftId: number) => {
     setNewBoard(prev => ({
       ...prev,
@@ -130,9 +163,18 @@ const Create = () => {
         <Tabs defaultValue="boards" className="w-full">
           <TabsList className="grid w-full grid-cols-5">
             <TabsTrigger value="boards">My Boards</TabsTrigger>
+            <Button asChild variant="link" className="px-2">
+              <a
+                href="https://chatgpt.com/g/g-Yxt9Kr5MD-mintlab"
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Open MintLab in a new tab"
+              >
+                MintLab <ArrowUpRight className="w-4 h-4 inline-block ml-1" />
+              </a>
+            </Button>
             <TabsTrigger value="upload">Upload NFT</TabsTrigger>
             <TabsTrigger value="subscriptions">Subscriptions</TabsTrigger>
-            <TabsTrigger value="marketplace">Marketplace</TabsTrigger>
             <TabsTrigger value="earnings">Earnings</TabsTrigger>
           </TabsList>
 
@@ -210,12 +252,31 @@ const Create = () => {
           </TabsContent>
 
           <TabsContent value="subscriptions" className="mt-6">
+            <Card className="mb-6">
+              <CardHeader>
+                <CardTitle>Payout Wallet</CardTitle>
+              </CardHeader>
+              <CardContent>
+                <div className="space-y-3">
+                  <p className="text-sm text-muted-foreground">
+                    Set the wallet address where you want to receive creator earnings.
+                  </p>
+                  <div className="flex flex-col sm:flex-row gap-3">
+                    <Input
+                      placeholder="0x… or ENS"
+                      value={walletAddress}
+                      onChange={(e) => setWalletAddress(e.target.value)}
+                    />
+                    <Button onClick={saveWallet} disabled={savingWallet} variant="aura">
+                      {savingWallet ? 'Saving…' : 'Save'}
+                    </Button>
+                  </div>
+                </div>
+              </CardContent>
+            </Card>
             <SubscriptionTiers isOwner={true} />
           </TabsContent>
 
-          <TabsContent value="marketplace" className="mt-6">
-            <NFTMarketplace />
-          </TabsContent>
 
           <TabsContent value="earnings" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
