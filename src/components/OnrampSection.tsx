@@ -1,11 +1,26 @@
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { Separator } from "@/components/ui/separator";
 import { Button } from "@/components/ui/button";
+import { useWeb3Modal } from "@web3modal/wagmi/react";
+import { useAccount } from "wagmi";
 
 export default function OnrampSection() {
-  const handleStart = () => {
-    const el = document.querySelector("w3m-onramp") as any;
-    el?.click?.();
+  const { open } = useWeb3Modal();
+  const { isConnected } = useAccount();
+
+  const handleStart = async () => {
+    try {
+      if (!isConnected) {
+        (document.querySelector("w3m-button") as any)?.click?.();
+        // give the wallet modal a moment to resolve connection
+        setTimeout(() => open({ view: "OnRamp" as any }), 500);
+      } else {
+        await open({ view: "OnRamp" as any });
+      }
+    } catch (err) {
+      // final fallback to the web component
+      (document.querySelector("w3m-onramp") as any)?.click?.();
+    }
   };
   return (
     <section className="py-8">
