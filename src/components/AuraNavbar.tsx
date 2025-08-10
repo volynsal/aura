@@ -37,7 +37,7 @@ const AuraNavbar = () => {
                     if (e.key === 'Enter') {
                       const q = globalQuery.trim();
                       console.log('Navbar: search submit', { q });
-                      if (q) navigate(`/vibe-matching?q=${encodeURIComponent(q)}`);
+                      if (q) navigate(`/search?q=${encodeURIComponent(q)}`);
                     }
                   }}
                 />
