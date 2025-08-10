@@ -293,7 +293,7 @@ const VibeMatching = () => {
           </Button>
         </div>
       </div>
-      <div className="w-full max-w-none mx-auto relative px-3 sm:max-w-lg sm:px-4">
+      <div className="w-full mx-auto relative px-1 sm:max-w-lg sm:px-4">
         <div className="mb-6">
           <label className="block text-sm font-medium mb-2 pt-4 md:pt-0">Your mood(s)</label>
           <div className="flex items-center gap-2 flex-wrap">
@@ -389,15 +389,15 @@ const VibeMatching = () => {
           <CardContent className="p-0 h-full relative">
             {currentCard.type === 'artwork' && (
               <>
-                <div className="h-full bg-surface-elevated rounded-lg overflow-hidden mx-3 sm:mx-4">
+                <div className="h-full bg-surface-elevated rounded-lg overflow-hidden">
                   <img 
                     src={currentCard.image} 
                     alt={currentCard.title}
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="absolute inset-y-0 left-3 right-3 sm:left-4 sm:right-4 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-lg" />
-                <div className="absolute bottom-0 left-3 right-3 sm:left-4 sm:right-4 p-6 text-white">
+                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-lg" />
+                <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant="secondary" className="capitalize">
                       {currentCard.mood}
