@@ -326,12 +326,12 @@ const NFTView = () => {
   const isOwner = user?.id === nft.creator_id;
   const isForSale = marketplaceOrder && marketplaceOrder.status === 'active';
 
-  // Ensure we have an absolute URL for the image
-  const getAbsoluteImageUrl = (imageUrl: string) => {
+  // Ensure we have an absolute URL for the image (function declaration for hoisting)
+  function getAbsoluteImageUrl(imageUrl: string) {
     if (imageUrl.startsWith('http')) return imageUrl;
     if (imageUrl.startsWith('/')) return `${window.location.origin}${imageUrl}`;
     return `${window.location.origin}/${imageUrl}`;
-  };
+  }
 
   const absoluteImageUrl = getAbsoluteImageUrl(nft.image_url);
   
@@ -379,7 +379,14 @@ const NFTView = () => {
           <Button 
             variant="ghost" 
             size="sm" 
-            onClick={() => navigate(-1)}
+            onClick={() => {
+              console.info('NFTView: back click', { historyLength: window.history.length, referrer: document.referrer });
+              if (window.history.length > 1) {
+                navigate(-1);
+              } else {
+                navigate('/search'); // fallback route
+              }
+            }}
             className="text-muted-foreground hover:text-foreground min-h-[44px] -ml-2"
           >
             <ArrowLeft className="w-4 h-4 mr-2" />
