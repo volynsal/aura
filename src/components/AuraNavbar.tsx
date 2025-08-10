@@ -126,6 +126,32 @@ const AuraNavbar = () => {
           </div>
         </div>
       </div>
+      {!isLandingPage && (
+        <div className="border-t border-border bg-background/80">
+          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 flex items-center gap-2 sm:gap-3 flex-wrap">
+            <Link to="/feed">
+              <Button variant={location.pathname === '/feed' ? 'aura' : 'minimal'} size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
+                Feed
+              </Button>
+            </Link>
+            <Link to="/discover">
+              <Button variant={location.pathname === '/discover' ? 'aura' : 'minimal'} size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
+                Discover
+              </Button>
+            </Link>
+            <Link to="/create">
+              <Button variant={location.pathname === '/create' ? 'aura' : 'minimal'} size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
+                Create & Earn
+              </Button>
+            </Link>
+            <Link to="/checkout">
+              <Button variant={location.pathname === '/checkout' ? 'aura' : 'minimal'} size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
+                Checkout Demo
+              </Button>
+            </Link>
+          </div>
+        </div>
+      )}
     </nav>
   );
 };
