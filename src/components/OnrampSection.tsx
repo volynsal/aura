@@ -8,10 +8,8 @@ export default function OnrampSection() {
 
   const handleStart = async () => {
     try {
-      // Preferred: open Web3Modal directly on Onramp view
       await open({ view: "OnRamp" as any });
     } catch (err) {
-      // Fallbacks: try the web component, then prompt connect
       const el = document.querySelector("w3m-onramp") as any;
       if (el?.click) {
         el.click();
@@ -37,14 +35,11 @@ export default function OnrampSection() {
             </p>
             <Separator className="bg-border" />
             <div className="flex items-center justify-between gap-4">
-              <div className="text-sm text-muted-foreground">Start onramp flow</div>
-              <div className="flex items-center gap-3">
-                <Button onClick={handleStart} variant="aura" size="sm">
-                  Buy Crypto with Card
-                </Button>
-                {/* eslint-disable-next-line react/no-unknown-property */}
-                <w3m-onramp size="md"></w3m-onramp>
-              </div>
+              <Button onClick={handleStart} variant="aura" size="sm">
+                Buy Crypto with Card
+              </Button>
+              {/* eslint-disable-next-line react/no-unknown-property */}
+              <w3m-onramp size="md"></w3m-onramp>
             </div>
           </CardContent>
         </Card>
