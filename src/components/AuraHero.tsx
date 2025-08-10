@@ -7,25 +7,21 @@ const AuraHero = () => {
 
   if (isMobile) {
     return (
-      <section className="relative py-2 bg-gradient-to-r from-background to-surface-elevated">
-        <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex gap-4 px-3 whitespace-nowrap">
-            <div className="flex items-center gap-2 min-w-fit">
-              <span className="text-sm font-semibold">Your mood gallery</span>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs text-muted-foreground">12.4K artworks</span>
+      <section className="relative bg-background">
+        <div className="overflow-x-auto scrollbar-hide border-b border-border/20">
+          <div className="flex gap-6 px-4 py-1.5 text-xs">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="text-muted-foreground">12.4K artworks</span>
             </div>
-            <div className="flex items-center gap-2 min-w-fit">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <Link to="/discover">
-                <Button variant="aura" size="sm" className="text-xs px-3 py-1 h-6">
+                <Button variant="ghost" size="sm" className="text-xs px-2 py-0.5 h-5">
                   Explore
                 </Button>
               </Link>
             </div>
-            <div className="flex items-center gap-2 min-w-fit">
-              <span className="text-xs text-muted-foreground">2.8K artists</span>
-              <span className="text-xs text-muted-foreground">•</span>
-              <span className="text-xs text-muted-foreground">890 collectors</span>
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
+              <span className="text-muted-foreground">2.8K artists</span>
             </div>
           </div>
         </div>
