@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { Heart, Users, Clock, Zap } from "lucide-react";
+import { Heart, Users, Clock, Zap, Home, Compass, ShoppingCart, Palette } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
@@ -161,31 +161,49 @@ const Discover = () => {
             variant="ghost" 
             size="sm" 
             className="whitespace-nowrap hover-scale"
+            aria-label="Feed"
             onClick={() => navigate('/feed')}
           >
+            <Home className="w-4 h-4 mr-2" />
             Feed
           </Button>
           <Button 
             variant="ghost" 
             size="sm" 
             className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
+            aria-label="Discover"
           >
+            <Compass className="w-4 h-4 mr-2" />
             Discover
           </Button>
           <Button 
             variant="ghost" 
             size="sm" 
             className="whitespace-nowrap hover-scale"
+            aria-label="Checkout"
+            onClick={() => navigate('/checkout')}
+          >
+            <ShoppingCart className="w-4 h-4 mr-2" />
+            Checkout
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            aria-label="Match"
             onClick={() => navigate('/vibe-matching')}
           >
+            <Heart className="w-4 h-4 mr-2" />
             Match
           </Button>
           <Button 
             variant="ghost" 
             size="sm" 
             className="whitespace-nowrap hover-scale"
+            aria-label="Create"
             onClick={() => navigate('/create')}
           >
+            <Palette className="w-4 h-4 mr-2" />
             Create
           </Button>
         </div>
