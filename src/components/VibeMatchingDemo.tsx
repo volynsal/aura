@@ -64,7 +64,7 @@ const VibeMatchingDemo = () => {
   };
 
   return (
-    <section className="pt-2 md:pt-4 pb-24 px-6 bg-gradient-to-b from-surface-elevated to-background">
+    <section className="pt-2 md:pt-4 pb-8 md:pb-10 px-6 bg-gradient-to-b from-surface-elevated to-background">
       <div className="max-w-4xl mx-auto text-center">
         {/* Top mood cards preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 max-w-3xl mx-auto">
