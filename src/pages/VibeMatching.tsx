@@ -160,9 +160,33 @@ const VibeMatching = () => {
               placeholder="e.g., melancholic, ethereal"
               value={moodQuery}
               onChange={(e) => setMoodQuery(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === 'Enter') handleFindMatches();
+              }}
             />
-            <Button variant="aura" onClick={handleFindMatches}>Find</Button>
+            <Button variant="aura" onClick={handleFindMatches}>Search</Button>
+            {userMoods.length > 0 && (
+              <Button variant="outline" onClick={() => { setUserMoods([]); setMoodQuery(''); }}>
+                Clear
+              </Button>
+            )}
           </div>
+          {userMoods.length > 0 && (
+            <div className="mt-3 flex flex-wrap gap-2">
+              {userMoods.map((m, i) => (
+                <Badge key={m + i} variant="secondary" className="capitalize">
+                  {m}
+                  <button
+                    className="ml-2 text-xs opacity-70 hover:opacity-100"
+                    onClick={() => setUserMoods(userMoods.filter((_, idx) => idx !== i))}
+                    aria-label={`Remove ${m}`}
+                  >
+                    ×
+                  </button>
+                </Badge>
+              ))}
+            </div>
+          )}
           <p className="mt-2 text-xs text-muted-foreground">Tip: comma-separated, up to 5 moods.</p>
         </div>
         {/* Cards Stack */}
