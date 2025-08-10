@@ -121,16 +121,22 @@ const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
 const AuraFeed = () => {
   return (
     <div className="max-w-6xl mx-auto px-6 py-0" role="feed" aria-label="NFT feed by mood">
+
+      {/* Explore Heading */}
+      <div className="text-center my-10">
+        <h2 className="text-4xl md:text-5xl font-bold">Explore</h2>
+      </div>
+
       {/* Mood Filter Bar */}
-      <div className="mb-0">
+      <div className="mb-6">
         <div className="flex items-center gap-2 overflow-x-auto pb-2">
           <div className="flex items-center gap-2 min-w-max">
             {['all', 'contemplative', 'serene', 'energetic', 'melancholic', 'hopeful', 'nostalgic'].map((mood) => (
               <button
                 key={mood}
                 className={`px-4 py-2 rounded-full text-sm transition-colors ${
-                  mood === 'all' 
-                    ? 'bg-primary text-primary-foreground' 
+                  mood === 'all'
+                    ? 'bg-primary text-primary-foreground'
                     : 'bg-surface-elevated text-muted-foreground hover:text-foreground hover:bg-accent'
                 }`}
               >
@@ -139,11 +145,6 @@ const AuraFeed = () => {
             ))}
           </div>
         </div>
-      </div>
-
-      {/* Explore Heading */}
-      <div className="text-center my-10">
-        <h2 className="text-4xl md:text-5xl font-bold">Explore</h2>
       </div>
 
       {/* Feed Grid */}
