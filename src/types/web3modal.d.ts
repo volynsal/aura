@@ -6,6 +6,10 @@ declare global {
     interface IntrinsicElements {
       "w3m-onramp": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         size?: "sm" | "md" | "lg";
+        asset?: string; // e.g., 'ETH' | 'USDC'
+        "fiat-currency"?: string; // e.g., 'USD'
+        amount?: string | number;
+        "chain-id"?: string | number;
       };
       "w3m-button": React.DetailedHTMLProps<React.HTMLAttributes<HTMLElement>, HTMLElement> & {
         size?: "sm" | "md" | "lg";

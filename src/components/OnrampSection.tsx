@@ -89,16 +89,19 @@ export default function OnrampSection() {
             <p className="text-xs text-muted-foreground">Minimum purchase is ${minAmount}. Provider availability varies by region.</p>
             <Separator className="bg-border" />
             <div className="flex items-center justify-between gap-4">
-              <Button onClick={handleStart} variant="aura" size="sm" disabled={!isAmountValid}>
-                Buy Crypto with Card
-              </Button>
+                {/* eslint-disable-next-line react/no-unknown-property */}
+                <w3m-onramp
+                  size="sm"
+                  // @ts-ignore custom element attributes
+                  chain-id={network === "base" ? 8453 : 1}
+                  asset={token}
+                  fiat-currency="USD"
+                  amount={amount}
+                ></w3m-onramp>
               <div className="flex items-center gap-3">
                 {/* eslint-disable-next-line react/no-unknown-property */}
                 <w3m-button balance="hide" size="sm"></w3m-button>
               </div>
-              {/* Hidden onramp element we trigger programmatically for consistency */}
-              {/* eslint-disable-next-line react/no-unknown-property */}
-              <w3m-onramp size="md" style={{ display: "none" }}></w3m-onramp>
             </div>
           </CardContent>
         </Card>
