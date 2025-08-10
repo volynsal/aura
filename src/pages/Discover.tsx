@@ -1,37 +1,18 @@
 import { useState, useEffect } from "react";
+import { useNavigate } from "react-router-dom";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Heart, Users, Clock, Zap } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { useAuth } from "@/hooks/useAuth";
+import { useToast } from "@/hooks/use-toast";
 
 const trendingArtists = [
   { name: "neon_oracle", followers: "12.4K", mood: "cyberpunk", avatar: "/placeholder.svg" },
   { name: "void_painter", followers: "8.7K", mood: "dark", avatar: "/placeholder.svg" },
   { name: "dream_weaver", followers: "15.2K", mood: "ethereal", avatar: "/placeholder.svg" },
   { name: "glitch_goddess", followers: "6.9K", mood: "chaotic", avatar: "/placeholder.svg" }
-];
-
-const ghostDrops = [
-  {
-    id: 1,
-    title: "Midnight Frequency",
-    artist: "signal_lost",
-    location: "Williamsburg, NYC",
-    timeLeft: "2h 34m",
-    clues: 3,
-    found: 47,
-    total: 100
-  },
-  {
-    id: 2,
-    title: "Neon Dreams",
-    artist: "cyber_monk",
-    location: "Hidden coordinates",
-    timeLeft: "6h 12m",
-    clues: 1,
-    found: 23,
-    total: 50
-  }
 ];
 
 const vibeCollections = [
@@ -59,7 +40,14 @@ const vibeCollections = [
 ];
 
 const Discover = () => {
+  const navigate = useNavigate();
+  const { user } = useAuth();
+  const { toast } = useToast();
+
   const [followedArtists, setFollowedArtists] = useState<Set<string>>(new Set());
+  const [drops, setDrops] = useState<any[]>([]);
+  const [myCheckins, setMyCheckins] = useState<Set<string>>(new Set());
+  const [checkingId, setCheckingId] = useState<string | null>(null);
 
   useEffect(() => {
     try {
@@ -67,6 +55,35 @@ const Discover = () => {
       if (Array.isArray(stored)) setFollowedArtists(new Set(stored));
     } catch {}
   }, []);
+
+  // Load ghost drops
+  useEffect(() => {
+    (async () => {
+      const { data, error } = await supabase
+        .from('ghost_drops')
+        .select('*')
+        .order('created_at', { ascending: false });
+      if (error) {
+        console.error('Load drops error', error);
+      }
+      setDrops(data || []);
+    })();
+  }, []);
+
+  // Load my check-ins
+  useEffect(() => {
+    if (!user) return;
+    (async () => {
+      const { data, error } = await supabase
+        .from('ghost_drop_checkins')
+        .select('drop_id')
+        .eq('user_id', user.id);
+      if (error) {
+        console.error('Load checkins error', error);
+      }
+      setMyCheckins(new Set((data || []).map((r: any) => r.drop_id)));
+    })();
+  }, [user]);
 
   const handleFollow = (artistName: string) => {
     const newFollowed = new Set(followedArtists);
@@ -77,6 +94,62 @@ const Discover = () => {
     }
     setFollowedArtists(newFollowed);
     try { localStorage.setItem('aura_followed_usernames', JSON.stringify(Array.from(newFollowed))); } catch {}
+  };
+
+  const haversineMeters = (lat1: number, lon1: number, lat2: number, lon2: number) => {
+    const toRad = (v: number) => (v * Math.PI) / 180;
+    const R = 6371000; // meters
+    const dLat = toRad(lat2 - lat1);
+    const dLon = toRad(lon2 - lon1);
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(toRad(lat1)) * Math.cos(toRad(lat2)) *
+      Math.sin(dLon / 2) * Math.sin(dLon / 2);
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    return R * c;
+  };
+
+  const formatTimeLeft = (ends?: string | null) => {
+    if (!ends) return null;
+    const end = new Date(ends).getTime();
+    const now = Date.now();
+    const diff = Math.max(0, end - now);
+    const h = Math.floor(diff / 3600000);
+    const m = Math.floor((diff % 3600000) / 60000);
+    return `${h}h ${m}m`;
+  };
+
+  const handleCheckIn = async (drop: any) => {
+    if (!user) {
+      navigate('/login');
+      return;
+    }
+    if (!('geolocation' in navigator)) {
+      toast({ title: 'Location unavailable', description: 'Geolocation not supported in this browser.' });
+      return;
+    }
+    setCheckingId(drop.id);
+    navigator.geolocation.getCurrentPosition(async (pos) => {
+      try {
+        const dist = haversineMeters(pos.coords.latitude, pos.coords.longitude, drop.latitude, drop.longitude);
+        const radius = drop.radius_m ?? 50;
+        if (dist <= radius) {
+          const { error } = await supabase.from('ghost_drop_checkins').insert({ drop_id: drop.id, user_id: user.id });
+          if (error) throw error;
+          setMyCheckins(prev => new Set([...prev, drop.id]));
+          toast({ title: 'Unlocked!', description: `Checked in to ${drop.title}` });
+        } else {
+          toast({ title: 'Too far', description: `You are ${Math.round(dist)}m away. Get within ${radius}m to unlock.` });
+        }
+      } catch (e: any) {
+        toast({ title: 'Check-in failed', description: e.message, variant: 'destructive' });
+      } finally {
+        setCheckingId(null);
+      }
+    }, (err) => {
+      toast({ title: 'Location error', description: err.message, variant: 'destructive' });
+      setCheckingId(null);
+    }, { enableHighAccuracy: true, timeout: 10000 });
   };
 
   return (
@@ -146,7 +219,7 @@ const Discover = () => {
                     </Button>
                   </div>
                   <div className="flex gap-2 mb-3">
-                    {collection.preview.map((img, idx) => (
+                    {collection.preview.map((_, idx) => (
                       <div key={idx} className="w-16 h-16 bg-surface-elevated rounded-lg" />
                     ))}
                     <div className="w-16 h-16 bg-surface-elevated rounded-lg flex items-center justify-center text-sm text-muted-foreground">
@@ -165,36 +238,58 @@ const Discover = () => {
                 <Zap className="w-5 h-5" />
                 Active Ghost Drops
               </h2>
-              {ghostDrops.map((drop) => (
-                <div key={drop.id} className="p-4 bg-surface border border-border rounded-xl">
-                  <div className="flex items-start justify-between mb-3">
-                    <div>
-                      <h3 className="font-medium mb-1">{drop.title}</h3>
-                      <p className="text-sm text-muted-foreground">by {drop.artist}</p>
-                      <p className="text-sm text-muted-foreground mt-1">{drop.location}</p>
-                    </div>
-                    <div className="text-right">
-                      <div className="flex items-center gap-1 text-sm font-medium text-primary">
-                        <Clock className="w-4 h-4" />
-                        {drop.timeLeft}
+              {drops.length === 0 ? (
+                <p className="text-muted-foreground">No active drops right now.</p>
+              ) : (
+                drops.map((drop) => (
+                  <div key={drop.id} className="p-4 bg-surface border border-border rounded-xl">
+                    <div className="flex items-start justify-between mb-3">
+                      <div>
+                        <h3 className="font-medium mb-1">{drop.title}</h3>
+                        {drop.artist_username && (
+                          <p className="text-sm text-muted-foreground">by {drop.artist_username}</p>
+                        )}
+                        {drop.location_name && (
+                          <p className="text-sm text-muted-foreground mt-1">{drop.location_name}</p>
+                        )}
+                      </div>
+                      <div className="text-right">
+                        {formatTimeLeft(drop.ends_at) && (
+                          <div className="flex items-center gap-1 text-sm font-medium text-primary">
+                            <Clock className="w-4 h-4" />
+                            {formatTimeLeft(drop.ends_at)}
+                          </div>
+                        )}
                       </div>
                     </div>
-                  </div>
-                  <div className="grid grid-cols-2 gap-4 mb-3">
-                    <div>
-                      <p className="text-xs text-muted-foreground">Clues found</p>
-                      <p className="font-medium">{drop.clues}/3</p>
+                    <div className="grid grid-cols-2 gap-4 mb-3">
+                      <div>
+                        <p className="text-xs text-muted-foreground">Radius</p>
+                        <p className="font-medium">{drop.radius_m}m</p>
+                      </div>
+                      <div>
+                        <p className="text-xs text-muted-foreground">Collectors</p>
+                        <p className="font-medium">{drop.found_count}/{drop.total}</p>
+                      </div>
                     </div>
-                    <div>
-                      <p className="text-xs text-muted-foreground">Collectors</p>
-                      <p className="font-medium">{drop.found}/{drop.total}</p>
-                    </div>
+                    {myCheckins.has(drop.id) ? (
+                      <Button variant="aura" size="sm" className="w-full" disabled>
+                        Unlocked
+                      </Button>
+                    ) : (
+                      <Button
+                        variant="aura"
+                        size="sm"
+                        className="w-full"
+                        onClick={() => handleCheckIn(drop)}
+                        disabled={checkingId === drop.id}
+                      >
+                        {checkingId === drop.id ? 'Checking…' : 'Check in'}
+                      </Button>
+                    )}
                   </div>
-                  <Button variant="aura" size="sm" className="w-full">
-                    Join Hunt
-                  </Button>
-                </div>
-              ))}
+                ))
+              )}
             </div>
           </TabsContent>
 

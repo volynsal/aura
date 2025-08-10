@@ -94,6 +94,83 @@ export type Database = {
           },
         ]
       }
+      ghost_drop_checkins: {
+        Row: {
+          created_at: string
+          drop_id: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          drop_id: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          drop_id?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "ghost_drop_checkins_drop_id_fkey"
+            columns: ["drop_id"]
+            isOneToOne: false
+            referencedRelation: "ghost_drops"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      ghost_drops: {
+        Row: {
+          artist_username: string | null
+          created_at: string
+          creator_id: string
+          ends_at: string | null
+          found_count: number
+          id: string
+          latitude: number
+          location_name: string | null
+          longitude: number
+          radius_m: number
+          starts_at: string | null
+          title: string
+          total: number
+        }
+        Insert: {
+          artist_username?: string | null
+          created_at?: string
+          creator_id: string
+          ends_at?: string | null
+          found_count?: number
+          id?: string
+          latitude: number
+          location_name?: string | null
+          longitude: number
+          radius_m?: number
+          starts_at?: string | null
+          title: string
+          total?: number
+        }
+        Update: {
+          artist_username?: string | null
+          created_at?: string
+          creator_id?: string
+          ends_at?: string | null
+          found_count?: number
+          id?: string
+          latitude?: number
+          location_name?: string | null
+          longitude?: number
+          radius_m?: number
+          starts_at?: string | null
+          title?: string
+          total?: number
+        }
+        Relationships: []
+      }
       likes: {
         Row: {
           created_at: string
