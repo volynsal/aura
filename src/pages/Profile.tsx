@@ -594,11 +594,6 @@ const Profile = () => {
                       
                       {/* Price & Rarity */}
                       <div className="flex items-center justify-between mb-3">
-                        {nft.price_eth && (
-                          <span className="text-xs font-medium text-primary">
-                            {nft.price_eth} ETH
-                          </span>
-                        )}
                         {nft.rarity && (
                           <Badge variant="outline" className="text-xs capitalize">
                             {nft.rarity}
