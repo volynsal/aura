@@ -5,7 +5,7 @@ import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Textarea } from '@/components/ui/textarea';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
-import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '@/components/ui/select';
+
 import { Badge } from '@/components/ui/badge';
 import { Upload, X, Plus } from 'lucide-react';
 import { useAuth } from '@/hooks/useAuth';
@@ -32,7 +32,7 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
   const { user } = useAuth();
   const { toast } = useToast();
 
-  const ALLOWED_TRAIT_TYPES = ['mood','trait'] as const;
+  
 
   const onDrop = useCallback((acceptedFiles: File[]) => {
     const file = acceptedFiles[0];
@@ -120,19 +120,9 @@ export default function NFTUpload({ onClose, onSuccess }: NFTUploadProps) {
       }
 
       const cleanedAttributes = attributes
-        .map(a => ({ trait_type: a.trait_type?.toLowerCase().trim(), value: a.value?.trim() }))
-        .filter(a => a.trait_type && a.value);
+        .map(a => ({ trait_type: 'mood', value: a.value?.trim() }))
+        .filter(a => a.value);
 
-      const hasInvalid = cleanedAttributes.some(a => !ALLOWED_TRAIT_TYPES.includes(a.trait_type as any));
-      if (hasInvalid) {
-        toast({
-          title: 'Invalid attribute type',
-          description: "Trait type must be 'mood' or 'trait'.",
-          variant: 'destructive',
-        });
-        setIsUploading(false);
-        return;
-      }
 
       // Create NFT record
       const { error: nftError } = await supabase
