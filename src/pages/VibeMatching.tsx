@@ -295,7 +295,7 @@ const VibeMatching = () => {
       </div>
       <div className="max-w-md mx-auto relative">
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-2">Your mood(s)</label>
+          <label className="block text-sm font-medium mb-2 pt-4 md:pt-0">Your mood(s)</label>
           <div className="flex gap-2">
             <Input
               placeholder="e.g., melancholic, ethereal"
