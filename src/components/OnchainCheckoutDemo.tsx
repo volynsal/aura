@@ -1,5 +1,5 @@
 import { useState, useMemo } from "react";
-import { useAccount, useSwitchChain, useSendTransaction, useWriteContract } from "wagmi";
+import { useAccount, useSwitchChain, useSendTransaction, useWriteContract, useDisconnect } from "wagmi";
 import { base, mainnet } from "wagmi/chains";
 import { parseEther, parseUnits } from "viem";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
@@ -8,6 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
+import { resetWalletSessions } from "@/lib/walletReset";
 
 // Minimal ERC20 ABI for transfer
 const erc20Abi = [
@@ -41,6 +42,7 @@ export default function OnchainCheckoutDemo() {
   const { switchChain, isPending: isSwitching } = useSwitchChain();
   const { sendTransaction, isPending: sendingEth } = useSendTransaction();
   const { writeContract, isPending: sendingUsdc } = useWriteContract();
+  const { disconnect } = useDisconnect();
 
   const [recipient, setRecipient] = useState<string>("");
   const [amount, setAmount] = useState<string>("1");
@@ -103,6 +105,12 @@ export default function OnchainCheckoutDemo() {
     }
   };
 
+  const handleResetWallet = () => {
+    try { disconnect?.(); } catch {}
+    resetWalletSessions();
+    toast({ title: "Connection reset", description: "Please reconnect your wallet" });
+  };
+
   return (
     <section className="py-10">
       <div className="max-w-2xl mx-auto">
@@ -118,9 +126,11 @@ export default function OnchainCheckoutDemo() {
               <div className="text-sm text-muted-foreground">
                 Status: {isConnected ? `Connected${onSelectedNetwork ? ` on ${selectedNetwork.label}` : ` (switch to ${selectedNetwork.label})`}` : "Not connected"}
               </div>
-              {/* Web3Modal button */}
-              {/* eslint-disable-next-line react/no-unknown-property */}
-              <w3m-button balance="hide" size="sm"></w3m-button>
+              <div className="flex items-center gap-2">
+                {/* eslint-disable-next-line react/no-unknown-property */}
+                <w3m-button balance="hide" size="sm"></w3m-button>
+                <Button size="sm" variant="secondary" onClick={handleResetWallet}>Reset Connect</Button>
+              </div>
             </div>
 
             <div className="space-y-2">

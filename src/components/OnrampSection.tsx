@@ -5,11 +5,13 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 import { useState } from "react";
-import { useChainId, useSwitchChain } from "wagmi";
+import { useChainId, useSwitchChain, useDisconnect } from "wagmi";
+import { resetWalletSessions } from "@/lib/walletReset";
 
 export default function OnrampSection() {
   const currentChainId = useChainId();
   const { switchChainAsync } = useSwitchChain();
+  const { disconnect } = useDisconnect();
   const [amount, setAmount] = useState<string>("10"); // Fiat amount in USD
   const [token, setToken] = useState<string>("USDC"); // 'USDC' | 'ETH'
   const [network, setNetwork] = useState<string>("base"); // 'base' | 'ethereum'
@@ -32,6 +34,11 @@ export default function OnrampSection() {
       el?.setAttribute?.("data-amount", amount);
     } catch {}
     el?.click?.();
+  };
+
+  const handleResetConnect = () => {
+    try { disconnect?.(); } catch {}
+    resetWalletSessions();
   };
   return (
     <section className="py-8">
@@ -101,6 +108,7 @@ export default function OnrampSection() {
               <div className="flex items-center gap-3">
                 {/* eslint-disable-next-line react/no-unknown-property */}
                 <w3m-button balance="hide" size="sm"></w3m-button>
+                <Button size="sm" variant="secondary" onClick={handleResetConnect}>Reset Connect</Button>
               </div>
             </div>
           </CardContent>
