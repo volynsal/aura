@@ -208,114 +208,196 @@ const Feed = () => {
       </div>
 
       {/* Feed */}
-      <div className="max-w-2xl mx-auto px-4 py-6">
-        {filteredPosts.map((post) => (
-          <div 
-            key={post.id} 
-            className="mb-8 bg-surface border border-border rounded-xl overflow-hidden cursor-pointer hover:border-primary/50 transition-colors"
-            onClick={() => handlePostClick(post)}
-          >
-            {/* Post Header */}
-            <div className="flex items-center justify-between p-4">
-              <div className="flex items-center gap-3">
-                <Avatar className="w-10 h-10">
-                  <AvatarImage src={post.artistAvatar} />
-                  <AvatarFallback>{post.artist[0].toUpperCase()}</AvatarFallback>
-                </Avatar>
-                <div>
-                  <p className="font-medium text-foreground">{post.artist}</p>
-                  <p className="text-sm text-muted-foreground">{post.timeAgo}</p>
-                </div>
-              </div>
-              <Button 
-                variant="minimal" 
-                size="sm"
-                onClick={(e) => e.stopPropagation()}
+      <div className="max-w-2xl mx-auto px-4 py-6 space-y-10">
+        {vibedPosts.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xl font-semibold">Because you vibed with {tokens.slice(0,3).join(', ') || 'these moods'}</h2>
+              <Badge variant="outline" className="text-xs">Why you're seeing this: your vibes</Badge>
+            </div>
+            {vibedPosts.map((post) => (
+              <div 
+                key={post.id} 
+                className="mb-8 bg-surface border border-border rounded-xl overflow-hidden cursor-pointer hover:border-primary/50 transition-colors"
+                onClick={() => handlePostClick(post)}
               >
-                <MoreHorizontal className="w-4 h-4" />
-              </Button>
-            </div>
-
-            {/* NFT Image */}
-            <div className="aspect-square bg-surface-elevated relative group">
-              <img 
-                src={post.image} 
-                alt={`${post.title} — mood: ${post.mood}`}
-                className="w-full h-full object-cover"
-                loading="lazy"
-                decoding="async"
-              />
-              <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
-              <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
-                <Badge variant="secondary" className="mb-2 capitalize">
-                  {post.mood}
-                </Badge>
-                <h3 className="text-white font-bold text-lg">{post.title}</h3>
-                <p className="text-white/80 text-sm">{post.price}</p>
-              </div>
-            </div>
-
-            {/* Post Actions */}
-            <div className="p-4">
-              <div className="flex items-center justify-between mb-3">
-                <div className="flex items-center gap-4">
-                  <Button
-                    variant="minimal"
-                    size="sm"
-                    onClick={(e) => {
-                      e.stopPropagation();
-                      handleLike(post.id);
-                    }}
-                    className={likedPosts.has(post.id) ? "text-red-500" : ""}
-                  >
-                    <Heart className={`w-5 h-5 ${likedPosts.has(post.id) ? "fill-current" : ""}`} />
-                  </Button>
-                  <Button 
-                    variant="minimal" 
-                    size="sm"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <MessageCircle className="w-5 h-5" />
-                  </Button>
-                  <Button 
-                    variant="minimal" 
-                    size="sm"
-                    onClick={(e) => e.stopPropagation()}
-                  >
-                    <Share className="w-5 h-5" />
+                <div className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={post.artistAvatar} />
+                      <AvatarFallback>{post.artist[0].toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium text-foreground">{post.artist}</p>
+                      <p className="text-sm text-muted-foreground">{post.timeAgo}</p>
+                    </div>
+                  </div>
+                  <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                    <MoreHorizontal className="w-4 h-4" />
                   </Button>
                 </div>
-                <Button 
-                  variant="minimal" 
-                  size="sm"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  <Bookmark className="w-5 h-5" />
-                </Button>
+                <div className="aspect-square bg-surface-elevated relative group">
+                  <img src={post.image} alt={`${post.title} — mood: ${post.mood}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Badge variant="secondary" className="mb-2 capitalize">{post.mood}</Badge>
+                    <h3 className="text-white font-bold text-lg">{post.title}</h3>
+                    <p className="text-white/80 text-sm">{post.price}</p>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-4">
+                      <Button variant="minimal" size="sm" onClick={(e) => { e.stopPropagation(); handleLike(post.id); }} className={likedPosts.has(post.id) ? "text-red-500" : ""}>
+                        <Heart className={`w-5 h-5 ${likedPosts.has(post.id) ? "fill-current" : ""}`} />
+                      </Button>
+                      <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                        <MessageCircle className="w-5 h-5" />
+                      </Button>
+                      <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                        <Share className="w-5 h-5" />
+                      </Button>
+                    </div>
+                    <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                      <Bookmark className="w-5 h-5" />
+                    </Button>
+                  </div>
+                  <p className="font-medium text-sm mb-1">{post.likes + (likedPosts.has(post.id) ? 1 : 0)} likes</p>
+                  <div className="text-sm">
+                    <span className="font-medium">{post.artist}</span>{" "}
+                    <span className="text-muted-foreground">{post.description}</span>
+                  </div>
+                </div>
               </div>
+            ))}
+          </section>
+        )}
 
-              <p className="font-medium text-sm mb-1">
-                {post.likes + (likedPosts.has(post.id) ? 1 : 0)} likes
-              </p>
-              
-              <div className="text-sm">
-                <span className="font-medium">{post.artist}</span>{" "}
-                <span className="text-muted-foreground">{post.description}</span>
-              </div>
-
-              {post.comments > 0 && (
-                <Button 
-                  variant="minimal" 
-                  size="sm" 
-                  className="mt-2 p-0 h-auto text-muted-foreground"
-                  onClick={(e) => e.stopPropagation()}
-                >
-                  View all {post.comments} comments
-                </Button>
-              )}
+        {followedPosts.length > 0 && (
+          <section>
+            <div className="flex items-center justify-between mb-3">
+              <h2 className="text-xl font-semibold">From creators you follow</h2>
+              <Badge variant="outline" className="text-xs">Why you're seeing this: follows</Badge>
             </div>
+            {followedPosts.map((post) => (
+              <div 
+                key={post.id} 
+                className="mb-8 bg-surface border border-border rounded-xl overflow-hidden cursor-pointer hover:border-primary/50 transition-colors"
+                onClick={() => handlePostClick(post)}
+              >
+                <div className="flex items-center justify-between p-4">
+                  <div className="flex items-center gap-3">
+                    <Avatar className="w-10 h-10">
+                      <AvatarImage src={post.artistAvatar} />
+                      <AvatarFallback>{post.artist[0].toUpperCase()}</AvatarFallback>
+                    </Avatar>
+                    <div>
+                      <p className="font-medium text-foreground">{post.artist}</p>
+                      <p className="text-sm text-muted-foreground">{post.timeAgo}</p>
+                    </div>
+                  </div>
+                  <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                    <MoreHorizontal className="w-4 h-4" />
+                  </Button>
+                </div>
+                <div className="aspect-square bg-surface-elevated relative group">
+                  <img src={post.image} alt={`${post.title} — mood: ${post.mood}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                  <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                  <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                    <Badge variant="secondary" className="mb-2 capitalize">{post.mood}</Badge>
+                    <h3 className="text-white font-bold text-lg">{post.title}</h3>
+                    <p className="text-white/80 text-sm">{post.price}</p>
+                  </div>
+                </div>
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div className="flex items-center gap-4">
+                      <Button variant="minimal" size="sm" onClick={(e) => { e.stopPropagation(); handleLike(post.id); }} className={likedPosts.has(post.id) ? "text-red-500" : ""}>
+                        <Heart className={`w-5 h-5 ${likedPosts.has(post.id) ? "fill-current" : ""}`} />
+                      </Button>
+                      <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                        <MessageCircle className="w-5 h-5" />
+                      </Button>
+                      <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                        <Share className="w-5 h-5" />
+                      </Button>
+                    </div>
+                    <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                      <Bookmark className="w-5 h-5" />
+                    </Button>
+                  </div>
+                  <p className="font-medium text-sm mb-1">{post.likes + (likedPosts.has(post.id) ? 1 : 0)} likes</p>
+                  <div className="text-sm">
+                    <span className="font-medium">{post.artist}</span>{" "}
+                    <span className="text-muted-foreground">{post.description}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </section>
+        )}
+
+        <section>
+          <div className="flex items-center justify-between mb-3">
+            <h2 className="text-xl font-semibold">Trending {tokens.length ? 'in your moods' : 'now'}</h2>
+            <Badge variant="outline" className="text-xs">Why you're seeing this: trending</Badge>
           </div>
-        ))}
+          {trendingPosts.map((post) => (
+            <div 
+              key={post.id} 
+              className="mb-8 bg-surface border border-border rounded-xl overflow-hidden cursor-pointer hover:border-primary/50 transition-colors"
+              onClick={() => handlePostClick(post)}
+            >
+              <div className="flex items-center justify-between p-4">
+                <div className="flex items-center gap-3">
+                  <Avatar className="w-10 h-10">
+                    <AvatarImage src={post.artistAvatar} />
+                    <AvatarFallback>{post.artist[0].toUpperCase()}</AvatarFallback>
+                  </Avatar>
+                  <div>
+                    <p className="font-medium text-foreground">{post.artist}</p>
+                    <p className="text-sm text-muted-foreground">{post.timeAgo}</p>
+                  </div>
+                </div>
+                <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                  <MoreHorizontal className="w-4 h-4" />
+                </Button>
+              </div>
+              <div className="aspect-square bg-surface-elevated relative group">
+                <img src={post.image} alt={`${post.title} — mood: ${post.mood}`} className="w-full h-full object-cover" loading="lazy" decoding="async" />
+                <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+                <div className="absolute bottom-4 left-4 opacity-0 group-hover:opacity-100 transition-opacity duration-300">
+                  <Badge variant="secondary" className="mb-2 capitalize">{post.mood}</Badge>
+                  <h3 className="text-white font-bold text-lg">{post.title}</h3>
+                  <p className="text-white/80 text-sm">{post.price}</p>
+                </div>
+              </div>
+              <div className="p-4">
+                <div className="flex items-center justify-between mb-3">
+                  <div className="flex items-center gap-4">
+                    <Button variant="minimal" size="sm" onClick={(e) => { e.stopPropagation(); handleLike(post.id); }} className={likedPosts.has(post.id) ? "text-red-500" : ""}>
+                      <Heart className={`w-5 h-5 ${likedPosts.has(post.id) ? "fill-current" : ""}`} />
+                    </Button>
+                    <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                      <MessageCircle className="w-5 h-5" />
+                    </Button>
+                    <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                      <Share className="w-5 h-5" />
+                    </Button>
+                  </div>
+                  <Button variant="minimal" size="sm" onClick={(e) => e.stopPropagation()}>
+                    <Bookmark className="w-5 h-5" />
+                  </Button>
+                </div>
+                <p className="font-medium text-sm mb-1">{post.likes + (likedPosts.has(post.id) ? 1 : 0)} likes</p>
+                <div className="text-sm">
+                  <span className="font-medium">{post.artist}</span>{" "}
+                  <span className="text-muted-foreground">{post.description}</span>
+                </div>
+              </div>
+            </div>
+          ))}
+        </section>
       </div>
     </div>
   );
