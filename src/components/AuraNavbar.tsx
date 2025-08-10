@@ -13,7 +13,7 @@ const AuraNavbar = () => {
   const [globalQuery, setGlobalQuery] = useState("");
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-12 flex items-center w-full" data-full-width={true}>
+    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-14 flex items-center w-full" data-full-width={true}>
       <div className="w-full px-3 sm:px-6">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 sm:gap-8">
