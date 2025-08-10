@@ -184,6 +184,16 @@ All colors MUST be HSL.
   .bg-underground {
     background-color: hsl(var(--underground));
   }
+
+  /* Hide scrollbars */
+  .scrollbar-hide {
+    -ms-overflow-style: none;
+    scrollbar-width: none;
+  }
+  
+  .scrollbar-hide::-webkit-scrollbar {
+    display: none;
+  }
 }
 
 
