@@ -8,7 +8,7 @@ import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import SEO from "@/components/SEO";
 
-const moods = ["common", "rare", "epic", "legendary"]; // Updated to match rarity values
+
 
 const Feed = () => {
   const navigate = useNavigate();
@@ -20,6 +20,7 @@ const Feed = () => {
   const [userMoods, setUserMoods] = useState<string[]>([]);
   const [followedUsernames, setFollowedUsernames] = useState<string[]>([]);
   const [followedCreatorIds, setFollowedCreatorIds] = useState<string[]>([]);
+  const [trendingVibes, setTrendingVibes] = useState<string[]>([]);
 
   useEffect(() => {
     try {
@@ -69,21 +70,42 @@ const Feed = () => {
 
       if (nftError) throw nftError;
       
-      // Transform the data to match our feed format
-      const transformedNFTs = nfts?.map(nft => ({
-        id: nft.id,
-        artist: nft.profiles?.username || 'Anonymous',
-        artistAvatar: nft.profiles?.avatar_url,
-        title: nft.title,
-        price: nft.price_eth ? `${nft.price_eth} ETH` : null,
-        mood: nft.rarity || 'neutral', // Using rarity as mood for now
-        image: nft.image_url,
-        likes: Math.floor(Math.random() * 500), // Mock likes for now
-        comments: Math.floor(Math.random() * 50), // Mock comments for now
-        timeAgo: getTimeAgo(nft.created_at),
-        description: nft.description,
-        nftData: nft
-      })) || [];
+      // Transform the data to match our feed format and extract vibes
+      const transformedNFTs = nfts?.map((nft) => {
+        const attrs = (nft.attributes as any[]) || [];
+        const vibeAttr = Array.isArray(attrs)
+          ? attrs.find((a: any) => {
+              const t = String(a?.trait_type || '').toLowerCase().trim();
+              return t === 'mood' || t === 'vibe';
+            })
+          : null;
+        const vibe = String((vibeAttr?.value as string) || 'neutral').toLowerCase().trim();
+
+        return {
+          id: nft.id,
+          artist: nft.profiles?.username || 'Anonymous',
+          artistAvatar: nft.profiles?.avatar_url,
+          title: nft.title,
+          price: nft.price_eth ? `${nft.price_eth} ETH` : null,
+          mood: vibe,
+          image: nft.image_url,
+          likes: Math.floor(Math.random() * 500), // Mock likes for now
+          comments: Math.floor(Math.random() * 50), // Mock comments for now
+          timeAgo: getTimeAgo(nft.created_at),
+          description: nft.description,
+          nftData: nft,
+        };
+      }) || [];
+
+      // Compute top trending vibes (up to 10)
+      const counts = new Map<string, number>();
+      transformedNFTs.forEach((p) => {
+        const v = (p.mood || '').toLowerCase().trim();
+        if (v && v !== 'neutral') {
+          counts.set(v, (counts.get(v) ?? 0) + 1);
+        }
+      });
+      setTrendingVibes(Array.from(counts.entries()).sort((a, b) => b[1] - a[1]).slice(0, 10).map(([v]) => v));
 
       setFeedNFTs(transformedNFTs);
     } catch (error: any) {
@@ -122,7 +144,7 @@ const Feed = () => {
   };
 
   const filteredPosts = selectedMood 
-    ? feedNFTs.filter(post => post.mood === selectedMood)
+    ? feedNFTs.filter(post => (post.mood || '').toLowerCase() === (selectedMood || '').toLowerCase())
     : feedNFTs;
 
   // Mood-aware scoring similar to VibeMatching
@@ -230,15 +252,15 @@ const Feed = () => {
             >
               All vibes
             </Button>
-            {moods.map((mood) => (
+            {trendingVibes.map((vibe) => (
               <Button
-                key={mood}
-                variant={selectedMood === mood ? "aura" : "minimal"}
+                key={vibe}
+                variant={selectedMood === vibe ? "aura" : "minimal"}
                 size="sm"
-                onClick={() => setSelectedMood(mood)}
+                onClick={() => setSelectedMood(vibe)}
                 className="whitespace-nowrap capitalize"
               >
-                {mood}
+                {vibe}
               </Button>
             ))}
           </div>
