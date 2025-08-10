@@ -9,7 +9,7 @@ const Index = () => {
         title="Aura — Your mood is your gallery"
         description="Aura: Your mood is your gallery. Share and discover digital art by vibe."
         path="/"
-        image="/lovable-uploads/c01519dd-0698-4c23-b3a7-e5af5415a354.png"
+        image="/og-aura.png?v=2"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "WebSite",
