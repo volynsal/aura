@@ -339,7 +339,7 @@ const Profile = () => {
           <div className="flex justify-center gap-4 text-xs text-muted-foreground mb-4">
             <span>Since {new Date(profile.created_at).toLocaleDateString('en-US', { month: 'long', year: 'numeric' })}</span>
             <span>•</span>
-            <span>Aura ✨ 94</span>
+            <span>Aura ✨ {profile.aura ?? 10}</span>
           </div>
           
           {isOwnProfile ? (
