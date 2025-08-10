@@ -2,6 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Button } from "@/components/ui/button";
 import { Badge } from "@/components/ui/badge";
 import { Card, CardContent } from "@/components/ui/card";
+import { useNavigate } from "react-router-dom";
 import { Heart, X, RotateCcw, Zap } from "lucide-react";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { Input } from "@/components/ui/input";
@@ -11,6 +12,7 @@ import { useSearchParams } from "react-router-dom";
 
 // Dynamic cards sourced from NFTs and user-selected moods
 const VibeMatching = () => {
+  const navigate = useNavigate();
   const [currentIndex, setCurrentIndex] = useState(0);
   const [matches, setMatches] = useState<number[]>([]);
   const [dragOffset, setDragOffset] = useState({ x: 0, y: 0 });

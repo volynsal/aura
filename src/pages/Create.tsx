@@ -6,6 +6,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Palette, TrendingUp, Coins, Eye, Heart, Share } from "lucide-react";
+import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import NFTUpload from "@/components/NFTUpload";
 import SubscriptionTiers from "@/components/SubscriptionTiers";
@@ -50,6 +51,7 @@ const availableNFTs = [
 ];
 
 const Create = () => {
+  const navigate = useNavigate();
   const [newBoard, setNewBoard] = useState({
     title: "",
     description: "",
@@ -80,7 +82,45 @@ const Create = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-6">
+    <div className="min-h-screen bg-background">
+      {/* Mobile Navigation Banner */}
+      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
+        <div className="flex gap-2 px-4 py-3 min-w-max">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/feed')}
+          >
+            Feed
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/discover')}
+          >
+            Discover
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/vibe-matching')}
+          >
+            Match
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
+          >
+            Create
+          </Button>
+        </div>
+      </div>
+      
+      <div className="pt-6">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Create & Earn</h1>
@@ -228,6 +268,7 @@ const Create = () => {
             </Card>
           </TabsContent>
         </Tabs>
+      </div>
       </div>
     </div>
   );

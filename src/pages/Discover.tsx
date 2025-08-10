@@ -153,7 +153,45 @@ const Discover = () => {
   };
 
   return (
-    <div className="min-h-screen bg-background pt-6">
+    <div className="min-h-screen bg-background">
+      {/* Mobile Navigation Banner */}
+      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
+        <div className="flex gap-2 px-4 py-3 min-w-max">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/feed')}
+          >
+            Feed
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
+          >
+            Discover
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/vibe-matching')}
+          >
+            Match
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/create')}
+          >
+            Create
+          </Button>
+        </div>
+      </div>
+      
+      <div className="pt-6">
       <div className="max-w-4xl mx-auto px-4">
         <div className="mb-8">
           <h1 className="text-3xl font-bold mb-2">Discover</h1>
@@ -306,6 +344,7 @@ const Discover = () => {
             </div>
           </TabsContent>
         </Tabs>
+      </div>
       </div>
     </div>
   );

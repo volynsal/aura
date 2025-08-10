@@ -180,6 +180,44 @@ const Feed = () => {
   return (
     <div className="min-h-screen bg-background">
       <SEO title="AURA Feed — Personalized NFTs" description="Curated NFT feed based on your vibes, follows, and trends." />
+      
+      {/* Mobile Navigation Banner */}
+      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
+        <div className="flex gap-2 px-4 py-3 min-w-max">
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale bg-primary/20 text-primary"
+          >
+            Feed
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/discover')}
+          >
+            Discover
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/vibe-matching')}
+          >
+            Match
+          </Button>
+          <Button 
+            variant="ghost" 
+            size="sm" 
+            className="whitespace-nowrap hover-scale"
+            onClick={() => navigate('/create')}
+          >
+            Create
+          </Button>
+        </div>
+      </div>
+      
       {/* Mood Filter Bar */}
       <div className="sticky top-12 z-40 bg-background/90 backdrop-blur-md border-b border-border">
         <div className="max-w-4xl mx-auto px-4 py-2">
