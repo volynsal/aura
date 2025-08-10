@@ -1,7 +1,7 @@
 import { createWeb3Modal } from '@web3modal/wagmi/react';
 import { defaultWagmiConfig } from '@web3modal/wagmi/react/config';
 import { WagmiProvider } from 'wagmi';
-import { mainnet, polygon, arbitrum, base } from 'wagmi/chains';
+import { mainnet, polygon, arbitrum, base, baseSepolia } from 'wagmi/chains';
 import { walletConnect, metaMask, coinbaseWallet } from 'wagmi/connectors';
 
 import { ReactNode, useEffect } from 'react';
@@ -17,7 +17,7 @@ const metadata = {
   icons: ['https://avatars.githubusercontent.com/u/37784886']
 };
 
-const chains = [mainnet, polygon, arbitrum, base] as const;
+const chains = [baseSepolia, base, mainnet, polygon, arbitrum] as const;
 
 // Configure connectors with mobile-friendly options
 const connectors = [

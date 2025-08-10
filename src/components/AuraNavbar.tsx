@@ -58,6 +58,11 @@ const AuraNavbar = () => {
                     Create & Earn
                   </Button>
                 </Link>
+                <Link to="/checkout" className="hidden sm:block">
+                  <Button variant="minimal" size="sm">
+                    Checkout Demo
+                  </Button>
+                </Link>
                 <Link to="/login">
                   <Button variant="aura" size="sm" className="text-xs sm:text-sm px-3 sm:px-4">
                     Unlock My Invite
@@ -76,6 +81,11 @@ const AuraNavbar = () => {
                   <Button variant={location.pathname === '/discover' ? 'aura' : 'minimal'} size="sm">
                     <Compass className="w-4 h-4 mr-2" />
                     Discover
+                  </Button>
+                </Link>
+                <Link to="/checkout" className="hidden sm:block">
+                  <Button variant={location.pathname === '/checkout' ? 'aura' : 'minimal'} size="sm">
+                    Checkout
                   </Button>
                 </Link>
                 <Link to="/vibe-matching" className="hidden sm:block">

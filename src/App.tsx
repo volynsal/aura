@@ -19,6 +19,7 @@ import { HelmetProvider } from "react-helmet-async";
 import SEO from "./components/SEO";
 import SearchResults from "./pages/SearchResults";
 import UserProfile from "./pages/UserProfile";
+import Checkout from "./pages/Checkout";
 const queryClient = new QueryClient({
   defaultOptions: {
     queries: {
@@ -55,6 +56,7 @@ const App = () => (
                 <Route path="/create" element={<Create />} />
                 <Route path="/login" element={<Login />} />
                 <Route path="/nft/:id" element={<NFTView />} />
+                <Route path="/checkout" element={<Checkout />} />
                 {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                 <Route path="*" element={<NotFound />} />
               </Routes>
