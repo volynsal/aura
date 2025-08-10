@@ -140,11 +140,6 @@ const UserProfile = () => {
           <section>
             <div className="flex items-center justify-between mb-3">
               <h2 className="text-lg font-semibold">Artworks</h2>
-              {!isOwner && (
-                <Button variant="aura" size="sm" onClick={() => setSubscribeOpen(true)}>
-                  Subscribe
-                </Button>
-              )}
             </div>
             {nfts.length === 0 ? (
               <p className="text-muted-foreground">No artworks yet.</p>
