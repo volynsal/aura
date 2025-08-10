@@ -7,7 +7,6 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
-import { Ban } from "lucide-react";
 
 // Minimal ERC20 ABI for transfer
 const erc20Abi = [
@@ -121,20 +120,10 @@ export default function OnchainCheckoutDemo() {
             </div>
 
             <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-              <Button
-                onClick={handlePayEth}
-                disabled={sendingEth || isSwitching}
-                variant={!isConnected ? "secondary" : "aura"}
-              >
-                {!isConnected && <Ban className="mr-2 h-4 w-4 opacity-80" aria-hidden="true" />}
+              <Button onClick={handlePayEth} disabled={sendingEth || isSwitching} variant="aura">
                 {onBaseSepolia ? "Pay 0.001 ETH" : "Switch to Base Sepolia"}
               </Button>
-              <Button
-                onClick={handlePayUsdc}
-                disabled={sendingUsdc || isSwitching}
-                variant="secondary"
-              >
-                {!isConnected && <Ban className="mr-2 h-4 w-4 opacity-80" aria-hidden="true" />}
+              <Button onClick={handlePayUsdc} disabled={sendingUsdc || isSwitching} variant="secondary">
                 {onBaseSepolia ? "Pay 1 USDC" : "Switch to Base Sepolia"}
               </Button>
             </div>

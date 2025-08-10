@@ -1,5 +1,4 @@
 import OnchainCheckoutDemo from "@/components/OnchainCheckoutDemo";
-import OnrampFund from "@/components/OnrampFund";
 import SEO from "@/components/SEO";
 
 export default function Checkout() {
@@ -16,7 +15,6 @@ export default function Checkout() {
           <p className="text-muted-foreground mt-2">Fast wallet-native payments for tips, unlocks, and mints.</p>
         </header>
         <OnchainCheckoutDemo />
-        <OnrampFund />
       </main>
     </div>
   );

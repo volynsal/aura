@@ -3,25 +3,25 @@ import { Link } from "react-router-dom";
 
 const AuraHero = () => {
   return (
-    <section className="relative pt-8 md:pt-24 pb-6 md:pb-10 px-4 md:px-6 bg-gradient-to-b from-background to-surface-elevated">
+    <section className="relative py-12 md:py-24 px-4 md:px-6 bg-gradient-to-b from-background to-surface-elevated">
       <div className="max-w-4xl mx-auto text-center">
-        <div className="mb-6 md:mb-12">
-          <h1 className="text-3xl sm:text-4xl md:text-7xl font-bold mb-3 md:mb-6 tracking-tight leading-tight">
+        <div className="mb-8 md:mb-12">
+          <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight leading-tight">
             Your mood is your gallery
           </h1>
-          <p className="text-base md:text-xl text-muted-foreground mb-4 md:mb-8 max-w-xl md:max-w-2xl mx-auto leading-relaxed px-2">
+          <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">
             Discover and collect NFTs by how they make you feel. Aura is where digital art and emotion collide.
           </p>
         </div>
         
-        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center mb-8 md:mb-16">
+        <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center mb-12 md:mb-16">
           <Link to="/discover">
-            <Button variant="aura" size="lg" className="w-full sm:w-auto text-sm sm:text-lg px-5 sm:px-8 py-3 sm:py-6">
+            <Button variant="aura" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
               Start exploring
             </Button>
           </Link>
           <Link to="/vibe-matching">
-            <Button variant="subtle" size="lg" className="w-full sm:w-auto text-sm sm:text-lg px-5 sm:px-8 py-3 sm:py-6">
+            <Button variant="subtle" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6">
               Learn more
             </Button>
           </Link>

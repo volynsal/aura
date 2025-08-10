@@ -13,13 +13,13 @@ const AuraNavbar = () => {
   const [globalQuery, setGlobalQuery] = useState("");
 
   return (
-    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-14 sm:h-12 flex items-center">
-      <div className="w-full overflow-x-auto scrollbar-hide">
-        <div className="flex items-center justify-between min-w-max px-4 sm:px-6 max-w-6xl mx-auto">
-          <div className="flex items-center gap-8 sm:gap-8 flex-shrink-0">
-            <Link to="/" className="flex items-center gap-2 sm:gap-3">
-              <img src={auraLogo} alt="Aura logo — mood-based art platform" className="w-8 h-8 sm:w-10 sm:h-10" />
-              <h1 className="text-xl sm:text-3xl font-bold pr-4 sm:pr-0">
+    <nav className="sticky top-0 z-50 bg-background/80 backdrop-blur-md border-b border-border h-12 flex items-center">
+      <div className="max-w-6xl mx-auto px-3 sm:px-6 w-full">
+        <div className="flex items-center justify-between">
+          <div className="flex items-center gap-4 sm:gap-8">
+            <Link to="/feed" className="flex items-center gap-2 sm:gap-3">
+              <img src={auraLogo} alt="Aura logo — mood-based art platform" className="w-6 h-6 sm:w-8 sm:h-8" />
+              <h1 className="text-lg sm:text-2xl font-bold">
                 <span className="text-primary">AURA</span>
               </h1>
             </Link>
@@ -45,26 +45,26 @@ const AuraNavbar = () => {
             )}
           </div>
           
-          <div className="flex items-center gap-2 sm:gap-4 flex-shrink-0">
+          <div className="flex items-center gap-2 sm:gap-4">
             {isLandingPage ? (
               <>
-                <Link to="/vibe-matching">
-                  <Button variant="minimal" size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2 whitespace-nowrap">
+                <Link to="/vibe-matching" className="hidden sm:block">
+                  <Button variant="minimal" size="sm">
                     Find Vibes
                   </Button>
                 </Link>
-                <Link to="/create">
-                  <Button variant="minimal" size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2 whitespace-nowrap">
+                <Link to="/create" className="hidden sm:block">
+                  <Button variant="minimal" size="sm">
                     Create & Earn
                   </Button>
                 </Link>
-                <Link to="/checkout">
-                  <Button variant="minimal" size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2 whitespace-nowrap">
+                <Link to="/checkout" className="hidden sm:block">
+                  <Button variant="minimal" size="sm">
                     Checkout Demo
                   </Button>
                 </Link>
                 <Link to="/login">
-                  <Button variant="aura" size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2 whitespace-nowrap">
+                  <Button variant="aura" size="sm" className="text-xs sm:text-sm px-3 sm:px-4">
                     Unlock My Invite
                   </Button>
                 </Link>
@@ -126,32 +126,6 @@ const AuraNavbar = () => {
           </div>
         </div>
       </div>
-      {!isLandingPage && (
-        <div className="border-t border-border bg-background/80">
-          <div className="max-w-6xl mx-auto px-4 sm:px-6 py-2 flex items-center gap-2 sm:gap-3 flex-wrap">
-            <Link to="/feed">
-              <Button variant={location.pathname === '/feed' ? 'aura' : 'minimal'} size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
-                Feed
-              </Button>
-            </Link>
-            <Link to="/discover">
-              <Button variant={location.pathname === '/discover' ? 'aura' : 'minimal'} size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
-                Discover
-              </Button>
-            </Link>
-            <Link to="/create">
-              <Button variant={location.pathname === '/create' ? 'aura' : 'minimal'} size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
-                Create & Earn
-              </Button>
-            </Link>
-            <Link to="/checkout">
-              <Button variant={location.pathname === '/checkout' ? 'aura' : 'minimal'} size="sm" className="text-sm sm:text-base px-3 py-2 sm:px-4 sm:py-2">
-                Checkout Demo
-              </Button>
-            </Link>
-          </div>
-        </div>
-      )}
     </nav>
   );
 };

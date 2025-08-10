@@ -1,12 +1,6 @@
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { X, Heart } from "lucide-react";
-import nft1 from "@/assets/nft-1.jpg";
-import nft2 from "@/assets/nft-2.jpg";
-import nft3 from "@/assets/nft-3.jpg";
-import nft4 from "@/assets/nft-4.jpg";
-import nft5 from "@/assets/nft-5.jpg";
-import nft6 from "@/assets/nft-6.jpg";
 
 const vibeCards = [
   {
@@ -46,15 +40,6 @@ const vibeCards = [
   }
 ];
 
-const mockGallery = [
-  { id: 'a', title: 'Neon Bloom', mood: 'Neon Dreams', src: nft1 },
-  { id: 'b', title: 'Circuit Shrine', mood: 'Mystic Tech', src: nft2 },
-  { id: 'c', title: 'Silent Nebula', mood: 'Void Serenity', src: nft3 },
-  { id: 'd', title: 'Solar Garden', mood: 'Solar Punk', src: nft4 },
-  { id: 'e', title: 'Chromatic Echo', mood: 'Cybermelancholy', src: nft5 },
-  { id: 'f', title: 'Prism Pulse', mood: 'Neon Dreams', src: nft6 }
-] as const;
-
 const VibeMatchingDemo = () => {
   const [currentCardIndex, setCurrentCardIndex] = useState(0);
   const [matches, setMatches] = useState<number[]>([]);
@@ -79,7 +64,7 @@ const VibeMatchingDemo = () => {
   };
 
   return (
-    <section className="pt-8 md:pt-10 pb-24 px-6 bg-gradient-to-b from-surface-elevated to-background">
+    <section className="py-24 px-6 bg-gradient-to-b from-surface-elevated to-background">
       <div className="max-w-4xl mx-auto text-center">
         {/* Top mood cards preview */}
         <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-12 max-w-3xl mx-auto">
@@ -147,27 +132,6 @@ const VibeMatchingDemo = () => {
             Take the Vibe Quiz
           </Button>
         </div>
-
-        {/* Static mock data gallery */}
-        <section className="mt-10">
-          <h3 className="text-4xl md:text-5xl font-bold mb-4">Explore</h3>
-          <div className="grid grid-cols-2 sm:grid-cols-3 gap-4">
-            {mockGallery.map((item) => (
-              <article key={item.id} className="rounded-lg overflow-hidden border border-border bg-surface-elevated">
-                <img
-                  src={item.src}
-                  alt={`${item.title} — ${item.mood} NFT artwork`}
-                  loading="lazy"
-                  className="w-full h-32 sm:h-40 object-cover"
-                />
-                <div className="p-3">
-                  <p className="text-sm font-medium">{item.title}</p>
-                  <p className="text-xs text-muted-foreground">{item.mood}</p>
-                </div>
-              </article>
-            ))}
-          </div>
-        </section>
 
         {/* Match counter */}
         {matches.length > 0 && (
