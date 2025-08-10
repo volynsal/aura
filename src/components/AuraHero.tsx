@@ -7,45 +7,25 @@ const AuraHero = () => {
 
   if (isMobile) {
     return (
-      <section className="relative py-3 bg-gradient-to-b from-background to-surface-elevated">
+      <section className="relative py-2 bg-gradient-to-r from-background to-surface-elevated">
         <div className="overflow-x-auto scrollbar-hide">
-          <div className="flex gap-6 px-4 pb-2">
-            {/* Hero Card */}
-            <div className="min-w-[280px] text-center flex-shrink-0">
-              <h1 className="text-xl font-bold mb-2 tracking-tight">
-                Your mood is your gallery
-              </h1>
-              <p className="text-xs text-muted-foreground mb-3 leading-relaxed">
-                Discover and collect NFTs by how they make you feel
-              </p>
-              <div className="flex flex-col gap-2">
-                <Link to="/discover">
-                  <Button variant="aura" size="sm" className="w-full text-xs px-3 py-2">
-                    Start exploring
-                  </Button>
-                </Link>
-                <Link to="/vibe-matching">
-                  <Button variant="subtle" size="sm" className="w-full text-xs px-3 py-2">
-                    Learn more
-                  </Button>
-                </Link>
-              </div>
+          <div className="flex gap-4 px-3 whitespace-nowrap">
+            <div className="flex items-center gap-2 min-w-fit">
+              <span className="text-sm font-semibold">Your mood gallery</span>
+              <span className="text-xs text-muted-foreground">•</span>
+              <span className="text-xs text-muted-foreground">12.4K artworks</span>
             </div>
-            
-            {/* Stats Cards */}
-            <div className="min-w-[200px] flex gap-4 flex-shrink-0">
-              <div className="text-center">
-                <div className="text-lg font-bold text-primary mb-1">12.4K</div>
-                <div className="text-xs text-muted-foreground">Artworks</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-primary mb-1">2.8K</div>
-                <div className="text-xs text-muted-foreground">Artists</div>
-              </div>
-              <div className="text-center">
-                <div className="text-lg font-bold text-primary mb-1">890</div>
-                <div className="text-xs text-muted-foreground">Collectors</div>
-              </div>
+            <div className="flex items-center gap-2 min-w-fit">
+              <Link to="/discover">
+                <Button variant="aura" size="sm" className="text-xs px-3 py-1 h-6">
+                  Explore
+                </Button>
+              </Link>
+            </div>
+            <div className="flex items-center gap-2 min-w-fit">
+              <span className="text-xs text-muted-foreground">2.8K artists</span>
+              <span className="text-xs text-muted-foreground">•</span>
+              <span className="text-xs text-muted-foreground">890 collectors</span>
             </div>
           </div>
         </div>
