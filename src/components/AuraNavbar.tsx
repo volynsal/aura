@@ -1,5 +1,5 @@
 import { Button } from "@/components/ui/button";
-import { Search, Home, Compass, User, Heart, Palette, LogOut } from "lucide-react";
+import { Search, Home, Compass, User, Heart, Palette, LogOut, ShoppingCart } from "lucide-react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import auraLogo from "@/assets/aura-logo-ring.png";
@@ -85,6 +85,7 @@ const AuraNavbar = () => {
                 </Link>
                 <Link to="/checkout" className="hidden sm:block">
                   <Button variant={location.pathname === '/checkout' ? 'aura' : 'minimal'} size="sm">
+                    <ShoppingCart className="w-4 h-4 mr-2" />
                     Checkout
                   </Button>
                 </Link>
