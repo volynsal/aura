@@ -385,7 +385,7 @@ const VibeMatching = () => {
                     className="w-full h-full object-cover"
                   />
                 </div>
-                <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent" />
+                <div className="absolute inset-y-0 left-3 right-3 sm:left-4 sm:right-4 bg-gradient-to-t from-black/80 via-transparent to-transparent rounded-lg" />
                 <div className="absolute bottom-0 left-0 right-0 p-6 text-white">
                   <div className="flex items-center gap-2 mb-2">
                     <Badge variant="secondary" className="capitalize">
