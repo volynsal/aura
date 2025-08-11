@@ -265,7 +265,7 @@ const VibeMatching = () => {
       <MobileSectionNav />
       <div className="w-full mx-auto relative px-4 sm:max-w-lg sm:px-4">
         <div className="mb-6">
-          <label className="block text-sm font-medium mb-2 pt-4 md:pt-6">Your mood(s)</label>
+          <label className="block text-sm font-medium mb-2 pt-4 md:pt-5">Your mood(s)</label>
           <div className="flex items-center gap-2 flex-wrap">
             <Input
               placeholder="e.g., melancholic, ethereal"
