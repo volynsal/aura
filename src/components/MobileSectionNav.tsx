@@ -22,10 +22,14 @@ const MobileSectionNav = () => {
           return (
             <Button
               key={path}
-              variant={active ? "default" : "ghost"}
+              variant="ghost"
               size="sm"
               aria-label={label}
-              className={`whitespace-nowrap hover-scale ${active ? "bg-primary/20 text-primary font-medium" : ""}`}
+              className={`whitespace-nowrap hover-scale ${
+                active 
+                  ? "bg-primary text-primary-foreground font-medium" 
+                  : "text-muted-foreground hover:text-foreground"
+              }`}
               onClick={() => navigate(path)}
             >
               <Icon className="w-4 h-4 mr-2" />

@@ -1,10 +1,12 @@
 import OnchainCheckoutDemo from "@/components/OnchainCheckoutDemo";
 import SEO from "@/components/SEO";
 import OnrampSection from "@/components/OnrampSection";
+import MobileSectionNav from "@/components/MobileSectionNav";
 
 export default function Checkout() {
   return (
     <div className="min-h-screen bg-background">
+      <MobileSectionNav />
       <SEO
         title="Aura Onchain Checkout — ETH & USDC on Base Sepolia"
         description="Demo onchain checkout: send ETH or USDC on Base Sepolia with one click using your wallet."
