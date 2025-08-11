@@ -5,9 +5,6 @@ import { useAuth } from "@/hooks/useAuth";
 const AuraBottomNav = () => {
   const location = useLocation();
   const { user } = useAuth();
-  const isLandingPage = location.pathname === '/';
-
-  if (isLandingPage) return null;
 
   const navItems = [
     { path: '/feed', icon: Home, label: 'Feed' },
