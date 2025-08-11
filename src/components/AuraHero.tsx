@@ -1,17 +1,13 @@
 import { Button } from "@/components/ui/button";
 import { Link } from "react-router-dom";
-
 const AuraHero = () => {
-  return (
-    <section className="relative py-12 md:py-24 px-4 md:px-6 bg-gradient-to-b from-background to-surface-elevated">
+  return <section className="relative py-12 md:py-24 px-4 md:px-6 bg-gradient-to-b from-background to-surface-elevated">
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8 md:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight leading-tight">
             Curation is the<br className="sm:hidden" /> new flex.
           </h1>
-          <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">
-            Swipe to sculpt your feed, stack moodboards that earn, subscribe to visionary creators like the Medicis, and mint AI pieces in MintLab.
-          </p>
+          <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">Swipe to sculpt your feed, stack moodboards that earn, subscribe to visionary creators like the Medicis, and mint new pieces in MintLab.</p>
         </div>
         
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center mb-6 md:mb-8">
@@ -46,8 +42,6 @@ const AuraHero = () => {
           </div>
         </div>
       </div>
-    </section>
-  );
+    </section>;
 };
-
 export default AuraHero;
