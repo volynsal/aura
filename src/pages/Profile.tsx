@@ -12,6 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
+import MobileSectionNav from "@/components/MobileSectionNav";
 
 const userPosts = [
   { 
@@ -339,43 +340,7 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      {/* Mobile Navigation Banner */}
-      <div className="lg:hidden overflow-x-auto scrollbar-hide bg-surface/50 border-b border-border/30">
-        <div className="flex gap-2 px-4 py-3 min-w-max">
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/feed')}
-          >
-            Feed
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/discover')}
-          >
-            Discover
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/vibe-matching')}
-          >
-            Match
-          </Button>
-          <Button 
-            variant="ghost" 
-            size="sm" 
-            className="whitespace-nowrap hover-scale"
-            onClick={() => navigate('/create')}
-          >
-            Create
-          </Button>
-        </div>
-      </div>
+      <MobileSectionNav />
       
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Profile Header */}
