@@ -120,9 +120,9 @@ const VibeMatchingDemo = () => {
             variant="aura" 
             size="lg" 
             onClick={handleVibe}
-            className="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-aura-accent hover:scale-105 transition-transform"
+            className="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-aura-accent hover:scale-105 transition-transform shadow-lg aura-glow border-2 border-primary/30"
           >
-            <Heart className="w-8 h-8" />
+            <Heart className="w-8 h-8 text-white fill-white" />
           </Button>
         </div>
 
