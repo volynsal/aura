@@ -27,14 +27,14 @@ const AuraNavbar = () => {
                 <span className="text-primary">AURA</span>
               </h1>
             </Link>
-            {!isLandingPage && (
-              <div className="relative hidden md:block">
+            {!isLandingPage && user && (
+              <div className="relative flex-1 max-w-md mx-4">
                 <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 text-muted-foreground w-4 h-4" />
                 <input 
                   type="text" 
                   placeholder="Search by mood, artist, or vibe..."
                   aria-label="Global search"
-                  className="pl-10 pr-4 py-2 w-64 bg-surface-elevated border border-border rounded-lg focus:border-primary/50 focus:outline-none text-sm"
+                  className="pl-10 pr-4 py-2 w-full bg-surface-elevated border border-border rounded-lg focus:border-primary/50 focus:outline-none text-sm"
                   value={globalQuery}
                   onChange={(e) => setGlobalQuery(e.target.value)}
                   onKeyDown={(e) => {
