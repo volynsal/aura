@@ -40,13 +40,37 @@ export const useSwipeGlitch = () => {
     touchStartY.current = 0;
   };
 
+  // Desktop support: mouse swipe between mousedown and mouseup
+  const handleMouseDown = (e: MouseEvent) => {
+    touchStartX.current = e.clientX;
+    touchStartY.current = e.clientY;
+  };
+
+  const handleMouseUp = (e: MouseEvent) => {
+    if (!touchStartX.current || !touchStartY.current) return;
+
+    const deltaX = e.clientX - touchStartX.current;
+    const deltaY = e.clientY - touchStartY.current;
+
+    if (Math.abs(deltaX) > Math.abs(deltaY) && Math.abs(deltaX) > 50) {
+      triggerGlitch();
+    }
+
+    touchStartX.current = 0;
+    touchStartY.current = 0;
+  };
+
   useEffect(() => {
     document.addEventListener('touchstart', handleTouchStart, { passive: true });
     document.addEventListener('touchend', handleTouchEnd, { passive: true });
+    document.addEventListener('mousedown', handleMouseDown);
+    document.addEventListener('mouseup', handleMouseUp);
 
     return () => {
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('touchend', handleTouchEnd);
+      document.removeEventListener('mousedown', handleMouseDown);
+      document.removeEventListener('mouseup', handleMouseUp);
     };
   }, []);
 
