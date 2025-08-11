@@ -8,53 +8,59 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    --background: 220 15% 8%;
-    --foreground: 220 10% 85%;
+    /* Dark flame-inspired foundation */
+    --background: 0 0% 5%;
+    --foreground: 30 20% 92%;
 
-    --card: 220 12% 12%;
-    --card-foreground: 220 8% 90%;
+    --card: 15 15% 8%;
+    --card-foreground: 30 15% 90%;
 
-    --popover: 220 15% 10%;
-    --popover-foreground: 220 8% 90%;
+    --popover: 10 20% 6%;
+    --popover-foreground: 30 15% 92%;
 
-    --primary: 220 15% 75%;
-    --primary-foreground: 220 15% 10%;
+    /* Flame-inspired primary colors */
+    --primary: 25 85% 65%;
+    --primary-foreground: 0 0% 5%;
 
-    --secondary: 220 10% 15%;
-    --secondary-foreground: 220 8% 80%;
+    --secondary: 15 25% 12%;
+    --secondary-foreground: 30 20% 85%;
 
-    --muted: 220 8% 18%;
-    --muted-foreground: 220 8% 60%;
+    --muted: 20 15% 10%;
+    --muted-foreground: 25 10% 60%;
 
-    --accent: 220 12% 20%;
-    --accent-foreground: 220 8% 85%;
+    --accent: 35 60% 55%;
+    --accent-foreground: 0 0% 5%;
 
-    --destructive: 0 50% 50%;
-    --destructive-foreground: 220 8% 95%;
+    --destructive: 0 70% 55%;
+    --destructive-foreground: 30 15% 95%;
 
-    --border: 220 10% 20%;
-    --input: 220 10% 16%;
-    --ring: 220 15% 75%;
+    --border: 20 20% 15%;
+    --input: 15 25% 8%;
+    --ring: 25 85% 65%;
 
-    --radius: 0.5rem;
+    --radius: 0.75rem;
 
-    /* Refined Aura design tokens */
-    --aura-accent: 260 15% 65%;
-    --aura-pink: 320 20% 70%;
-    --aura-blue: 200 25% 75%;
-    --aura-warm: 40 25% 80%;
-    --surface: 220 12% 14%;
-    --surface-elevated: 220 12% 18%;
-    --text-subtle: 220 8% 65%;
+    /* Flame ring design tokens */
+    --flame-orange: 25 85% 65%;
+    --flame-red: 10 80% 60%;
+    --flame-gold: 45 90% 75%;
+    --flame-ember: 15 70% 45%;
+    --surface: 15 25% 8%;
+    --surface-elevated: 20 20% 12%;
+    --text-subtle: 25 15% 65%;
 
-    /* Subtle gradients */
+    /* Flame-inspired gradients */
+    --gradient-flame: linear-gradient(135deg, hsl(var(--flame-orange)) 0%, hsl(var(--flame-red)) 50%, hsl(var(--flame-ember)) 100%);
+    --gradient-ember: linear-gradient(135deg, hsl(var(--flame-ember) / 0.2) 0%, hsl(var(--flame-orange) / 0.1) 100%);
     --gradient-subtle: linear-gradient(135deg, hsl(var(--surface)) 0%, hsl(var(--surface-elevated)) 100%);
-    --gradient-accent: linear-gradient(135deg, hsl(var(--aura-accent) / 0.1) 0%, hsl(var(--aura-pink) / 0.1) 100%);
+    --gradient-glow: radial-gradient(circle at center, hsl(var(--flame-orange) / 0.3) 0%, transparent 70%);
 
-    /* Refined effects */
-    --shadow-soft: 0 4px 20px hsl(220 15% 2% / 0.4);
-    --shadow-elevated: 0 8px 40px hsl(220 15% 2% / 0.6);
-    --transition-smooth: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+    /* Enhanced effects */
+    --shadow-flame: 0 4px 32px hsl(var(--flame-orange) / 0.25);
+    --shadow-ember: 0 8px 48px hsl(var(--flame-ember) / 0.4);
+    --shadow-soft: 0 4px 20px hsl(0 0% 0% / 0.5);
+    --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    --transition-flame: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
     --sidebar-background: 0 0% 98%;
 
@@ -146,17 +152,51 @@ All colors MUST be HSL.
     animation: flicker 3s infinite;
   }
 
-  /* Gradient backgrounds */
-  .gradient-aura {
-    background: var(--gradient-aura);
+  /* Flame-inspired backgrounds */
+  .gradient-flame {
+    background: var(--gradient-flame);
   }
 
-  .gradient-underground {
-    background: var(--gradient-underground);
+  .gradient-ember {
+    background: var(--gradient-ember);
   }
 
-  .gradient-ghost {
-    background: var(--gradient-ghost);
+  .gradient-glow {
+    background: var(--gradient-glow);
+  }
+
+  /* Enhanced effects */
+  .flame-glow {
+    box-shadow: var(--shadow-flame);
+  }
+
+  .ember-shadow {
+    box-shadow: var(--shadow-ember);
+  }
+
+  /* Flame ring animation */
+  .flame-ring {
+    position: relative;
+    overflow: hidden;
+  }
+
+  .flame-ring::before {
+    content: '';
+    position: absolute;
+    inset: -2px;
+    background: var(--gradient-flame);
+    border-radius: inherit;
+    z-index: -1;
+    animation: flame-pulse 2s ease-in-out infinite alternate;
+  }
+
+  .flame-ring::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: inherit;
+    border-radius: inherit;
+    z-index: -1;
   }
 }
 
@@ -190,6 +230,28 @@ All colors MUST be HSL.
 @keyframes flicker {
   0%, 98%, 100% { opacity: 1; }
   99% { opacity: 0.8; }
+}
+
+@keyframes flame-pulse {
+  0% { 
+    opacity: 0.6;
+    transform: scale(1);
+  }
+  100% { 
+    opacity: 0.9;
+    transform: scale(1.02);
+  }
+}
+
+@keyframes ember-float {
+  0%, 100% { 
+    transform: translateY(0px) rotate(0deg);
+    opacity: 0.7;
+  }
+  50% { 
+    transform: translateY(-10px) rotate(180deg);
+    opacity: 1;
+  }
 }
 
 @keyframes tv-static {

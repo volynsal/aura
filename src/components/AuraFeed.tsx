@@ -65,7 +65,7 @@ const nftPosts = [
 
 const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
   return (
-    <article className="bg-card rounded-lg overflow-hidden border border-border/50 hover:border-border transition-colors">
+    <article className="bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg ember-shadow">
       {/* Header */}
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">
@@ -89,16 +89,17 @@ const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
           loading="lazy"
           decoding="async"
         />
-        <div className="absolute inset-0 bg-gradient-to-t from-black/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity" />
+        <div className="absolute inset-0 bg-gradient-to-t from-black/40 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
+        <div className="absolute inset-0 gradient-glow opacity-0 group-hover:opacity-20 transition-opacity duration-300" />
       </div>
 
       {/* Actions */}
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-4">
-            <Heart className="w-6 h-6 cursor-pointer hover:text-red-400 transition-colors" />
-            <MessageCircle className="w-6 h-6 cursor-pointer hover:text-primary transition-colors" />
-            <Bookmark className="w-6 h-6 cursor-pointer hover:text-primary transition-colors" />
+            <Heart className="w-6 h-6 cursor-pointer hover:text-red-400 transition-all duration-300 hover:scale-110" />
+            <MessageCircle className="w-6 h-6 cursor-pointer hover:text-primary transition-all duration-300 hover:scale-110" />
+            <Bookmark className="w-6 h-6 cursor-pointer hover:text-primary transition-all duration-300 hover:scale-110" />
           </div>
           <span className="text-sm font-medium text-primary">{post.price}</span>
         </div>
@@ -156,7 +157,7 @@ const AuraFeed = () => {
 
       {/* Load More */}
       <div className="text-center mt-12">
-        <button className="px-8 py-3 bg-surface-elevated text-foreground border border-border rounded-lg hover:bg-accent transition-colors">
+        <button className="px-8 py-3 bg-surface-elevated text-foreground border border-border rounded-lg hover:bg-accent hover:border-primary/30 transition-all duration-300 hover:scale-105">
           Load more vibes
         </button>
       </div>
