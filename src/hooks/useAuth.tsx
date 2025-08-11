@@ -2,6 +2,7 @@ import { createContext, useContext, useEffect, useState, ReactNode } from 'react
 import { User, Session } from '@supabase/supabase-js';
 import { supabase } from '@/integrations/supabase/client';
 import { useToast } from '@/hooks/use-toast';
+import { testSupabaseConnection, diagnoseCurrentState } from '@/utils/diagnostics';
 
 interface AuthContextType {
   user: User | null;
@@ -37,13 +38,33 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   useEffect(() => {
     let mounted = true;
     
+    // Run diagnostics on mount
+    diagnoseCurrentState();
+    testSupabaseConnection();
+    
     // Get existing session first
     const getInitialSession = async () => {
-      const { data: { session } } = await supabase.auth.getSession();
-      if (mounted) {
-        setSession(session);
-        setUser(session?.user ?? null);
-        setLoading(false);
+      try {
+        console.log('🔍 Getting initial session...');
+        const { data: { session }, error } = await supabase.auth.getSession();
+        
+        if (error) {
+          console.error('🔍 Error getting session:', error);
+        }
+        
+        if (mounted) {
+          console.log('🔍 Initial session:', { hasSession: !!session, hasUser: !!session?.user });
+          setSession(session);
+          setUser(session?.user ?? null);
+          setLoading(false);
+        }
+      } catch (error) {
+        console.error('🔍 Exception getting initial session:', error);
+        if (mounted) {
+          setSession(null);
+          setUser(null);
+          setLoading(false);
+        }
       }
     };
 
@@ -150,13 +171,22 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
   };
 
   const signIn = async (email: string, password: string) => {
+    console.log('🔵 SIGNIN START - Email:', email);
     try {
-      const { error } = await supabase.auth.signInWithPassword({
+      const { data, error } = await supabase.auth.signInWithPassword({
         email,
         password
       });
 
+      console.log('🔵 SIGNIN RESULT:', {
+        success: !error,
+        error: error?.message,
+        hasUser: !!data?.user,
+        hasSession: !!data?.session
+      });
+
       if (error) {
+        console.error('🔵 SIGNIN ERROR:', error);
         toast({
           title: "Sign in failed",
           description: error.message,
@@ -165,6 +195,7 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
         return { error };
       }
 
+      console.log('🔵 SIGNIN SUCCESS');
       toast({
         title: "Welcome back!",
         description: "You have successfully signed in."
@@ -172,9 +203,10 @@ export const AuthProvider = ({ children }: AuthProviderProps) => {
 
       return { error: null };
     } catch (error: any) {
+      console.error('🔵 SIGNIN EXCEPTION:', error);
       toast({
         title: "Sign in failed",
-        description: error.message,
+        description: error.message || "Network connection error. Please try again.",
         variant: "destructive"
       });
       return { error };
