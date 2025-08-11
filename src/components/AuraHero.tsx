@@ -27,7 +27,7 @@ const AuraHero = () => {
           </Link>
         </div>
         <p className="text-xs sm:text-sm text-muted-foreground mb-12 md:mb-16">
-          Swipe to curate your feed • Curate-to-earn moodboards • Memberships • MintLab AI NFTs
+          Swipe to curate your feed • Curate-to-earn moodboards • Subscribe to your favorite creators • Create NFTs with MintLab
         </p>
 
         {/* Stats */}
