@@ -65,7 +65,7 @@ const nftPosts = [
 
 const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
   return (
-    <article className="bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg halo-shadow gentle-hover">
+    <article className="bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg">
       {/* Header */}
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">
@@ -97,9 +97,9 @@ const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
       <div className="p-4">
         <div className="flex items-center justify-between mb-3">
           <div className="flex items-center gap-4">
-            <Heart className="w-6 h-6 cursor-pointer hover:text-red-400 transition-all duration-300 hover:scale-110" />
-            <MessageCircle className="w-6 h-6 cursor-pointer hover:text-primary transition-all duration-300 hover:scale-110" />
-            <Bookmark className="w-6 h-6 cursor-pointer hover:text-primary transition-all duration-300 hover:scale-110" />
+            <Heart className="w-6 h-6 cursor-pointer hover:text-red-400 transition-colors duration-300" />
+            <MessageCircle className="w-6 h-6 cursor-pointer hover:text-primary transition-colors duration-300" />
+            <Bookmark className="w-6 h-6 cursor-pointer hover:text-primary transition-colors duration-300" />
           </div>
           <span className="text-sm font-medium text-primary">{post.price}</span>
         </div>
@@ -157,7 +157,7 @@ const AuraFeed = () => {
 
       {/* Load More */}
       <div className="text-center mt-12">
-        <button className="px-8 py-3 bg-surface-elevated text-foreground border border-border rounded-lg hover:bg-accent hover:border-primary/30 transition-all duration-300 hover:scale-105">
+        <button className="px-8 py-3 bg-surface-elevated text-foreground border border-border rounded-lg hover:bg-accent hover:border-primary/30 transition-all duration-300">
           Load more vibes
         </button>
       </div>
