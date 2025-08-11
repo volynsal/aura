@@ -13,6 +13,7 @@ import Login from "./pages/Login";
 import NFTView from "./pages/NFTView";
 import NotFound from "./pages/NotFound";
 import AuraNavbar from "./components/AuraNavbar";
+import AuraBottomNav from "./components/AuraBottomNav";
 import { AuthProvider } from "./hooks/useAuth";
 import { Web3Provider } from "./components/Web3Provider";
 import { HelmetProvider } from "react-helmet-async";
@@ -44,22 +45,27 @@ const App = () => (
             <Toaster />
             <Sonner />
             <BrowserRouter>
-              <AuraNavbar />
-              <Routes>
-                <Route path="/" element={<Index />} />
-                <Route path="/feed" element={<Feed />} />
-                <Route path="/discover" element={<Discover />} />
-                <Route path="/profile" element={<Profile />} />
-                <Route path="/vibe-matching" element={<VibeMatching />} />
-                <Route path="/search" element={<SearchResults />} />
-                <Route path="/u/:username" element={<UserProfile />} />
-                <Route path="/create" element={<Create />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/nft/:id" element={<NFTView />} />
-                <Route path="/checkout" element={<Checkout />} />
-                {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
-                <Route path="*" element={<NotFound />} />
-              </Routes>
+              <div className="flex flex-col min-h-screen">
+                <AuraNavbar />
+                <main className="flex-1 pb-20">
+                  <Routes>
+                    <Route path="/" element={<Index />} />
+                    <Route path="/feed" element={<Feed />} />
+                    <Route path="/discover" element={<Discover />} />
+                    <Route path="/profile" element={<Profile />} />
+                    <Route path="/vibe-matching" element={<VibeMatching />} />
+                    <Route path="/search" element={<SearchResults />} />
+                    <Route path="/u/:username" element={<UserProfile />} />
+                    <Route path="/create" element={<Create />} />
+                    <Route path="/login" element={<Login />} />
+                    <Route path="/nft/:id" element={<NFTView />} />
+                    <Route path="/checkout" element={<Checkout />} />
+                    {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
+                    <Route path="*" element={<NotFound />} />
+                  </Routes>
+                </main>
+                <AuraBottomNav />
+              </div>
             </BrowserRouter>
           </TooltipProvider>
         </AuthProvider>

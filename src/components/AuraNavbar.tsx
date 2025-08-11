@@ -75,36 +75,7 @@ const AuraNavbar = () => {
               </>
             ) : (
               <>
-                <Link to="/feed" className="hidden sm:block">
-                  <Button variant={location.pathname === '/feed' ? 'aura' : 'minimal'} size="sm">
-                    <Home className="w-4 h-4 mr-2" />
-                    Feed
-                  </Button>
-                </Link>
-                <Link to="/discover" className="hidden sm:block">
-                  <Button variant={location.pathname === '/discover' ? 'aura' : 'minimal'} size="sm">
-                    <Compass className="w-4 h-4 mr-2" />
-                    Discover
-                  </Button>
-                </Link>
-                <Link to="/checkout" className="hidden sm:block">
-                  <Button variant={location.pathname === '/checkout' ? 'aura' : 'minimal'} size="sm">
-                    <ShoppingCart className="w-4 h-4 mr-2" />
-                    Checkout
-                  </Button>
-                </Link>
-                <Link to="/vibe-matching" className="hidden sm:block">
-                  <Button variant={location.pathname === '/vibe-matching' ? 'aura' : 'minimal'} size="sm">
-                    <Heart className="w-4 h-4 mr-2" />
-                    Match
-                  </Button>
-                </Link>
-                 <Link to="/create" className="hidden sm:block">
-                   <Button variant={location.pathname === '/create' ? 'aura' : 'minimal'} size="sm">
-                     <Palette className="w-4 h-4 mr-2" />
-                     Create
-                   </Button>
-                 </Link>
+                 {/* Navigation moved to bottom on mobile, keep desktop links hidden for now */}
                  <Link to={user ? "/profile" : "/login"}>
                    <Button variant={location.pathname === '/profile' ? 'aura' : 'minimal'} size="sm">
                      <User className="w-4 h-4 sm:mr-2" />
