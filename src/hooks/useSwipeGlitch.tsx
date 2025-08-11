@@ -1,8 +1,8 @@
 import { useEffect, useRef } from 'react';
 
 export const useSwipeGlitch = () => {
-  const touchStartX = useRef<number>(0);
-  const touchStartY = useRef<number>(0);
+  const touchStartX = useRef<number | null>(null);
+  const touchStartY = useRef<number | null>(null);
   const isGlitching = useRef<boolean>(false);
 
   const triggerGlitch = () => {
@@ -23,7 +23,7 @@ export const useSwipeGlitch = () => {
   };
 
   const handleTouchEnd = (e: TouchEvent) => {
-    if (!touchStartX.current || !touchStartY.current) return;
+    if (touchStartX.current === null || touchStartY.current === null) return;
 
     const touchEndX = e.changedTouches[0].clientX;
     const touchEndY = e.changedTouches[0].clientY;
@@ -36,20 +36,21 @@ export const useSwipeGlitch = () => {
       triggerGlitch();
     }
     
-    touchStartX.current = 0;
-    touchStartY.current = 0;
+    touchStartX.current = null;
+    touchStartY.current = null;
   };
 
   // Desktop support: pointer swipe between pointerdown and pointerup (for mouse/trackpad)
   const handlePointerDown = (e: PointerEvent) => {
-    if (e.pointerType !== 'mouse') return;
+    // Only handle desktop-like pointers
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
     touchStartX.current = e.clientX;
     touchStartY.current = e.clientY;
   };
 
   const handlePointerUp = (e: PointerEvent) => {
-    if (e.pointerType !== 'mouse') return;
-    if (!touchStartX.current || !touchStartY.current) return;
+    if (e.pointerType !== 'mouse' && e.pointerType !== 'pen') return;
+    if (touchStartX.current === null || touchStartY.current === null) return;
 
     const deltaX = e.clientX - touchStartX.current;
     const deltaY = e.clientY - touchStartY.current;
@@ -58,28 +59,23 @@ export const useSwipeGlitch = () => {
       triggerGlitch();
     }
 
-    touchStartX.current = 0;
-    touchStartY.current = 0;
+    touchStartX.current = null;
+    touchStartY.current = null;
   };
 
   useEffect(() => {
     document.addEventListener('touchstart', handleTouchStart, { passive: true });
     document.addEventListener('touchend', handleTouchEnd, { passive: true });
 
-    // Attach pointer listeners only for fine pointers (desktop)
-    const isDesktop = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
-    if (isDesktop) {
-      document.addEventListener('pointerdown', handlePointerDown);
-      document.addEventListener('pointerup', handlePointerUp);
-    }
+    // Always attach pointer listeners; we filter pointerType inside handlers
+    document.addEventListener('pointerdown', handlePointerDown);
+    document.addEventListener('pointerup', handlePointerUp);
 
     return () => {
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('touchend', handleTouchEnd);
-      if (isDesktop) {
-        document.removeEventListener('pointerdown', handlePointerDown);
-        document.removeEventListener('pointerup', handlePointerUp);
-      }
+      document.removeEventListener('pointerdown', handlePointerDown);
+      document.removeEventListener('pointerup', handlePointerUp);
     };
   }, []);
 
