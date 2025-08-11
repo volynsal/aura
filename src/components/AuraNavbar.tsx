@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Home, Compass, User, Heart, Palette, LogOut, ShoppingCart } from "lucide-react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import auraLogo from "/lovable-uploads/886c6539-c748-446f-a137-cb1cad2ac3dc.png";
+import auraLogo from "/lovable-uploads/d0a28a13-92b0-4d4d-bbf1-82fbbd68ed03.png";
 import { useState } from "react";
 
 const AuraNavbar = () => {
@@ -18,14 +18,11 @@ const AuraNavbar = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 sm:gap-8">
             <Link to="/feed" className="flex items-center gap-2 sm:gap-3">
-              <div className="relative p-1">
-                <img 
-                  src={auraLogo} 
-                  alt="Aura logo — mood-based art platform" 
-                  className="w-6 h-6 sm:w-8 sm:h-8 halo-float transparent-logo relative z-10" 
-                />
-                <div className="absolute inset-0 w-6 h-6 sm:w-8 sm:h-8 rounded-full bg-gradient-to-r from-blue-500/20 to-cyan-500/20 blur-md animate-pulse"></div>
-              </div>
+              <img 
+                src={auraLogo} 
+                alt="Aura logo — mood-based art platform" 
+                className="w-6 h-6 sm:w-8 sm:h-8 halo-float" 
+              />
               <h1 className="text-lg sm:text-2xl font-bold">
                 <span className="text-primary">AURA</span>
               </h1>
