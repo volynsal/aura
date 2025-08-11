@@ -7,7 +7,7 @@ const AuraHero = () => {
       <div className="max-w-4xl mx-auto text-center">
         <div className="mb-8 md:mb-12">
           <h1 className="text-4xl sm:text-5xl md:text-7xl font-bold mb-4 md:mb-6 tracking-tight leading-tight">
-            Curation is the new flex.
+            Curation is the<br className="sm:hidden" /> new flex.
           </h1>
           <p className="text-lg md:text-xl text-muted-foreground mb-6 md:mb-8 max-w-2xl mx-auto leading-relaxed px-2">
             Swipe to sculpt your feed, stack moodboards that earn, subscribe to visionary creators like the Medicis, and mint AI pieces in MintLab.
