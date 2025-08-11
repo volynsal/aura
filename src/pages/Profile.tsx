@@ -12,7 +12,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { supabase } from "@/integrations/supabase/client";
 import { useToast } from "@/hooks/use-toast";
 import { useNavigate } from "react-router-dom";
-import MobileSectionNav from "@/components/MobileSectionNav";
+
 
 const userPosts = [
   { 
@@ -340,7 +340,6 @@ const Profile = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MobileSectionNav />
       
       <div className="max-w-2xl mx-auto px-4 py-6">
         {/* Profile Header */}

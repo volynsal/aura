@@ -7,7 +7,6 @@ import { Textarea } from "@/components/ui/textarea";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import { Plus, Palette, TrendingUp, Coins, Eye, Heart, Share, ArrowUpRight } from "lucide-react";
 import { useNavigate } from "react-router-dom";
-import MobileSectionNav from "@/components/MobileSectionNav";
 import { useAuth } from "@/hooks/useAuth";
 import { useToast } from "@/hooks/use-toast";
 import { supabase } from "@/integrations/supabase/client";
@@ -126,7 +125,6 @@ const Create = () => {
 
   return (
     <div className="min-h-screen bg-background">
-      <MobileSectionNav />
       
       <div className="pt-6">
       <div className="max-w-4xl mx-auto px-4">
