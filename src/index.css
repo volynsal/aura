@@ -8,59 +8,59 @@ All colors MUST be HSL.
 
 @layer base {
   :root {
-    /* Dark flame-inspired foundation */
-    --background: 0 0% 5%;
-    --foreground: 30 20% 92%;
+    /* Dark blue aura foundation */
+    --background: 222 25% 5%;
+    --foreground: 200 20% 92%;
 
-    --card: 15 15% 8%;
-    --card-foreground: 30 15% 90%;
+    --card: 215 20% 8%;
+    --card-foreground: 200 15% 90%;
 
-    --popover: 10 20% 6%;
-    --popover-foreground: 30 15% 92%;
+    --popover: 220 25% 6%;
+    --popover-foreground: 200 15% 92%;
 
-    /* Flame-inspired primary colors */
-    --primary: 25 85% 65%;
-    --primary-foreground: 0 0% 5%;
+    /* Blue aura-inspired primary colors */
+    --primary: 200 85% 65%;
+    --primary-foreground: 222 25% 5%;
 
-    --secondary: 15 25% 12%;
-    --secondary-foreground: 30 20% 85%;
+    --secondary: 215 25% 12%;
+    --secondary-foreground: 200 20% 85%;
 
-    --muted: 20 15% 10%;
-    --muted-foreground: 25 10% 60%;
+    --muted: 220 15% 10%;
+    --muted-foreground: 215 10% 60%;
 
-    --accent: 35 60% 55%;
-    --accent-foreground: 0 0% 5%;
+    --accent: 195 60% 55%;
+    --accent-foreground: 222 25% 5%;
 
     --destructive: 0 70% 55%;
-    --destructive-foreground: 30 15% 95%;
+    --destructive-foreground: 200 15% 95%;
 
-    --border: 20 20% 15%;
-    --input: 15 25% 8%;
-    --ring: 25 85% 65%;
+    --border: 220 20% 15%;
+    --input: 215 25% 8%;
+    --ring: 200 85% 65%;
 
     --radius: 0.75rem;
 
-    /* Flame ring design tokens */
-    --flame-orange: 25 85% 65%;
-    --flame-red: 10 80% 60%;
-    --flame-gold: 45 90% 75%;
-    --flame-ember: 15 70% 45%;
-    --surface: 15 25% 8%;
-    --surface-elevated: 20 20% 12%;
-    --text-subtle: 25 15% 65%;
+    /* Blue aura design tokens */
+    --aura-blue: 200 85% 65%;
+    --aura-cyan: 180 80% 70%;
+    --aura-electric: 210 90% 75%;
+    --aura-deep: 215 70% 45%;
+    --surface: 215 25% 8%;
+    --surface-elevated: 220 20% 12%;
+    --text-subtle: 215 15% 65%;
 
-    /* Flame-inspired gradients */
-    --gradient-flame: linear-gradient(135deg, hsl(var(--flame-orange)) 0%, hsl(var(--flame-red)) 50%, hsl(var(--flame-ember)) 100%);
-    --gradient-ember: linear-gradient(135deg, hsl(var(--flame-ember) / 0.2) 0%, hsl(var(--flame-orange) / 0.1) 100%);
+    /* Blue aura gradients */
+    --gradient-aura: linear-gradient(135deg, hsl(var(--aura-blue)) 0%, hsl(var(--aura-cyan)) 50%, hsl(var(--aura-deep)) 100%);
+    --gradient-halo: linear-gradient(135deg, hsl(var(--aura-deep) / 0.2) 0%, hsl(var(--aura-blue) / 0.1) 100%);
     --gradient-subtle: linear-gradient(135deg, hsl(var(--surface)) 0%, hsl(var(--surface-elevated)) 100%);
-    --gradient-glow: radial-gradient(circle at center, hsl(var(--flame-orange) / 0.3) 0%, transparent 70%);
+    --gradient-glow: radial-gradient(circle at center, hsl(var(--aura-blue) / 0.3) 0%, transparent 70%);
 
     /* Enhanced effects */
-    --shadow-flame: 0 4px 32px hsl(var(--flame-orange) / 0.25);
-    --shadow-ember: 0 8px 48px hsl(var(--flame-ember) / 0.4);
-    --shadow-soft: 0 4px 20px hsl(0 0% 0% / 0.5);
+    --shadow-aura: 0 4px 32px hsl(var(--aura-blue) / 0.25);
+    --shadow-halo: 0 8px 48px hsl(var(--aura-deep) / 0.4);
+    --shadow-soft: 0 4px 20px hsl(222 25% 0% / 0.5);
     --transition-smooth: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-    --transition-flame: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    --transition-aura: all 0.4s cubic-bezier(0.25, 0.46, 0.45, 0.94);
 
     --sidebar-background: 0 0% 98%;
 
@@ -152,13 +152,13 @@ All colors MUST be HSL.
     animation: flicker 3s infinite;
   }
 
-  /* Flame-inspired backgrounds */
-  .gradient-flame {
-    background: var(--gradient-flame);
+  /* Blue aura backgrounds */
+  .gradient-aura {
+    background: var(--gradient-aura);
   }
 
-  .gradient-ember {
-    background: var(--gradient-ember);
+  .gradient-halo {
+    background: var(--gradient-halo);
   }
 
   .gradient-glow {
@@ -166,31 +166,31 @@ All colors MUST be HSL.
   }
 
   /* Enhanced effects */
-  .flame-glow {
-    box-shadow: var(--shadow-flame);
+  .aura-glow {
+    box-shadow: var(--shadow-aura);
   }
 
-  .ember-shadow {
-    box-shadow: var(--shadow-ember);
+  .halo-shadow {
+    box-shadow: var(--shadow-halo);
   }
 
-  /* Flame ring animation */
-  .flame-ring {
+  /* Aura ring animation */
+  .aura-ring {
     position: relative;
     overflow: hidden;
   }
 
-  .flame-ring::before {
+  .aura-ring::before {
     content: '';
     position: absolute;
     inset: -2px;
-    background: var(--gradient-flame);
+    background: var(--gradient-aura);
     border-radius: inherit;
     z-index: -1;
-    animation: flame-pulse 2s ease-in-out infinite alternate;
+    animation: aura-pulse 2s ease-in-out infinite alternate;
   }
 
-  .flame-ring::after {
+  .aura-ring::after {
     content: '';
     position: absolute;
     inset: 0;
@@ -232,7 +232,7 @@ All colors MUST be HSL.
   99% { opacity: 0.8; }
 }
 
-@keyframes flame-pulse {
+@keyframes aura-pulse {
   0% { 
     opacity: 0.6;
     transform: scale(1);
@@ -243,7 +243,7 @@ All colors MUST be HSL.
   }
 }
 
-@keyframes ember-float {
+@keyframes halo-float {
   0%, 100% { 
     transform: translateY(0px) rotate(0deg);
     opacity: 0.7;

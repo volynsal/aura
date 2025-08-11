@@ -14,7 +14,7 @@ const AuraHero = () => {
         
         <div className="flex flex-col gap-3 sm:flex-row sm:gap-4 justify-center items-center mb-6 md:mb-8">
           <Link to="/vibe-matching">
-            <Button variant="aura" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 flame-ring">
+            <Button variant="aura" size="lg" className="w-full sm:w-auto text-base sm:text-lg px-6 sm:px-8 py-4 sm:py-6 aura-ring">
               Start swiping
             </Button>
           </Link>
