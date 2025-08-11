@@ -3,7 +3,6 @@ import { Search, Home, Compass, User, Heart, Palette, LogOut, ShoppingCart } fro
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import auraLogo from "/lovable-uploads/886c6539-c748-446f-a137-cb1cad2ac3dc.png";
-import FloatingLogo from "@/components/FloatingLogo";
 import { useState } from "react";
 
 const AuraNavbar = () => {
@@ -19,10 +18,10 @@ const AuraNavbar = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4 sm:gap-8">
             <Link to="/feed" className="flex items-center gap-2 sm:gap-3">
-              <FloatingLogo 
+              <img 
                 src={auraLogo} 
                 alt="Aura logo — mood-based art platform" 
-                className="w-6 h-6 sm:w-8 sm:h-8 halo-float" 
+                className="w-6 h-6 sm:w-8 sm:h-8 halo-float transparent-logo" 
               />
               <h1 className="text-lg sm:text-2xl font-bold">
                 <span className="text-primary">AURA</span>
