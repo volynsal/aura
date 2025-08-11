@@ -40,13 +40,15 @@ export const useSwipeGlitch = () => {
     touchStartY.current = 0;
   };
 
-  // Desktop support: mouse swipe between mousedown and mouseup
-  const handleMouseDown = (e: MouseEvent) => {
+  // Desktop support: pointer swipe between pointerdown and pointerup (for mouse/trackpad)
+  const handlePointerDown = (e: PointerEvent) => {
+    if (e.pointerType !== 'mouse') return;
     touchStartX.current = e.clientX;
     touchStartY.current = e.clientY;
   };
 
-  const handleMouseUp = (e: MouseEvent) => {
+  const handlePointerUp = (e: PointerEvent) => {
+    if (e.pointerType !== 'mouse') return;
     if (!touchStartX.current || !touchStartY.current) return;
 
     const deltaX = e.clientX - touchStartX.current;
@@ -63,14 +65,21 @@ export const useSwipeGlitch = () => {
   useEffect(() => {
     document.addEventListener('touchstart', handleTouchStart, { passive: true });
     document.addEventListener('touchend', handleTouchEnd, { passive: true });
-    document.addEventListener('mousedown', handleMouseDown);
-    document.addEventListener('mouseup', handleMouseUp);
+
+    // Attach pointer listeners only for fine pointers (desktop)
+    const isDesktop = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+    if (isDesktop) {
+      document.addEventListener('pointerdown', handlePointerDown);
+      document.addEventListener('pointerup', handlePointerUp);
+    }
 
     return () => {
       document.removeEventListener('touchstart', handleTouchStart);
       document.removeEventListener('touchend', handleTouchEnd);
-      document.removeEventListener('mousedown', handleMouseDown);
-      document.removeEventListener('mouseup', handleMouseUp);
+      if (isDesktop) {
+        document.removeEventListener('pointerdown', handlePointerDown);
+        document.removeEventListener('pointerup', handlePointerUp);
+      }
     };
   }, []);
 
