@@ -13,7 +13,6 @@ import Login from "./pages/Login";
 import NFTView from "./pages/NFTView";
 import NotFound from "./pages/NotFound";
 import AuraBottomNav from "./components/AuraBottomNav";
-import AuraNavbar from "./components/AuraNavbar";
 import { AuthProvider } from "./hooks/useAuth";
 import { Web3Provider } from "./components/Web3Provider";
 import { HelmetProvider } from "react-helmet-async";
@@ -46,7 +45,6 @@ const App = () => (
             <Sonner />
             <BrowserRouter>
               <div className="flex flex-col min-h-screen">
-                <AuraNavbar />
                 <main className="flex-1 pb-20">
                   <Routes>
                     <Route path="/" element={<Index />} />

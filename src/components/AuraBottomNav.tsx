@@ -6,6 +6,11 @@ const AuraBottomNav = () => {
   const location = useLocation();
   const { user } = useAuth();
 
+  // Only show bottom nav if user is logged in
+  if (!user) {
+    return null;
+  }
+
   const navItems = [
     { path: '/feed', icon: Home, label: 'Feed' },
     { path: '/discover', icon: Compass, label: 'Discover' },
