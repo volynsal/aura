@@ -9,7 +9,7 @@ const Index = () => {
         title="Curation is the new flex."
         description="Swipe to sculpt your feed, stack moodboards that earn, subscribe to visionary creators like the Medicis, and mint AI pieces in MintLab."
         path="/"
-        image="/lovable-uploads/53e0d869-5f3f-4770-a316-e6580fdb7e9f.png"
+        image="/lovable-uploads/886c6539-c748-446f-a137-cb1cad2ac3dc.png"
         structuredData={{
           "@context": "https://schema.org",
           "@type": "WebSite",

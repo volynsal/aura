@@ -2,7 +2,7 @@ import { Button } from "@/components/ui/button";
 import { Search, Home, Compass, User, Heart, Palette, LogOut, ShoppingCart } from "lucide-react";
 import { useLocation, Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import auraLogo from "/lovable-uploads/53e0d869-5f3f-4770-a316-e6580fdb7e9f.png";
+import auraLogo from "/lovable-uploads/886c6539-c748-446f-a137-cb1cad2ac3dc.png";
 import { useState } from "react";
 
 const AuraNavbar = () => {
