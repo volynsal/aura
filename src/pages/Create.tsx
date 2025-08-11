@@ -174,7 +174,7 @@ const Create = () => {
             
             <div className="grid gap-6">
               {curatedBoards.map((board) => (
-                <Card key={board.id} className="overflow-hidden">
+                <Card key={board.id} className="overflow-hidden gentle-hover">
                   <CardHeader>
                     <div className="flex justify-between items-start">
                       <div>
@@ -277,23 +277,23 @@ const Create = () => {
 
           <TabsContent value="earnings" className="mt-6">
             <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-8">
-              <Card>
+              <Card className="aura-element" style={{"--delay": 0} as any}>
                 <CardContent className="p-6 text-center">
-                  <TrendingUp className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <TrendingUp className="w-8 h-8 mx-auto mb-2 text-primary halo-float" />
                   <div className="text-2xl font-bold">4.1 ETH</div>
                   <div className="text-sm text-muted-foreground">Total Earned</div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="aura-element" style={{"--delay": 1} as any}>
                 <CardContent className="p-6 text-center">
-                  <Palette className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <Palette className="w-8 h-8 mx-auto mb-2 text-primary halo-float" />
                   <div className="text-2xl font-bold">8</div>
                   <div className="text-sm text-muted-foreground">Active Boards</div>
                 </CardContent>
               </Card>
-              <Card>
+              <Card className="aura-element" style={{"--delay": 2} as any}>
                 <CardContent className="p-6 text-center">
-                  <Coins className="w-8 h-8 mx-auto mb-2 text-primary" />
+                  <Coins className="w-8 h-8 mx-auto mb-2 text-primary halo-float" />
                   <div className="text-2xl font-bold">127</div>
                   <div className="text-sm text-muted-foreground">Total Mints</div>
                 </CardContent>

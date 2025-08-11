@@ -65,7 +65,7 @@ const nftPosts = [
 
 const NftPost = ({ post }: { post: typeof nftPosts[0] }) => {
   return (
-    <article className="bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg halo-shadow">
+    <article className="bg-card rounded-lg overflow-hidden border border-border/50 hover:border-primary/30 transition-all duration-300 hover:shadow-lg halo-shadow gentle-hover">
       {/* Header */}
       <div className="flex items-center justify-between p-4">
         <div className="flex items-center gap-3">

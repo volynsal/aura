@@ -198,6 +198,25 @@ All colors MUST be HSL.
     border-radius: inherit;
     z-index: -1;
   }
+
+  /* Floating animations */
+  .halo-float {
+    animation: halo-float 3s ease-in-out infinite;
+  }
+
+  .gentle-hover {
+    animation: gentle-hover 4s ease-in-out infinite;
+  }
+
+  .aura-bob {
+    animation: aura-bob 2.5s ease-in-out infinite;
+  }
+
+  /* Apply floating to aura elements */
+  .aura-element {
+    animation: halo-float 3s ease-in-out infinite;
+    animation-delay: calc(var(--delay, 0) * 0.2s);
+  }
 }
 
 @layer utilities {
@@ -245,12 +264,30 @@ All colors MUST be HSL.
 
 @keyframes halo-float {
   0%, 100% { 
-    transform: translateY(0px) rotate(0deg);
-    opacity: 0.7;
+    transform: translateY(0px);
+    opacity: 0.8;
   }
   50% { 
-    transform: translateY(-10px) rotate(180deg);
+    transform: translateY(-8px);
     opacity: 1;
+  }
+}
+
+@keyframes gentle-hover {
+  0%, 100% { 
+    transform: translateY(0px);
+  }
+  50% { 
+    transform: translateY(-3px);
+  }
+}
+
+@keyframes aura-bob {
+  0%, 100% { 
+    transform: translateY(0px) scale(1);
+  }
+  50% { 
+    transform: translateY(-6px) scale(1.01);
   }
 }
 
