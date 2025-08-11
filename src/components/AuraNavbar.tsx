@@ -75,28 +75,27 @@ const AuraNavbar = () => {
               </>
             ) : (
               <>
-                 {/* Navigation moved to bottom on mobile, keep desktop links hidden for now */}
-                 <Link to={user ? "/profile" : "/login"}>
-                   <Button variant={location.pathname === '/profile' ? 'aura' : 'minimal'} size="sm">
-                     <User className="w-4 h-4 sm:mr-2" />
-                     <span className="hidden sm:inline">Profile</span>
-                   </Button>
-                 </Link>
-                  {user && (
-                    <Button 
-                      variant="minimal" 
-                      size="sm" 
-                      onClick={async () => {
-                        console.log('🚪 Navbar logout clicked');
-                        // Just call signOut - it handles everything including redirect
-                        await signOut();
-                      }}
-                      className="text-muted-foreground hover:text-foreground"
-                    >
-                      <LogOut className="w-4 h-4 sm:mr-2" />
-                      <span className="hidden sm:inline">Sign Out</span>
-                    </Button>
-                  )}
+                <Link to={user ? "/profile" : "/login"}>
+                  <Button variant={location.pathname === '/profile' ? 'aura' : 'minimal'} size="sm">
+                    <User className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Profile</span>
+                  </Button>
+                </Link>
+                {user && (
+                  <Button 
+                    variant="minimal" 
+                    size="sm" 
+                    onClick={async () => {
+                      console.log('🚪 Navbar logout clicked');
+                      // Just call signOut - it handles everything including redirect
+                      await signOut();
+                    }}
+                    className="text-muted-foreground hover:text-foreground"
+                  >
+                    <LogOut className="w-4 h-4 sm:mr-2" />
+                    <span className="hidden sm:inline">Sign Out</span>
+                  </Button>
+                )}
               </>
             )}
           </div>

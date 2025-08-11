@@ -54,16 +54,61 @@ const App = () => (
                         <Index />
                       </>
                     } />
-                    <Route path="/feed" element={<Feed />} />
-                    <Route path="/discover" element={<Discover />} />
-                    <Route path="/profile" element={<Profile />} />
-                    <Route path="/vibe-matching" element={<VibeMatching />} />
-                    <Route path="/search" element={<SearchResults />} />
-                    <Route path="/u/:username" element={<UserProfile />} />
-                    <Route path="/create" element={<Create />} />
+                    <Route path="/feed" element={
+                      <>
+                        <AuraNavbar />
+                        <Feed />
+                      </>
+                    } />
+                    <Route path="/discover" element={
+                      <>
+                        <AuraNavbar />
+                        <Discover />
+                      </>
+                    } />
+                    <Route path="/profile" element={
+                      <>
+                        <AuraNavbar />
+                        <Profile />
+                      </>
+                    } />
+                    <Route path="/vibe-matching" element={
+                      <>
+                        <AuraNavbar />
+                        <VibeMatching />
+                      </>
+                    } />
+                    <Route path="/search" element={
+                      <>
+                        <AuraNavbar />
+                        <SearchResults />
+                      </>
+                    } />
+                    <Route path="/u/:username" element={
+                      <>
+                        <AuraNavbar />
+                        <UserProfile />
+                      </>
+                    } />
+                    <Route path="/create" element={
+                      <>
+                        <AuraNavbar />
+                        <Create />
+                      </>
+                    } />
                     <Route path="/login" element={<Login />} />
-                    <Route path="/nft/:id" element={<NFTView />} />
-                    <Route path="/checkout" element={<Checkout />} />
+                    <Route path="/nft/:id" element={
+                      <>
+                        <AuraNavbar />
+                        <NFTView />
+                      </>
+                    } />
+                    <Route path="/checkout" element={
+                      <>
+                        <AuraNavbar />
+                        <Checkout />
+                      </>
+                    } />
                     {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
                     <Route path="*" element={<NotFound />} />
                   </Routes>
