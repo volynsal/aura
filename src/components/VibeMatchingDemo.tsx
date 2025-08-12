@@ -107,22 +107,22 @@ const VibeMatchingDemo = () => {
         </div>
 
         {/* Action buttons */}
-        <div className="flex gap-6 justify-center mb-12">
+        <div className="flex gap-8 justify-center mb-12">
           <Button 
             variant="outline" 
             size="lg" 
             onClick={handlePass}
-            className="w-20 h-20 rounded-full border-2 hover:border-red-400 hover:text-red-400 transition-colors"
+            className="w-16 h-16 rounded-full border-2 border-white/20 bg-black/20 backdrop-blur-sm hover:border-red-400 hover:bg-red-400/10 transition-all duration-300"
           >
-            <X className="w-8 h-8" />
+            <X className="w-6 h-6 text-white" />
           </Button>
           <Button 
-            variant="aura" 
+            variant="outline"
             size="lg" 
             onClick={handleVibe}
-            className="w-20 h-20 rounded-full bg-gradient-to-r from-primary to-aura-accent hover:scale-105 transition-transform shadow-lg aura-glow border-2 border-primary/30"
+            className="w-16 h-16 rounded-full border-2 border-cyan-400/50 bg-cyan-400/20 backdrop-blur-sm hover:bg-cyan-400/30 hover:border-cyan-400 transition-all duration-300 shadow-lg shadow-cyan-400/20"
           >
-            <Heart className="w-8 h-8 text-white fill-white" />
+            <Heart className="w-6 h-6 text-cyan-400 fill-cyan-400" />
           </Button>
         </div>
 
